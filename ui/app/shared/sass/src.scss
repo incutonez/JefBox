@@ -1,0 +1,26 @@
+.jb-button-large {
+  .x-icon-el {
+    height: 32px;
+    width: 32px;
+
+    &::before {
+      font-size: 26px;
+    }
+  }
+}
+
+.jefbox-color-success {
+  color: var(--confirm-color);
+}
+
+.jefbox-color-failure {
+  color: var(--alert-color);
+}
+
+.jefbox-element-hidden {
+  display: none;
+}
+
+.jefbox-element-invisible {
+  visibility: hidden;
+}
