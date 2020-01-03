@@ -38,6 +38,12 @@ Ext.define('JefBox.Routes', {
      */
     key: 'UPLOADS',
     basePath: 'uploads'
+  }, {
+    /**
+     * @property PAINTER
+     */
+    key: 'PAINTER',
+    basePath: 'painter'
   }],
 
   constructor: function(config) {

@@ -11,6 +11,7 @@ Ext.define('JefBox.Icons', {
   GAMES: 'x-fa fa-gamepad',
   INFO: 'x-fa fa-info',
   NEW: 'x-fa fa-plus-circle',
+  PAINT: 'x-fa fa-paint-brush',
   REFRESH: 'x-fa fa-redo',
   REVERT: 'x-fa fa-history',
   SAVE: 'x-fa fa-save',

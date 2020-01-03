@@ -4,7 +4,7 @@ Ext.define('JefBox.Styles', {
     'Styles'
   ],
 
-  BUTTON_LARGE: 'jb-button-large',
+  BUTTON_LARGE: 'jefbox-button-large',
   COLOR_FAILURE: 'jefbox-color-failure',
   COLOR_SUCCESS: 'jefbox-color-success',
   ELEMENT_HIDDEN: 'jefbox-element-hidden',
