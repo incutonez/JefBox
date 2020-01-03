@@ -6,7 +6,7 @@ Ext.define('JefBox.view.main.MainViewController', {
     'JefBox.view.users.MainView',
     'JefBox.view.games.MainView',
     'JefBox.view.uploads.MainView',
-    'JefBox.Painter'
+    'JefBox.view.PainterView'
   ],
 
   constructor: function(config) {
@@ -47,7 +47,7 @@ Ext.define('JefBox.view.main.MainViewController', {
   },
 
   onRoutePainter: function(params) {
-    this.createTaskWindow('Painter', 'painter', Icons.PAINT, Routes.PAINTER);
+    this.createTaskWindow('Painter', 'painterView', Icons.PAINT, Routes.PAINTER);
   },
 
   getTaskWindowByType: function(key) {

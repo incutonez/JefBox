@@ -12,7 +12,8 @@ Ext.define('JefBox.Painter', {
     lineCap: 'round',
     context: null,
     memoryCanvas: null,
-    memoryContext: null
+    memoryContext: null,
+    fileName: UserProfile.get('UserName') + '_paint.png'
   },
 
   defaultListenerScope: true,
@@ -107,18 +108,22 @@ Ext.define('JefBox.Painter', {
     return this.el.dom;
   },
 
-  getValue: function() {
-    return this.el.dom.toDataURL();
-  },
-
-  saveImage: function() {
-    this.el.dom.toBlob(function(blob) {
+  saveImage: function(cb) {
+    let me = this;
+    me.el.dom.toBlob(function(blob) {
       let formData = new FormData();
-      // TODOJEF: This works, but it'd be nice to do it with Ext.Ajax.request somehow
-      let xhr = new XMLHttpRequest();
-      formData.append('uploadFile', blob, 'mySave.png');
-      xhr.open('POST', 'api/upload', true);
-      xhr.send(formData);
+      formData.append('uploadFile', blob, me.getFileName());
+      Ext.Ajax.request({
+        type: 'ajax',
+        url: 'api/upload',
+        method: 'POST',
+        formData: formData,
+        callback: function(options, successful, response) {
+          if (Ext.isFunction(cb)) {
+            cb(response, successful);
+          }
+        }
+      });
     });
   }
 });

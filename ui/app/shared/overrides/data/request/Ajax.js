@@ -1,8 +1,8 @@
-Ext.define('JefBox.overrides.Ajax', {
+Ext.define('JefBox.overrides.data.request.Ajax', {
   override: 'Ext.data.request.Ajax',
 
   createResponse: function(xhr) {
-    var me = this;
+    let me = this;
     // TODOJEF: Something odd here... xhr.responseType is an empty string, even though Node is returning application/json
     let response = this.callParent(arguments);
     response.getResponseData = function() {
