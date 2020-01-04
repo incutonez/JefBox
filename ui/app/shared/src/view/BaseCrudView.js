@@ -22,26 +22,17 @@ Ext.define('JefBox.view.BaseCrudView', {
         canEditRecord: function(get) {
           return get('record.CanEdit');
         },
-        viewIconCls: function(get) {
-          return get('canEditRecord') ? Styles.ELEMENT_HIDDEN : Icons.VIEW;
+        hideViewIcon: function(get) {
+          return get('canEditRecord');
         },
-        revertIconCls: function(get) {
-          if (!get('canEditRecord')) {
-            return Styles.ELEMENT_HIDDEN;
-          }
-          return !get('record.isDeleted') ? Styles.ELEMENT_HIDDEN : Icons.REVERT;
+        hideRevertIcon: function(get) {
+          return !get('record.isDeleted') || !get('canEditRecord');
         },
-        editIconCls: function(get) {
-          if (!get('canEditRecord')) {
-            return Styles.ELEMENT_HIDDEN;
-          }
-          return get('record.isDeleted') ? Styles.ELEMENT_HIDDEN : Icons.EDIT;
+        hideEditIcon: function(get) {
+          return get('record.isDeleted') || !get('canEditRecord');
         },
-        deleteIconCls: function(get) {
-          if (!get('canEditRecord')) {
-            return Styles.ELEMENT_HIDDEN;
-          }
-          return get('record.isDeleted') ? Styles.ELEMENT_HIDDEN : Icons.DELETE;
+        hideDeleteIcon: function(get) {
+          return get('record.isDeleted') || !get('canEditRecord');
         }
       }
     }
@@ -113,8 +104,9 @@ Ext.define('JefBox.view.BaseCrudView', {
     return {
       tooltip: 'View Record',
       handler: 'onClickViewRecord',
+      iconCls: Icons.VIEW,
       bind: {
-        iconCls: '{viewIconCls}'
+        hidden: '{hideViewIcon}'
       }
     };
   },
@@ -123,8 +115,9 @@ Ext.define('JefBox.view.BaseCrudView', {
     return {
       tooltip: 'Delete Record',
       handler: 'onClickDeleteRecord',
+      iconCls: Icons.DELETE,
       bind: {
-        iconCls: '{deleteIconCls}'
+        hidden: '{hideDeleteIcon}'
       }
     };
   },
@@ -133,8 +126,9 @@ Ext.define('JefBox.view.BaseCrudView', {
     return {
       tooltip: 'Edit Record',
       handler: 'onClickEditRecord',
+      iconCls: Icons.EDIT,
       bind: {
-        iconCls: '{editIconCls}'
+        hidden: '{hideEditIcon}'
       }
     };
   },
@@ -143,8 +137,9 @@ Ext.define('JefBox.view.BaseCrudView', {
     return {
       tooltip: 'Revert Record',
       handler: 'onClickRevertRecord',
+      iconCls: Icons.REVERT,
       bind: {
-        iconCls: '{revertIconCls}'
+        hidden: '{hideRevertIcon}'
       }
     };
   },

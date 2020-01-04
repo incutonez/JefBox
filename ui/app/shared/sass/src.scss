@@ -12,6 +12,10 @@
   }
 }
 
+.jefbox-base-color {
+  color: var(--base-color);
+}
+
 .jefbox-color-success {
   color: var(--confirm-color);
 }
@@ -21,9 +25,9 @@
 }
 
 .jefbox-element-hidden {
-  display: none;
+  display: none !important;
 }
 
 .jefbox-element-invisible {
-  visibility: hidden;
+  visibility: hidden !important;;
 }

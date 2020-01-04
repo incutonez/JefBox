@@ -86,7 +86,7 @@ Ext.define('JefBox.BaseDialog', {
   onCloseDialog: function() {
     // If the close was invoked, and the user didn't click the save button, let's revert any changes
     if (!this.clickedSave) {
-      let viewRecord = this.getViewRecord();
+      let viewRecord = this.getViewRecord(true);
       if (viewRecord) {
         viewRecord.reject();
       }
@@ -134,10 +134,10 @@ Ext.define('JefBox.BaseDialog', {
     this.fireEvent('minimize', this);
   },
 
-  getViewRecord: function() {
+  getViewRecord: function(suppress) {
     let viewModel = this.getViewModel();
     let viewRecord = viewModel && viewModel.get('viewRecord');
-    if (!viewRecord) {
+    if (!suppress && !viewRecord) {
       this.logError('viewRecord is undefined');
     }
     return viewRecord;

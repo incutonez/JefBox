@@ -4,18 +4,26 @@ Ext.define('JefBox.Icons', {
     'Icons'
   ],
 
+  ACTIONS: 'x-fa fa-tools',
   CHECKMARK: 'x-fa fa-check',
+  CONFIGURE: 'x-fa fa-cog',
+  CONNECT: 'x-fa fa-plug',
   CROSS: 'x-fa fa-times',
   DELETE: 'x-fa fa-trash',
   EDIT: 'x-fa fa-edit',
   GAMES: 'x-fa fa-gamepad',
   INFO: 'x-fa fa-info',
+  MENU: 'x-fa fa-bars',
   NEW: 'x-fa fa-plus-circle',
   PAINT: 'x-fa fa-paint-brush',
+  PAUSE: 'x-fa fa-pause',
   REFRESH: 'x-fa fa-redo',
   REVERT: 'x-fa fa-history',
   SAVE: 'x-fa fa-save',
   SEARCH: 'x-fa fa-search',
+  SIGN_IN: 'x-fa fa-sign-in-alt',
+  SIGN_OUT: 'x-fa fa-sign-out-alt',
+  START: 'x-fa fa-play',
   START_MENU: 'x-fa fa-monument',
   TEAMS: 'x-fa fa-sitemap',
   UPLOAD: 'x-fa fa-upload',
@@ -26,6 +34,11 @@ Ext.define('JefBox.Icons', {
     if (!config) {
       return;
     }
-    return `<span class="${config.iconCls} ${config.colorCls}"</span>`;
+    let colorCls = config.colorCls || '';
+    let tooltip = '';
+    if (config.tooltip) {
+      tooltip = `data-qtip="${config.tooltip}"`;
+    }
+    return `<span ${tooltip} class="${config.iconCls} ${colorCls}"</span>`;
   }
 });

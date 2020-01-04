@@ -2,6 +2,11 @@ const db = require('../models/index');
 const express = require('express');
 const router = express.Router();
 
+router.get('/logout', async (req, res) => {
+  await req.session.destroy();
+  res.sendStatus(403);
+});
+
 router.get('/login', async (req, res) => {
   const user = req.session.user;
   const record = user && await db.User.findOne({

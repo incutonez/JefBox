@@ -1,3 +1,4 @@
+const GameStatuses = require('../enums/GameStatuses');
 module.exports = (conn, types) => {
   const GameModel = conn.define('Game', {
     Id: {
@@ -18,13 +19,30 @@ module.exports = (conn, types) => {
     Type: {
       type: types.INTEGER,
       allowNull: false
+    },
+    Status: {
+      type: types.INTEGER,
+      allowNull: false
     }
   }, {
     timestamps: true,
     paranoid: true,
     createdAt: 'CreateDate',
     updatedAt: 'UpdateDate',
-    deletedAt: 'DeleteDate'
+    deletedAt: 'DeleteDate',
+    hooks: {
+      beforeUpdate: (record, options) => {
+        if (record.Status === GameStatuses.DELETED) {
+          record.Status = GameStatuses.NEW;
+        }
+      },
+      afterDestroy: async (record, options) => {
+        record.Status = GameStatuses.DELETED;
+        await record.save({
+          hooks: false
+        });
+      }
+    }
   });
 
   GameModel.associate = (models) => {

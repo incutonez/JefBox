@@ -91,7 +91,8 @@ module.exports = (Model) => {
       where: {
         Id: data.Id
       },
-      include: Model.updateInclude
+      include: Model.updateInclude,
+      individualHooks: true
     });
     let record = await getRecordById(data.Id);
     return await updateAssociations(record, data);
@@ -101,7 +102,8 @@ module.exports = (Model) => {
     return Model.destroy({
       where: {
         Id: id
-      }
+      },
+      individualHooks: true
     });
   }
 

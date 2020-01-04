@@ -63,6 +63,7 @@ Ext.define('JefBox.Socket', {
     me.on('updatedTeams', function() {
       teams.load();
       users.load();
+      games.load();
     });
     me.on('updatedUsers', function() {
       users.load();
@@ -81,6 +82,7 @@ Ext.define('JefBox.Socket', {
       }
     });
     me.on('updatedGames', function() {
+      teams.load();
       games.load();
     });
     me.on('updatedUploads', function() {

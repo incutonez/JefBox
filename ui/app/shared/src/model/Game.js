@@ -22,6 +22,9 @@ Ext.define('JefBox.model.Game', {
   }, {
     name: 'Room',
     type: 'string'
+  }, {
+    name: 'Status',
+    type: 'int'
   }],
 
   hasMany: [{

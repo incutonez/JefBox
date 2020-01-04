@@ -19,8 +19,8 @@ Ext.define('JefBox.view.uploads.MainView', {
   itemConfig: {
     viewModel: {
       formulas: {
-        viewIconCls: function(get) {
-          return Icons.VIEW;
+        hideViewIcon: function(get) {
+          return false;
         }
       }
     }

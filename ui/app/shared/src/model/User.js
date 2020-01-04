@@ -123,6 +123,13 @@ Ext.define('JefBox.model.User', {
     }
   },
 
+  signOut: function() {
+    Ext.Ajax.request({
+      method: 'GET',
+      url: 'api/logout'
+    });
+  },
+
   logInUser: function(callback) {
     let me = this;
     Ext.Ajax.request({
