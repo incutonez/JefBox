@@ -149,5 +149,27 @@ Ext.define('JefBox.model.User', {
         }
       }
     });
+  },
+
+  joinGame: function(config) {
+    if (!config) {
+      return;
+    }
+    Ext.Ajax.request({
+      method: 'POST',
+      url: Routes.parseRoute(Schemas.Games.JOIN_PATH_UI, {
+        Id: config.gameId
+      }),
+      jsonData: {
+        TeamId: config.teamId
+      },
+      listeners: {
+        callback: function(options, successful, response) {
+          if (Ext.isFunction(config.callback)) {
+            config.callback(response, successful);
+          }
+        }
+      }
+    });
   }
 });

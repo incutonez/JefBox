@@ -25,6 +25,10 @@ Ext.define('JefBox.model.Game', {
   }, {
     name: 'Status',
     type: 'int'
+  }, {
+    name: 'AllowTeams',
+    type: 'boolean',
+    defaultValue: true
   }],
 
   hasMany: [{
@@ -51,7 +55,7 @@ Ext.define('JefBox.model.Game', {
 
   proxy: {
     type: 'rest',
-    url: 'api/games',
+    url: Schemas.Games.BASE_PATH,
     writer: {
       type: 'associationWriter',
       writeAllFields: true,

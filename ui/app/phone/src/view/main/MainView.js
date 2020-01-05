@@ -14,8 +14,8 @@ Ext.define('JefBox.view.main.MainView', {
     type: 'mainView'
   },
 
-  title: 'Phone',
   layout: 'fit',
+  title: 'Welcome ' + UserProfile.get('UserName'),
   tools: [{
     xtype: 'button',
     iconCls: Icons.MENU,

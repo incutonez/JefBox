@@ -24,9 +24,14 @@ module.exports = (conn, types) => {
   });
 
   TeamModel.associate = (models) => {
-    TeamModel.belongsToMany(models.User, {
-      as: 'Users',
-      through: 'TeamUsers'
+    // TeamModel.belongsToMany(models.User, {
+    //   as: 'Users',
+    //   through: 'GamesTeamsUsers'
+    // });
+
+    TeamModel.belongsToMany(models.Game, {
+      as: 'Games',
+      through: models.GameTeam
     });
 
     TeamModel.belongsToMany(models.RoundItem, {
@@ -34,9 +39,17 @@ module.exports = (conn, types) => {
       through: 'RoundItemWinners'
     });
 
+    // TeamModel.includeOptions.push({
+    //   model: models.User,
+    //   as: 'Users',
+    //   through: {
+    //     attributes: []
+    //   }
+    // });
+
     TeamModel.includeOptions.push({
-      model: models.User,
-      as: 'Users',
+      model: models.Game,
+      as: 'Games',
       through: {
         attributes: []
       }

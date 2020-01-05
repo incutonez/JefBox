@@ -18,7 +18,7 @@ Ext.define('JefBox.Enums', {
       method: 'GET',
       url: 'api/enums',
       callback: function(options, successful, response) {
-        const enums = Ext.decode(response.responseText);
+        const enums = response.getResponseData();
         if (successful && enums) {
           for (let i = 0; i < enums.length; i++) {
             const enumData = enums[i];

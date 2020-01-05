@@ -5,11 +5,16 @@ Ext.define('JefBox.phone.view.games.JoinView', {
   viewModel: {
     data: {
       selectedGame: null,
-      selectedTeam: null
+      selectedTeam: null,
+      saveBtnText: 'Join'
     },
     formulas: {
+      gameAllowsTeams: function(get) {
+        let selectedGame = get('selectedGame');
+        return !Ext.isEmpty(selectedGame) && selectedGame.get('AllowTeams');
+      },
       saveBtnDisabled: function(get) {
-        return !get('selectedGame') || !get('selectedTeam');
+        return !get('selectedGame') || get('gameAllowsTeams') && !get('selectedTeam');
       }
     },
     stores: {
@@ -22,7 +27,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
 
   title: 'Join Game',
   isCrudDialog: true,
-  height: '100%',
+  height: '50%',
   width: '100%',
   layout: {
     type: 'vbox'
@@ -43,13 +48,15 @@ Ext.define('JefBox.phone.view.games.JoinView', {
     }
   }, {
     xtype: 'combobox',
-    label: 'Teams',
+    label: 'Team',
     required: true,
     queryMode: 'local',
     valueField: 'Id',
     displayField: 'Name',
     store: JefBox.store.Teams,
     bind: {
+      disabled: '{!gameAllowsTeams}',
+      hidden: '{!gameAllowsTeams}',
       selection: '{selectedTeam}'
     }
   }],
@@ -59,47 +66,13 @@ Ext.define('JefBox.phone.view.games.JoinView', {
     let viewModel = me.getViewModel();
     this.clickedSave = true;
     if (viewModel) {
-      let selectedTeam = viewModel.get('selectedTeam');
-      let selectedTeamUsers = selectedTeam && selectedTeam.getUsersStore();
-      if (selectedTeamUsers) {
-        let found = selectedTeamUsers.findRecord('Id', UserProfile.getId(), 0, false, true, true);
-        if (!found) {
-          selectedTeamUsers.add(UserProfile);
-          selectedTeam.save({
-            callback: function(record, operation, success) {
-              if (success) {
-                me.addTeamToGame(selectedTeam);
-              }
-            }
-          });
-        }
-        else {
-          me.addTeamToGame(selectedTeam);
-        }
-      }
-    }
-  },
+      UserProfile.joinGame({
+        gameId: viewModel.get('selectedGame.Id'),
+        teamId: viewModel.get('selectedTeam.Id'),
+        callback: function() {
 
-  addTeamToGame: function(teamRecord) {
-    let me = this;
-    let viewModel = me.getViewModel();
-    let selectedGame = viewModel && viewModel.get('selectedGame');
-    let selectedGameTeams = selectedGame && selectedGame.getTeamsStore();
-    if (selectedGameTeams && teamRecord) {
-      let found = selectedGameTeams.findRecord('Id', teamRecord.getId(), 0, false, true, true);
-      if (!found) {
-        selectedGameTeams.add(teamRecord);
-        selectedGame.save({
-          callback: function(record, operation, success) {
-            if (success) {
-              me.close();
-            }
-          }
-        });
-      }
-      else {
-        me.close();
-      }
+        }
+      });
     }
   }
 });

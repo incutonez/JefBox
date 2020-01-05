@@ -36,7 +36,9 @@ for (let key in db) {
   }
 }
 
-db.conn.sync().then(() => {
+db.conn.sync({
+  force: process.env.CLEAR_DATABASE
+}).then(() => {
   console.log('synced');
 }).catch((err) => {
   console.log(err);

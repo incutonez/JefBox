@@ -5,6 +5,7 @@ Ext.define('JefBox.shared.Application', {
     'Ext.*',
     'Ext.Loader',
     'JefBox.Enums',
+    'JefBox.Schemas',
     'JefBox.model.User',
     'JefBox.Routes',
     'JefBox.Icons',

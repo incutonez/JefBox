@@ -17,7 +17,6 @@ Ext.define('JefBox.view.games.HostView', {
           deep: true
         },
         get: function(store) {
-          console.log('changing');
           return store && store.findRecord('Id', this.get('viewRecordId'), 0, false, true, true);
         }
       }
@@ -37,10 +36,42 @@ Ext.define('JefBox.view.games.HostView', {
     },
     items: [{
       title: 'Lobby',
-      xtype: 'teamsMainView',
-      bind: {
-        store: '{viewRecord.Teams}'
-      }
+      layout: {
+        type: 'vbox'
+      },
+      items: [{
+        xtype: 'grid',
+        flex: 1,
+        bind: {
+          store: '{viewRecord.Teams}'
+        },
+        itemConfig: {
+          viewModel: {
+            formulas: {
+              usersDisplay: function(get) {
+                return Ext.util.Format.storeToList({
+                  store: get('record.Users'),
+                  fields: 'UserName'
+                });
+              }
+            }
+          }
+        },
+        columns: [{
+          text: 'Name',
+          dataIndex: 'Name'
+        }, {
+          text: 'Users',
+          dataIndex: 'Users',
+          flex: 1,
+          cell: {
+            encodeHtml: false,
+            bind: {
+              value: '{usersDisplay}'
+            }
+          }
+        }]
+      }]
     }]
   }]
 });

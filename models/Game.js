@@ -23,6 +23,9 @@ module.exports = (conn, types) => {
     Status: {
       type: types.INTEGER,
       allowNull: false
+    },
+    AllowTeams: {
+      type: types.BOOLEAN
     }
   }, {
     timestamps: true,
@@ -46,9 +49,14 @@ module.exports = (conn, types) => {
   });
 
   GameModel.associate = (models) => {
-    GameModel.hasMany(models.Team, {
+    GameModel.belongsToMany(models.Team, {
       as: 'Teams',
-      foreignKey: 'GameId'
+      through: models.GameTeam
+    });
+
+    GameModel.belongsToMany(models.User, {
+      as: 'Users',
+      through: 'GamesUsers'
     });
 
     GameModel.hasMany(models.RoundItem, {
@@ -56,10 +64,14 @@ module.exports = (conn, types) => {
       foreignKey: 'GameId'
     });
 
+    // I add this in here because we need the GameTeamModel association to exist in order to use it below
     GameModel.includeOptions.push({
       model: models.Team,
       as: 'Teams',
-      include: models.Team.includeOptions
+      include: models.GameTeam.includeOptions,
+      through: {
+        attributes: []
+      }
     });
 
     GameModel.includeOptions.push({

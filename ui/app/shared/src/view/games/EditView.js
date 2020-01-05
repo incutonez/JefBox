@@ -74,6 +74,12 @@ Ext.define('JefBox.view.games.EditView', {
           bind: {
             value: '{viewRecord.Room}'
           }
+        }, {
+          xtype: 'checkbox',
+          boxLabel: 'Teams',
+          bind: {
+            checked: '{viewRecord.AllowTeams}'
+          }
         }]
       }, {
         xtype: 'grid',

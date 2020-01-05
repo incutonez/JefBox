@@ -101,19 +101,22 @@ module.exports = (conn, types) => {
     UserModel.hasOne(models.Upload, {
       foreignKey: 'OwnerId'
     });
-    UserModel.belongsToMany(models.Team, {
-      as: 'Teams',
-      through: 'TeamUsers'
+    UserModel.belongsToMany(models.Game, {
+      through: 'GamesUsers'
+    });
+    UserModel.belongsToMany(models.GameTeam, {
+      through: 'GameTeamUser',
+      as: 'GameTeams'
     });
     // TODOJEF: Issue here when a user is inactive, and they're on a Team... they don't get removed from the join table,
     // and so they show up in the list, but as null
-    UserModel.includeOptions.push({
-      model: models.Team,
-      as: 'Teams',
-      through: {
-        attributes: []
-      }
-    });
+    // UserModel.includeOptions.push({
+    //   model: models.Team,
+    //   as: 'Teams',
+    //   through: {
+    //     attributes: []
+    //   }
+    // });
   };
 
   UserModel.includeOptions = [];
