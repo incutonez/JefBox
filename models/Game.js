@@ -75,6 +75,14 @@ module.exports = (conn, types) => {
     });
 
     GameModel.includeOptions.push({
+      model: models.User,
+      as: 'Users',
+      through: {
+        attributes: []
+      }
+    });
+
+    GameModel.includeOptions.push({
       model: models.RoundItem,
       as: 'RoundItems',
       include: models.RoundItem.includeOptions

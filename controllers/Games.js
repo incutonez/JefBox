@@ -20,8 +20,6 @@ module.exports = (io) => {
     let game = await Game.getRecordById(gameId);
     if (game.AllowTeams) {
       if (teamId) {
-        // If a Team ID was passed in, grab the record
-        let team = await Team.getRecordById(teamId);
         // Add the team to the game, if it's not already added
         await game.addTeam(teamId);
         // Get the associated model
@@ -32,11 +30,6 @@ module.exports = (io) => {
           }
         });
         await gameTeam.addUser(req.session.user.Id);
-        // Add the user to the team, if they're not already added
-        // await team.addUser(req.session.user.Id);
-        if (io && TeamModel.updateEvent) {
-          io.emit(TeamModel.updateEvent);
-        }
       }
     }
     else {
