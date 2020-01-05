@@ -48,13 +48,30 @@ Ext.define('JefBox.model.User', {
     convert: function(value, record) {
       return Enums.AccessLevels && Enums.AccessLevels.getDisplayValue(record.get('AccessLevel'));
     }
+  }, {
+    name: 'onlineCls',
+    type: 'string',
+    persist: false,
+    depends: ['IsActive'],
+    convert: function(value, record) {
+      let colorCls = Styles.COLOR_FAILURE;
+      let iconCls = Icons.CROSS;
+      if (record.get('IsActive')) {
+        iconCls = Icons.CHECKMARK;
+        colorCls = Styles.COLOR_SUCCESS;
+      }
+      return Icons.getIconMarkup({
+        iconCls: iconCls,
+        colorCls: colorCls
+      });
+    }
   }],
 
   hasMany: [{
-    model: 'JefBox.model.Team',
-    associationKey: 'Teams',
-    getterName: 'getTeamsStore',
-    role: 'Teams'
+    model: 'JefBox.model.Game',
+    associationKey: 'Games',
+    role: 'Games',
+    getterName: 'getGamesStore'
   }],
 
   proxy: {

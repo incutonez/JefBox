@@ -71,9 +71,7 @@ Ext.define('JefBox.Socket', {
     });
     me.on('userStatusChange', function() {
       users.load();
-      if (!games.isLoaded()) {
-        games.load();
-      }
+      games.load();
       if (!teams.isLoaded()) {
         teams.load();
       }
@@ -82,7 +80,6 @@ Ext.define('JefBox.Socket', {
       }
     });
     me.on('updatedGames', function() {
-      teams.load();
       games.load();
     });
     me.on('updatedUploads', function() {

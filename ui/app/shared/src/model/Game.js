@@ -37,6 +37,11 @@ Ext.define('JefBox.model.Game', {
     role: 'Teams',
     getterName: 'getTeamsStore'
   }, {
+    model: 'JefBox.model.User',
+    associationKey: 'Users',
+    role: 'Users',
+    getterName: 'getUsersStore'
+  }, {
     model: 'JefBox.model.game.RoundItem',
     associationKey: 'RoundItems',
     role: 'RoundItems',

@@ -29,26 +29,14 @@ Ext.define('JefBox.view.users.MainView', {
   },
 
   getColumnsConfig: function() {
-    var config = this.callParent();
-    var columns = [{
+    let config = this.callParent();
+    let columns = [{
       text: 'Active',
-      dataIndex: 'IsActive',
+      dataIndex: 'onlineCls',
       align: 'center',
       width: 70,
       cell: {
         encodeHtml: false
-      },
-      renderer: function(value) {
-        let colorCls = Styles.COLOR_FAILURE;
-        let iconCls = Icons.CROSS;
-        if (value) {
-          iconCls = Icons.CHECKMARK;
-          colorCls = Styles.COLOR_SUCCESS;
-        }
-        return Icons.getIconMarkup({
-          iconCls: iconCls,
-          colorCls: colorCls
-        });
       }
     }];
     if (UserProfile.get('IsAdmin')) {

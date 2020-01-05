@@ -85,41 +85,6 @@ Ext.define('JefBox.view.teams.EditView', {
         dataIndex: 'UserName',
         flex: 1
       }]
-    }, {
-      xtype: 'grid',
-      title: 'Available',
-      margin: '0 0 0 10',
-      flex: 1,
-      store: JefBox.store.Users.getActiveUsersStore({
-        filterFn: function(record) {
-          let hasFreeTeam = true;
-          const teamsStore = record.getTeamsStore();
-          if (teamsStore) {
-            teamsStore.findBy(function(team) {
-              hasFreeTeam = Ext.isEmpty(team.get('GameId'));
-              return !hasFreeTeam;
-            });
-          }
-          return hasFreeTeam;
-        }
-      }),
-      titleBar: {
-        items: [{
-          xtype: 'button',
-          align: 'right',
-          tooltip: 'Create User',
-          iconCls: Icons.NEW,
-          handler: 'onClickCreateUser'
-        }]
-      },
-      plugins: [{
-        type: 'gridrowdragdrop'
-      }],
-      columns: [{
-        text: 'User Name',
-        dataIndex: 'UserName',
-        flex: 1
-      }]
     }]
   }]
 });

@@ -42,7 +42,9 @@ Ext.define('JefBox.view.games.HostView', {
       items: [{
         xtype: 'grid',
         flex: 1,
+        title: 'Teams',
         bind: {
+          hidden: '{!viewRecord.AllowTeams}',
           store: '{viewRecord.Teams}'
         },
         itemConfig: {
@@ -70,6 +72,26 @@ Ext.define('JefBox.view.games.HostView', {
               value: '{usersDisplay}'
             }
           }
+        }]
+      }, {
+        xtype: 'grid',
+        flex: 1,
+        title: 'Users',
+        bind: {
+          hidden: '{viewRecord.AllowTeams}',
+          store: '{viewRecord.Users}'
+        },
+        columns: [{
+          text: 'Online',
+          dataIndex: 'onlineCls',
+          align: 'center',
+          cell: {
+            encodeHtml: false
+          }
+        }, {
+          text: 'Name',
+          dataIndex: 'UserName',
+          flex: 1
         }]
       }]
     }]
