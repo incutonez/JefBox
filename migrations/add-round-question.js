@@ -2,10 +2,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
+      await queryInterface.removeColumn('RoundItems', 'AnsweredDate', {transaction});
       await queryInterface.addColumn(
-      'Questions',
-      'Round', {
-        type: Sequelize.INTEGER
+      'RoundItems',
+      'AnswerDate', {
+        type: Sequelize.DATE
       }, {
         transaction
       });

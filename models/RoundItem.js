@@ -30,6 +30,9 @@ module.exports = (conn, types) => {
     },
     Url: {
       type: types.STRING
+    },
+    AnswerDate: {
+      type: types.DATE
     }
   });
 

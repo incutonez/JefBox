@@ -1,5 +1,5 @@
-var Sequelize = require('sequelize');
-var Op = Sequelize.Op;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 module.exports = (conn, types) => {
   const GameTeamModel = conn.define('GameTeam', {
     Id: {

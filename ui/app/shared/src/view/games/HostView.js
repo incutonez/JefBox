@@ -2,15 +2,33 @@ Ext.define('JefBox.view.games.HostView', {
   extend: 'JefBox.BaseDialog',
   alias: 'widget.gamesHostView',
   requires: [
-    'JefBox.view.teams.MainView'
+    'JefBox.view.teams.MainView',
+    'JefBox.view.games.HostViewController'
   ],
 
+  controller: {
+    type: 'gamesHostView'
+  },
   viewModel: {
     data: {
       viewRecordId: null,
       store: null
     },
     formulas: {
+      currentQuestion: {
+        bind: {
+          bindTo: '{viewRecord.RoundItems}',
+          deep: true
+        },
+        get: function(roundItemsStore) {
+          if (roundItemsStore) {
+            let questionIndex = roundItemsStore.findBy(function(r) {
+              return Ext.isEmpty(r.get('AnswerDate'));
+            });
+            return roundItemsStore.getAt(questionIndex);
+          }
+        }
+      },
       viewRecord: {
         bind: {
           bindTo: '{store}',
@@ -94,6 +112,80 @@ Ext.define('JefBox.view.games.HostView', {
           flex: 1
         }]
       }]
+    }, {
+      title: 'Game',
+      xtype: 'accordion',
+      items: [{
+        xtype: 'panel',
+        flex: 1,
+        title: 'Current Question',
+        collapsible: true,
+        items: [{
+          xtype: 'displayfield',
+          bind: {
+            value: '{currentQuestion.Question}'
+          }
+        }]
+      }, {
+        xtype: 'panel',
+        title: 'Rounds',
+        flex: 1,
+        layout: 'fit',
+        items: [{
+          xtype: 'grid',
+          grouped: true,
+          groupHeader: {
+            tpl: 'Round: {name}'
+          },
+          bind: {
+            store: '{viewRecord.RoundItems}'
+          },
+          itemConfig: {
+            viewModel: true
+          },
+          columns: [{
+            text: 'Actions',
+            align: 'right',
+            width: 75,
+            cell: {
+              tools: [{
+                iconCls: Icons.CHECKMARK_ROUND,
+                tooltip: 'Mark Question Answered',
+                handler: 'onMarkQuestionAnsweredRow',
+                bind: {
+                  hidden: '{record.AnswerDate}'
+                }
+              }, {
+                iconCls: Icons.CHECKMARK_ROUND_SOLID,
+                tooltip: 'Mark Question Unanswered',
+                handler: 'onMarkQuestionUnansweredRow',
+                bind: {
+                  hidden: '{!record.AnswerDate}'
+                }
+              }]
+            }
+          }, {
+            text: 'Order',
+            dataIndex: 'Order'
+          }, {
+            text: 'Type',
+            dataIndex: 'Type',
+            width: 120,
+            renderer: function(value) {
+              return Enums.RoundItemTypes.getDisplayValue(value);
+            }
+          }, {
+            text: 'Question',
+            dataIndex: 'Question',
+            flex: 1
+          }, {
+            text: 'Points',
+            dataIndex: 'Points'
+          }]
+        }]
+      }]
+    }, {
+      title: 'Standings'
     }]
   }]
 });

@@ -130,6 +130,7 @@ Ext.define('JefBox.view.games.EditView', {
         }, {
           text: 'Type',
           dataIndex: 'Type',
+          width: 120,
           renderer: function(value) {
             return Enums.RoundItemTypes.getDisplayValue(value);
           }
@@ -137,6 +138,9 @@ Ext.define('JefBox.view.games.EditView', {
           text: 'Question',
           dataIndex: 'Question',
           flex: 1
+        }, {
+          text: 'Points',
+          dataIndex: 'Points'
         }]
       }]
     }, {

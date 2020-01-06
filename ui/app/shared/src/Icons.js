@@ -6,6 +6,8 @@ Ext.define('JefBox.Icons', {
 
   ACTIONS: 'x-fa fa-tools',
   CHECKMARK: 'x-fa fa-check',
+  CHECKMARK_ROUND: 'x-far fa-check-circle',
+  CHECKMARK_ROUND_SOLID: 'x-fas fa-check-circle',
   CONFIGURE: 'x-fa fa-cog',
   CONNECT: 'x-fa fa-plug',
   CROSS: 'x-fa fa-times',

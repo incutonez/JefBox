@@ -54,6 +54,10 @@ Ext.define('JefBox.model.game.RoundItem', {
     name: 'UploadId',
     type: 'int',
     allowNull: true
+  }, {
+    name: 'AnswerDate',
+    type: 'date',
+    allowNull: true
   }],
 
   hasMany: [{
