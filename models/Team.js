@@ -31,7 +31,8 @@ module.exports = (conn, types) => {
 
     TeamModel.belongsToMany(models.Game, {
       as: 'Games',
-      through: models.GameTeam
+      through: models.GameTeam,
+      foreignKey: 'TeamId'
     });
 
     TeamModel.belongsToMany(models.RoundItem, {

@@ -104,19 +104,13 @@ module.exports = (conn, types) => {
     UserModel.belongsToMany(models.Game, {
       through: 'GamesUsers'
     });
-    UserModel.belongsToMany(models.GameTeam, {
-      through: 'GameTeamUser',
-      as: 'GameTeams'
+    UserModel.includeOptions.push({
+      model: models.Game,
+      as: 'Games',
+      through: {
+        attributes: []
+      }
     });
-    // TODOJEF: Issue here when a user is inactive, and they're on a Team... they don't get removed from the join table,
-    // and so they show up in the list, but as null
-    // UserModel.includeOptions.push({
-    //   model: models.Team,
-    //   as: 'Teams',
-    //   through: {
-    //     attributes: []
-    //   }
-    // });
   };
 
   UserModel.includeOptions = [];
