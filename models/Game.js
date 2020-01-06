@@ -51,7 +51,8 @@ module.exports = (conn, types) => {
   GameModel.associate = (models) => {
     GameModel.belongsToMany(models.Team, {
       as: 'Teams',
-      through: models.GameTeam
+      through: models.GameTeam,
+      foreignKey: 'GameId'
     });
 
     GameModel.belongsToMany(models.User, {

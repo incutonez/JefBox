@@ -1,15 +1,11 @@
+var Sequelize = require('sequelize');
+var Op = Sequelize.Op;
 module.exports = (conn, types) => {
   const GameTeamModel = conn.define('GameTeam', {
     Id: {
       type: types.INTEGER,
       primaryKey: true,
       autoIncrement: true
-    },
-    GameId: {
-      type: types.INTEGER
-    },
-    TeamId: {
-      type: types.INTEGER
     }
   });
 
@@ -21,6 +17,11 @@ module.exports = (conn, types) => {
     GameTeamModel.includeOptions.push({
       // We use association instead of model
       association: GameTeamModel.associations.Users,
+      on: {
+        '$Teams.GameTeam.Id$': {
+          [Op.eq]: conn.col('Teams.Users.GameTeamUser.GameTeamId')
+        }
+      },
       through: {
         attributes: []
       }
