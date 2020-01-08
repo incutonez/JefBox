@@ -1,7 +1,8 @@
 Ext.define('JefBox.model.game.RoundItem', {
   extend: 'Ext.data.Model',
   requires: [
-    'JefBox.model.game.RoundItemChoice'
+    'JefBox.model.game.RoundItemChoice',
+    'JefBox.model.game.RoundItemAnswer'
   ],
 
   idProperty: 'Id',
@@ -65,6 +66,11 @@ Ext.define('JefBox.model.game.RoundItem', {
     associationKey: 'Choices',
     role: 'Choices',
     getterName: 'getChoicesStore'
+  }, {
+    model: 'JefBox.model.game.RoundItemAnswer',
+    associationKey: 'Answers',
+    role: 'Answers',
+    getterName: 'getAnswersStore'
   }],
 
   proxy: {

@@ -15,6 +15,9 @@ Ext.define('JefBox.view.games.HostView', {
       store: null
     },
     formulas: {
+      entityText: function(get) {
+        return get('viewRecord.AllowTeams') ? 'Teams' : 'Users';
+      },
       currentQuestion: {
         bind: {
           bindTo: '{viewRecord.RoundItems}',
@@ -113,76 +116,139 @@ Ext.define('JefBox.view.games.HostView', {
         }]
       }]
     }, {
-      title: 'Game',
-      xtype: 'accordion',
+      title: 'Current Question',
+      layout: {
+        type: 'hbox'
+      },
       items: [{
         xtype: 'panel',
+        padding: 10,
         flex: 1,
-        title: 'Current Question',
-        collapsible: true,
+        title: 'Info',
+        layout: {
+          type: 'vbox'
+        },
+        tools: [{
+          xtype: 'button',
+          text: 'Next Question',
+          iconCls: Icons.CHECKMARK_ROUND,
+          handler: 'onClickNextQuestionBtn'
+        }],
+        defaults: {
+          labelWidth: 110,
+          labelAlign: 'left'
+        },
         items: [{
           xtype: 'displayfield',
+          label: 'Round',
+          bind: {
+            value: '{currentQuestion.Round}'
+          }
+        }, {
+          xtype: 'displayfield',
+          label: 'Question Number',
+          bind: {
+            value: '{currentQuestion.Order}'
+          }
+        }, {
+          xtype: 'displayfield',
+          label: 'Question',
           bind: {
             value: '{currentQuestion.Question}'
           }
+        }, {
+          xtype: 'displayfield',
+          label: 'Answer',
+          bind: {
+            value: '{currentQuestion.Answer}'
+          }
         }]
       }, {
-        xtype: 'panel',
-        title: 'Rounds',
+        xtype: 'grid',
         flex: 1,
-        layout: 'fit',
-        items: [{
-          xtype: 'grid',
-          grouped: true,
-          groupHeader: {
-            tpl: 'Round: {name}'
-          },
+        title: 'Answers',
+        bind: {
+          store: '{currentQuestion.Answers}'
+        },
+        itemConfig: {
+          viewModel: {
+            formulas: {
+              entityValue: function(get) {
+                const id = get('record.UniqueId');
+                console.log(id, get('viewRecord.AllowTeams'));
+                return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
+              }
+            }
+          }
+        },
+        columns: [{
+          dataIndex: 'UniqueId',
+          flex: 1,
           bind: {
-            store: '{viewRecord.RoundItems}'
+            text: '{entityText}'
           },
-          itemConfig: {
-            viewModel: true
-          },
-          columns: [{
-            text: 'Actions',
-            align: 'right',
-            width: 75,
-            cell: {
-              tools: [{
-                iconCls: Icons.CHECKMARK_ROUND,
-                tooltip: 'Mark Question Answered',
-                handler: 'onMarkQuestionAnsweredRow',
-                bind: {
-                  hidden: '{record.AnswerDate}'
-                }
-              }, {
-                iconCls: Icons.CHECKMARK_ROUND_SOLID,
-                tooltip: 'Mark Question Unanswered',
-                handler: 'onMarkQuestionUnansweredRow',
-                bind: {
-                  hidden: '{!record.AnswerDate}'
-                }
-              }]
-            }
-          }, {
-            text: 'Order',
-            dataIndex: 'Order'
-          }, {
-            text: 'Type',
-            dataIndex: 'Type',
-            width: 120,
-            renderer: function(value) {
-              return Enums.RoundItemTypes.getDisplayValue(value);
-            }
-          }, {
-            text: 'Question',
-            dataIndex: 'Question',
-            flex: 1
-          }, {
-            text: 'Points',
-            dataIndex: 'Points'
-          }]
+          cell: {
+            bind: '{entityValue}'
+          }
+        }, {
+          text: 'Answers',
+          dataIndex: 'Answer',
+          flex: 2
         }]
+      }]
+    }, {
+      xtype: 'grid',
+      grouped: true,
+      tab: {
+        title: 'Rounds'
+      },
+      groupHeader: {
+        tpl: 'Round: {name}'
+      },
+      bind: {
+        store: '{viewRecord.RoundItems}'
+      },
+      itemConfig: {
+        viewModel: true
+      },
+      columns: [{
+        text: 'Actions',
+        align: 'right',
+        width: 75,
+        cell: {
+          tools: [{
+            iconCls: Icons.CHECKMARK_ROUND,
+            tooltip: 'Mark Question Answered',
+            handler: 'onMarkQuestionAnsweredRow',
+            bind: {
+              hidden: '{record.AnswerDate}'
+            }
+          }, {
+            iconCls: Icons.CHECKMARK_ROUND_SOLID,
+            tooltip: 'Mark Question Unanswered',
+            handler: 'onMarkQuestionUnansweredRow',
+            bind: {
+              hidden: '{!record.AnswerDate}'
+            }
+          }]
+        }
+      }, {
+        text: 'Order',
+        dataIndex: 'Order'
+      }, {
+        text: 'Type',
+        dataIndex: 'Type',
+        width: 120,
+        renderer: function(value) {
+          return Enums.RoundItemTypes.getDisplayValue(value);
+        }
+      }, {
+        text: 'Question',
+        dataIndex: 'Question',
+        flex: 1
+      }, {
+        text: 'Points',
+        dataIndex: 'Points'
       }]
     }, {
       title: 'Standings'

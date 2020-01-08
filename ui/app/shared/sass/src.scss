@@ -31,3 +31,8 @@
 .jefbox-element-invisible {
   visibility: hidden !important;;
 }
+
+// TODOJEF: Change how default Material stlying is for buttons in headers
+.x-panelheader .x-text-el {
+  color: #fff;
+}

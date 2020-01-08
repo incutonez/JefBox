@@ -104,6 +104,10 @@ module.exports = (conn, types) => {
     UserModel.belongsToMany(models.Game, {
       through: 'GamesUsers'
     });
+    UserModel.hasMany(models.RoundItemAnswer, {
+      as: 'Answers',
+      foreignKey: 'UniqueId'
+    });
     UserModel.includeOptions.push({
       model: models.Game,
       as: 'Games',

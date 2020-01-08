@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 module.exports = (conn, types) => {
   const RoundItemModel = conn.define('RoundItem', {
     Id: {
@@ -14,6 +16,9 @@ module.exports = (conn, types) => {
     },
     Round: {
       type: types.INTEGER
+    },
+    RoundName: {
+      type: types.STRING
     },
     Order: {
       type: types.INTEGER
@@ -52,6 +57,11 @@ module.exports = (conn, types) => {
       foreignKey: 'UploadId'
     });
 
+    RoundItemModel.hasMany(models.RoundItemAnswer, {
+      as: 'Answers',
+      foreignKey: 'RoundItemId'
+    });
+
     RoundItemModel.updateInclude.push({
       model: models.RoundItemChoice,
       as: 'Choices'
@@ -60,6 +70,10 @@ module.exports = (conn, types) => {
     RoundItemModel.includeOptions.push({
       model: models.RoundItemChoice,
       as: 'Choices'
+    });
+
+    RoundItemModel.includeOptions.push({
+      association: RoundItemModel.associations.Answers
     });
   };
 

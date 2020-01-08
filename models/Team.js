@@ -35,6 +35,11 @@ module.exports = (conn, types) => {
       through: 'RoundItemWinners'
     });
 
+    TeamModel.hasMany(models.RoundItemAnswer, {
+      as: 'Answers',
+      foreignKey: 'UniqueId'
+    });
+
     TeamModel.includeOptions.push({
       model: models.Game,
       as: 'Games',

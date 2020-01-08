@@ -14,20 +14,23 @@ module.exports = (Model) => {
   async function updateAssociation(record, associations, items) {
     if (associations) {
       for (let i = 0; i < associations.length; i++) {
-        let ids = [];
-        let association = associations[i];
-        let existing = record && record[association.as];
+        const association = associations[i];
+        const existing = record && record[association.as];
         if (existing) {
           for (let j = 0; j < existing.length; j++) {
             await existing[j].destroy();
           }
         }
-        for (let j = 0; j < items.length; j++) {
-          let ass = await association.model.create(items[j]);
-          await updateAssociations(ass, items[j], association.model);
-          ids.push(ass[association.model.primaryKeyAttribute]);
+        console.log(items, association.as);
+        if (items.length) {
+          const ids = [];
+          for (let j = 0; j < items.length; j++) {
+            const ass = await association.model.create(items[j]);
+            await updateAssociations(ass, items[j], association.model);
+            ids.push(ass[association.model.primaryKeyAttribute]);
+          }
+          await updateLinkedAssociation(record, association.as, ids);
         }
-        await updateLinkedAssociation(record, association.as, ids);
       }
     }
   }

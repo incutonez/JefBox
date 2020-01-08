@@ -65,7 +65,11 @@ Ext.define('JefBox.model.Game', {
       type: 'associationWriter',
       writeAllFields: true,
       allDataOptions: {
-        associated: true,
+        associated: {
+          RoundItems: {
+            Choices: true
+          }
+        },
         critical: true
       },
       partialDataOptions: {

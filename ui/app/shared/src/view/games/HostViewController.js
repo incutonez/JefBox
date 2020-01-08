@@ -18,5 +18,15 @@ Ext.define('JefBox.view.games.HostViewController', {
       record.set('AnswerDate', null);
       gameRecord.save();
     }
+  },
+
+  onClickNextQuestionBtn: function() {
+    const viewModel = this.getViewModel();
+    const gameRecord = this.getViewRecord();
+    const currentQuestion = viewModel && viewModel.get('currentQuestion');
+    if (currentQuestion && gameRecord) {
+      currentQuestion.set('AnswerDate', new Date());
+      gameRecord.save();
+    }
   }
 });
