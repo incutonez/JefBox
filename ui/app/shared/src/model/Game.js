@@ -3,7 +3,8 @@ Ext.define('JefBox.model.Game', {
   requires: [
     'JefBox.AssociationWriter',
     'JefBox.model.Team',
-    'JefBox.model.game.RoundItem'
+    'JefBox.model.game.RoundItem',
+    'JefBox.model.game.Score'
   ],
 
   fields: [{
@@ -59,6 +60,19 @@ Ext.define('JefBox.model.Game', {
         direction: 'ASC'
       }]
     }
+  }, {
+    model: 'JefBox.model.game.Score',
+    associationKey: 'Score',
+    role: 'Score',
+    getterName: 'getScoreStore',
+    inverse: {
+      getterName: 'getGameRecord'
+    },
+    storeConfig: {
+      remoteSort: false,
+      remoteFilter: false,
+      groupField: 'UniqueId'
+    }
   }],
 
   proxy: {
@@ -80,5 +94,28 @@ Ext.define('JefBox.model.Game', {
         critical: true
       }
     }
+  },
+
+  addWinners: function(config) {
+    if (!config) {
+      return;
+    }
+    Ext.Ajax.request({
+      url: Routes.parseRoute(Schemas.Games.ADD_WINNER_PATH_UI, this),
+      method: 'POST',
+      jsonData: {
+        winners: config.winners
+      },
+      callback: function(operation, successful, response) {
+        if (Ext.isFunction(config.callback)) {
+          config.callback(successful, response);
+        }
+      }
+    });
+  },
+
+  getRoundItemById: function(id) {
+    const roundItemsStore = this.getRoundItemsStore();
+    return roundItemsStore && roundItemsStore.findRecord('Id', id, 0, false, true, true);
   }
 });

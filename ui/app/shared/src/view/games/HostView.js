@@ -15,8 +15,14 @@ Ext.define('JefBox.view.games.HostView', {
       store: null
     },
     formulas: {
+      groupHeaderTpl: function(get) {
+        return get('entityTextSingular') + ' {name}';
+      },
+      entityTextSingular: function(get) {
+        return get('viewRecord.AllowTeams') ? 'Team' : 'User';
+      },
       entityText: function(get) {
-        return get('viewRecord.AllowTeams') ? 'Teams' : 'Users';
+        return get('entityTextSingular') + 's';
       },
       currentQuestion: {
         bind: {
@@ -170,12 +176,19 @@ Ext.define('JefBox.view.games.HostView', {
         bind: {
           store: '{currentQuestion.Answers}'
         },
+        titleBar: {
+          items: [{
+            xtype: 'button',
+            text: 'Submit Answers',
+            align: 'right',
+            handler: 'onClickSubmitAnswers'
+          }]
+        },
         itemConfig: {
           viewModel: {
             formulas: {
               entityValue: function(get) {
                 const id = get('record.UniqueId');
-                console.log(id, get('viewRecord.AllowTeams'));
                 return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
               }
             }
@@ -187,7 +200,17 @@ Ext.define('JefBox.view.games.HostView', {
             tools: [{
               iconCls: Icons.CHECKMARK_ROUND,
               tooltip: 'Mark Correct',
-              handler: 'onClickMarkAnswerCorrect'
+              handler: 'onClickMarkAnswerCorrect',
+              bind: {
+                hidden: '{record.IsCorrect}'
+              }
+            }, {
+              iconCls: Icons.CHECKMARK_ROUND_SOLID,
+              tooltip: 'Mark Incorrect',
+              handler: 'onClickMarkAnswerIncorrect',
+              bind: {
+                hidden: '{!record.IsCorrect}'
+              }
             }]
           }
         }, {
@@ -260,7 +283,44 @@ Ext.define('JefBox.view.games.HostView', {
         dataIndex: 'Points'
       }]
     }, {
-      title: 'Standings'
+      title: 'Standings',
+      xtype: 'grid',
+      grouped: true,
+      groupHeader: {
+        bind: {
+          tpl: '{groupHeaderTpl}'
+        }
+      },
+      bind: {
+        store: '{viewRecord.Score}'
+      },
+      itemConfig: {
+        viewModel: {
+          formulas: {
+            entityValue: function(get) {
+              const id = get('record.UniqueId');
+              return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
+            }
+          }
+        }
+      },
+      columns: [{
+        text: 'Round',
+        dataIndex: 'RoundItemId'
+      }, {
+        text: 'Question',
+        dataIndex: 'QuestionNumber'
+      }, {
+        text: 'Points',
+        dataIndex: 'Points',
+        // TODOJEF: Not the best way of getting this
+        renderer: function(value, record) {
+          const viewModel = this.lookupViewModel();
+          const gameRecord = viewModel && viewModel.get('viewRecord');
+          const roundItem = gameRecord && gameRecord.getRoundItemById(record.get('RoundItemId'));
+          return roundItem && roundItem.get('Points');
+        }
+      }]
     }]
   }]
 });

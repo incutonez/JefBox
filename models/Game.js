@@ -65,6 +65,11 @@ module.exports = (conn, types) => {
       foreignKey: 'GameId'
     });
 
+    GameModel.hasMany(models.GameScore, {
+      as: 'Score',
+      foreignKey: 'GameId'
+    });
+
     // I add this in here because we need the GameTeamModel association to exist in order to use it below
     GameModel.includeOptions.push({
       model: models.Team,
@@ -73,20 +78,18 @@ module.exports = (conn, types) => {
       through: {
         attributes: []
       }
-    });
-
-    GameModel.includeOptions.push({
+    }, {
       model: models.User,
       as: 'Users',
       through: {
         attributes: []
       }
-    });
-
-    GameModel.includeOptions.push({
+    }, {
       model: models.RoundItem,
       as: 'RoundItems',
       include: models.RoundItem.includeOptions
+    }, {
+      association: GameModel.associations.Score
     });
 
     GameModel.updateInclude.push({

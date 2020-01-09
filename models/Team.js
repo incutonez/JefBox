@@ -30,13 +30,13 @@ module.exports = (conn, types) => {
       foreignKey: 'TeamId'
     });
 
-    TeamModel.belongsToMany(models.RoundItem, {
-      as: 'RoundItems',
-      through: 'RoundItemWinners'
-    });
-
     TeamModel.hasMany(models.RoundItemAnswer, {
       as: 'Answers',
+      foreignKey: 'UniqueId'
+    });
+
+    TeamModel.hasMany(models.GameScore, {
+      as: 'Standings',
       foreignKey: 'UniqueId'
     });
 

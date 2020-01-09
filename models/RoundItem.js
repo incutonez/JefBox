@@ -42,11 +42,6 @@ module.exports = (conn, types) => {
   });
 
   RoundItemModel.associate = (models) => {
-    RoundItemModel.belongsToMany(models.Team, {
-      as: 'Winners',
-      through: 'RoundItemWinners'
-    });
-
     RoundItemModel.hasMany(models.RoundItemChoice, {
       as: 'Choices',
       foreignKey: 'RoundItemId',
@@ -62,6 +57,11 @@ module.exports = (conn, types) => {
       foreignKey: 'RoundItemId'
     });
 
+    RoundItemModel.hasMany(models.GameScore, {
+      as: 'Winners',
+      foreignKey: 'RoundItemId'
+    });
+
     RoundItemModel.updateInclude.push({
       model: models.RoundItemChoice,
       as: 'Choices'
@@ -70,9 +70,7 @@ module.exports = (conn, types) => {
     RoundItemModel.includeOptions.push({
       model: models.RoundItemChoice,
       as: 'Choices'
-    });
-
-    RoundItemModel.includeOptions.push({
+    }, {
       association: RoundItemModel.associations.Answers
     });
   };

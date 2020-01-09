@@ -24,7 +24,64 @@ Ext.define('JefBox.BaseDialog', {
   config: {
     autoShow: true,
     minimizable: true,
-    isCrudDialog: false
+    isCrudDialog: false,
+    canResize: true
+  },
+
+  initialize: function() {
+    this.callParent();
+  },
+
+  resizeToScreen: function() {
+    let hasChange = false;
+    const body = Ext.getBody();
+    const screenHeight = body.getHeight();
+    const screenWidth = body.getWidth();
+    const dialogHeight = this.getHeight();
+    const dialogWidth = this.getWidth();
+    if (dialogHeight > screenHeight + 20) {
+      this.setHeight(screenHeight - 20);
+      hasChange = true;
+    }
+    if (dialogWidth > screenWidth + 20) {
+      this.setWidth(screenWidth - 20);
+      hasChange = true;
+    }
+    if (hasChange) {
+      this.center();
+    }
+  },
+
+  onResizeDialog: function() {
+    this.resizeToScreen();
+  },
+
+  onShowDialog: function() {
+    this.resizeToScreen();
+  },
+
+  updateCanResize: function(canResize) {
+    const me = this;
+    if (canResize) {
+      me.setResizable({
+        edges: 'all'
+      });
+      me.on({
+        resize: 'onResizeDialog',
+        show: 'onShowDialog',
+        scope: me
+      });
+      Ext.getBody().on('resize', 'onResizeDialog', me);
+    }
+    else {
+      me.setResizable(null);
+      me.un({
+        resize: 'onResizeDialog',
+        show: 'onShowDialog',
+        scope: me
+      });
+      Ext.getBody().un('resize', 'onResizeDialog', me);
+    }
   },
 
   updateMinimizable: function(minimizable) {

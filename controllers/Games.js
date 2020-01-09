@@ -54,6 +54,23 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
+  router.post(GameSchema.ADD_WINNER_PATH, async (req, res) => {
+    const game = await Game.getRecordById(req.params.id);
+    const winners = req.body.winners;
+    console.log(game.createWinners);
+    for (let i = 0; i < winners.length; i++) {
+      const winner = winners[i];
+      await game.createScore({
+        RoundItemId: winner.RoundItemId,
+        QuestionNumber: winner.QuestionNumber,
+        UniqueId: winner.UniqueId
+      });
+    }
+    if (io && GameModel.updateEvent) {
+      io.emit(GameModel.updateEvent);
+    }
+    res.sendStatus(204);
+  });
   router.get(GameSchema.ID_PATH, BaseCrudController.getById);
   router.put(GameSchema.ID_PATH, BaseCrudController.updateById);
   router.delete(GameSchema.ID_PATH, BaseCrudController.deleteById);

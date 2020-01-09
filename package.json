@@ -4,7 +4,7 @@
   "description": "Application similar to Jackbox games",
   "main": "index.js",
   "scripts": {
-    "start": "sequelize db:migrate && npx supervisor -i /ui server.js",
+    "start": "sequelize db:migrate && supervisor -i ./ui,./seeders server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cd ui && npm install",
     "seed": "sequelize db:seed:all"
@@ -26,6 +26,7 @@
     "sequelize": "^5.21.3",
     "sequelize-cli": "^5.5.1",
     "socket.io": "^2.3.0",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "supervisor": "^0.12.0"
   }
 }

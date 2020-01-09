@@ -19,6 +19,7 @@ Ext.define('JefBox.view.auth.LoginView', {
   closable: false,
   maximized: true,
   defaultListenerScope: true,
+  canResize: false,
   layout: {
     type: 'vbox'
   },

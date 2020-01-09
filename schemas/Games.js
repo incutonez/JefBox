@@ -8,5 +8,7 @@ module.exports = {
   JOIN_PATH: idPath + '/join',
   JOIN_PATH_UI: idPathUI + '/join',
   ADD_ANSWER_PATH: idPath + '/answer',
-  ADD_ANSWER_PATH_UI: idPathUI + '/answer'
+  ADD_ANSWER_PATH_UI: idPathUI + '/answer',
+  ADD_WINNER_PATH: idPath + '/winner',
+  ADD_WINNER_PATH_UI: idPathUI + '/winner'
 };

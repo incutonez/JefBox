@@ -86,39 +86,7 @@ module.exports = {
       UpdatedById: 1,
       OwnerId: 1
     }], {});
-    queryInterface.bulkInsert('GameTeams', [{
-      GameId: 2,
-      TeamId: 3
-    }, {
-      GameId: 2,
-      TeamId: 1
-    }, {
-      GameId: 3,
-      TeamId: 1
-    }, {
-      GameId: 3,
-      TeamId: 3
-    }], {});
-    queryInterface.bulkInsert('GameTeamUser', [{
-      GameTeamId: 1,
-      UserId: 1
-    }, {
-      GameTeamId: 1,
-      UserId: 2
-    }, {
-      GameTeamId: 2,
-      UserId: 3
-    }, {
-      GameTeamId: 3,
-      UserId: 1
-    }, {
-      GameTeamId: 3,
-      UserId: 2
-    }, {
-      GameTeamId: 4,
-      UserId: 3
-    }], {});
-    queryInterface.bulkInsert('RoundItems', [{
+    return queryInterface.bulkInsert('RoundItems', [{
       Type: 1,
       Round: 1,
       Order: 1,
@@ -177,15 +145,6 @@ module.exports = {
       Question: 'Draw me Mulder',
       Answer: 'no',
       GameId: 3
-    }], {});
-    return queryInterface.bulkInsert('RoundItemAnswers', [{
-      RoundItemId: 1,
-      UniqueId: 2,
-      Answer: 'This is like so much fun zomg'
-    }, {
-      RoundItemId: 1,
-      UniqueId: 1,
-      Answer: 'FUCK IT, WE\'LL DO IT LIVE'
     }], {});
   },
 
