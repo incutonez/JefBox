@@ -47,6 +47,9 @@ Ext.define('JefBox.model.Game', {
     role: 'RoundItems',
     getterName: 'getRoundItemsStore',
     transform: false,
+    inverse: {
+      getterName: 'getGameRecord'
+    },
     storeConfig: {
       remoteSort: false,
       remoteFilter: false,

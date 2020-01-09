@@ -41,6 +41,19 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
+  router.post(GameSchema.ADD_ANSWER_PATH, async (req, res) => {
+    const game = await Game.getRecordById(req.params.id);
+    const roundItem = await game.getRoundItemById(req.body.RoundItemId);
+    await roundItem.createAnswer({
+      Answer: req.body.Answer,
+      UploadId: req.body.UploadId,
+      UniqueId: req.body.UniqueId
+    });
+    if (io && GameModel.updateEvent) {
+      io.emit(GameModel.updateEvent);
+    }
+    res.sendStatus(204);
+  });
   router.get(GameSchema.ID_PATH, BaseCrudController.getById);
   router.put(GameSchema.ID_PATH, BaseCrudController.updateById);
   router.delete(GameSchema.ID_PATH, BaseCrudController.deleteById);

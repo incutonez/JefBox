@@ -6,5 +6,7 @@ module.exports = {
   ID_PATH: idPath,
   ID_PATH_UI: idPathUI,
   JOIN_PATH: idPath + '/join',
-  JOIN_PATH_UI: idPathUI + '/join'
+  JOIN_PATH_UI: idPathUI + '/join',
+  ADD_ANSWER_PATH: idPath + '/answer',
+  ADD_ANSWER_PATH_UI: idPathUI + '/answer'
 };

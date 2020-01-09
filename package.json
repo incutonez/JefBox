@@ -4,7 +4,7 @@
   "description": "Application similar to Jackbox games",
   "main": "index.js",
   "scripts": {
-    "start": "sequelize db:migrate && node server.js",
+    "start": "sequelize db:migrate && npx supervisor -i /ui server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cd ui && npm install",
     "seed": "sequelize db:seed:all"

@@ -28,5 +28,9 @@ Ext.define('JefBox.view.games.HostViewController', {
       currentQuestion.set('AnswerDate', new Date());
       gameRecord.save();
     }
+  },
+
+  onClickMarkAnswerCorrect: function() {
+    
   }
 });

@@ -1,6 +1,9 @@
 Ext.define('JefBox.phone.view.games.JoinView', {
   extend: 'JefBox.BaseDialog',
   alias: 'widget.phoneGamesJoinView',
+  requires: [
+    'JefBox.phone.view.games.RoundView'
+  ],
 
   viewModel: {
     data: {
@@ -66,11 +69,20 @@ Ext.define('JefBox.phone.view.games.JoinView', {
     const viewModel = me.getViewModel();
     this.clickedSave = true;
     if (viewModel) {
+      const gameId = viewModel.get('selectedGame.Id');
       UserProfile.joinGame({
-        gameId: viewModel.get('selectedGame.Id'),
+        gameId: gameId,
         teamId: viewModel.get('selectedTeam.Id'),
-        callback: function() {
-
+        callback: function(successful, response) {
+          if (successful) {
+            Ext.create('JefBox.phone.view.games.RoundView', {
+              viewModel: {
+                data: {
+                  gameId: gameId
+                }
+              }
+            });
+          }
         }
       });
     }

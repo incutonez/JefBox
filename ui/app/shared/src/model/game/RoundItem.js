@@ -24,6 +24,9 @@ Ext.define('JefBox.model.game.RoundItem', {
       type: 'presence'
     }]
   }, {
+    name: 'RoundName',
+    type: 'string'
+  }, {
     name: 'Order',
     type: 'int',
     validators: [{
@@ -75,5 +78,41 @@ Ext.define('JefBox.model.game.RoundItem', {
 
   proxy: {
     type: 'memory'
+  },
+
+  addAnswer: function(config) {
+    config = config || {};
+    const gameRecord = this.getGameRecord();
+    if (gameRecord) {
+      let uniqueId = UserProfile.getId();
+      if (gameRecord.get('AllowTeams')) {
+        const teamsStore = gameRecord.getTeamsStore();
+        if (teamsStore) {
+          teamsStore.each(function(teamRecord) {
+            const usersStore = teamRecord.getUsersStore();
+            const foundRecord = usersStore && usersStore.findRecord('Id', uniqueId, 0, false, true, true);
+            if (foundRecord) {
+              uniqueId = teamRecord.getId();
+              return false;
+            }
+          });
+        }
+      }
+      Ext.Ajax.request({
+        url: Routes.parseRoute(Schemas.Games.ADD_ANSWER_PATH_UI, gameRecord),
+        method: 'POST',
+        jsonData: {
+          Answer: config.answer,
+          UploadId: config.uploadId,
+          RoundItemId: this.getId(),
+          UniqueId: uniqueId
+        },
+        callback: function(options, successful, response) {
+          if (Ext.isFunction(config.callback)) {
+            config.callback(successful, response);
+          }
+        }
+      });
+    }
   }
 });

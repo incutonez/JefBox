@@ -100,5 +100,20 @@ module.exports = (conn, types) => {
   GameModel.updateInclude = [];
   GameModel.updateEvent = 'updatedGames';
 
+  GameModel.prototype.getRoundItemById = async function(id) {
+    let roundItem;
+    const roundItems = await this.getRoundItems();
+    if (roundItems) {
+      for (let i = 0; i < roundItems.length; i++) {
+        const item = roundItems[i];
+        if (item.Id === id) {
+          roundItem = item;
+          break;
+        }
+      }
+    }
+    return roundItem;
+  };
+
   return GameModel;
 };

@@ -180,11 +180,9 @@ Ext.define('JefBox.model.User', {
       jsonData: {
         TeamId: config.teamId
       },
-      listeners: {
-        callback: function(options, successful, response) {
-          if (Ext.isFunction(config.callback)) {
-            config.callback(response, successful);
-          }
+      callback: function(options, successful, response) {
+        if (Ext.isFunction(config.callback)) {
+          config.callback(successful, response);
         }
       }
     });

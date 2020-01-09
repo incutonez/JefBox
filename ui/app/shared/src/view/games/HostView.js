@@ -182,6 +182,15 @@ Ext.define('JefBox.view.games.HostView', {
           }
         },
         columns: [{
+          text: 'Actions',
+          cell: {
+            tools: [{
+              iconCls: Icons.CHECKMARK_ROUND,
+              tooltip: 'Mark Correct',
+              handler: 'onClickMarkAnswerCorrect'
+            }]
+          }
+        }, {
           dataIndex: 'UniqueId',
           flex: 1,
           bind: {
