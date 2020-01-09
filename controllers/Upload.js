@@ -8,10 +8,10 @@ const Model = db.Upload;
 
 module.exports = (io) => {
   router.post('/upload', (req, res) => {
-    let form = new formidable.IncomingForm();
+    const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
-      let data = fs.readFileSync(files.uploadFile.path);
-      let record = await Model.create({
+      const data = fs.readFileSync(files.uploadFile.path);
+      const record = await Model.create({
         Data: data,
         MimeType: files.uploadFile.type,
         FileName: files.uploadFile.name,
@@ -32,7 +32,7 @@ module.exports = (io) => {
   });
 
   router.get('/upload', async (req, res) => {
-    let records = await Model.findAll();
+    const records = await Model.findAll();
     records.forEach(function(record) {
       record.Data = Buffer.from(record.Data).toString('base64');
     });
@@ -41,12 +41,12 @@ module.exports = (io) => {
 
   router.get('/upload/:id', async (req, res) => {
     const queryParams = url.parse(req.url, true).query;
-    let record = await Model.findOne({
+    const record = await Model.findOne({
       where: {
         Id: req.params.id
       }
     });
-    let img = Buffer.from(record.Data);
+    const img = Buffer.from(record.Data);
     if (queryParams.base64) {
       record.Data = img.toString('base64');
       return res.send(record);

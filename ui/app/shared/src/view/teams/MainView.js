@@ -32,7 +32,7 @@ Ext.define('JefBox.view.teams.MainView', {
   },
 
   getColumnsConfig: function() {
-    let config = this.callParent();
+    const config = this.callParent();
     Ext.Array.insert(config, 3, [{
       text: 'Users',
       dataIndex: 'Users',

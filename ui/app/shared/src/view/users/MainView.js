@@ -21,7 +21,7 @@ Ext.define('JefBox.view.users.MainView', {
   NAME_DATAINDEX: 'UserName',
 
   getTitleBarConfig: function() {
-    var config = this.callParent();
+    const config = this.callParent();
     if (!UserProfile.get('IsAdmin')) {
       Ext.Array.removeAt(config, 0);
     }
@@ -29,8 +29,8 @@ Ext.define('JefBox.view.users.MainView', {
   },
 
   getColumnsConfig: function() {
-    let config = this.callParent();
-    let columns = [{
+    const config = this.callParent();
+    const columns = [{
       text: 'Active',
       dataIndex: 'onlineCls',
       align: 'center',

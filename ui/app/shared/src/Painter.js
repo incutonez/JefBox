@@ -28,7 +28,7 @@ Ext.define('JefBox.Painter', {
   },
 
   initialize: function() {
-    let memoryCanvas = document.createElement('canvas');
+    const memoryCanvas = document.createElement('canvas');
     // In memory canvas idea taken from https://stackoverflow.com/questions/11179274/html-canvas-drawing-disappear-on-resizing
     this.setMemoryCanvas(memoryCanvas);
     this.setMemoryContext(memoryCanvas.getContext('2d'));
@@ -36,12 +36,12 @@ Ext.define('JefBox.Painter', {
   },
 
   resize: function() {
-    let me = this;
+    const me = this;
     const parent = me.parent;
     const parentEl = parent && parent.el;
-    let canvas = me.getCanvas();
-    let memoryCanvas = me.getMemoryCanvas();
-    let memoryContext = me.getMemoryContext();
+    const canvas = me.getCanvas();
+    const memoryCanvas = me.getMemoryCanvas();
+    const memoryContext = me.getMemoryContext();
     if (parentEl && canvas && memoryCanvas && memoryContext) {
       const parentWidth = parentEl.getWidth();
       const parentHeight = parentEl.getHeight();
@@ -50,14 +50,14 @@ Ext.define('JefBox.Painter', {
       memoryContext.drawImage(canvas, 0, 0);
       canvas.width = parentWidth;
       canvas.height = parentHeight;
-      let context = canvas.getContext('2d');
+      const context = canvas.getContext('2d');
       context.drawImage(memoryCanvas, 0, 0);
       me.setContext(context);
     }
   },
 
   onPaintCanvas: function() {
-    let parent = this.parent;
+    const parent = this.parent;
     if (parent) {
       parent.on('resize', 'onResizeParent', this);
       this.resize();
@@ -65,8 +65,8 @@ Ext.define('JefBox.Painter', {
   },
 
   onTouchStartCanvas: function(event) {
-    let me = this;
-    let context = me.getContext();
+    const me = this;
+    const context = me.getContext();
     const coords = me.getMouseCoords(event);
     if (context && coords) {
       context.lineWidth = me.getLineWidth();
@@ -79,7 +79,7 @@ Ext.define('JefBox.Painter', {
   },
 
   onDragCanvas: function(event) {
-    let context = this.getContext();
+    const context = this.getContext();
     const coords = this.getMouseCoords(event);
     if (context && coords) {
       context.lineTo(coords.x, coords.y);
@@ -109,9 +109,9 @@ Ext.define('JefBox.Painter', {
   },
 
   saveImage: function(cb) {
-    let me = this;
+    const me = this;
     me.el.dom.toBlob(function(blob) {
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append('uploadFile', blob, me.getFileName());
       Ext.Ajax.request({
         type: 'ajax',

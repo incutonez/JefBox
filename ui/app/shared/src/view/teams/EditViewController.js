@@ -17,8 +17,8 @@ Ext.define('JefBox.view.teams.EditViewController', {
   },
 
   onClickSave: function() {
-    var me = this;
-    var viewRecord = me.getViewRecord();
+    const me = this;
+    const viewRecord = me.getViewRecord();
     if (viewRecord) {
       JefBox.store.Teams.add(viewRecord);
       JefBox.store.Teams.sync({
@@ -30,8 +30,8 @@ Ext.define('JefBox.view.teams.EditViewController', {
   },
 
   getViewRecord: function() {
-    var viewModel = this.getViewModel();
-    var viewRecord = viewModel && viewModel.get('viewRecord');
+    const viewModel = this.getViewModel();
+    const viewRecord = viewModel && viewModel.get('viewRecord');
     if (!viewRecord) {
       console.error('viewRecord is undefined');
     }

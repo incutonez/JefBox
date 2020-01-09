@@ -17,13 +17,13 @@ module.exports = (io) => {
     const teamId = req.body.TeamId;
     const gameId = req.params.id;
     // First lookup the Game record
-    let game = await Game.getRecordById(gameId);
+    const game = await Game.getRecordById(gameId);
     if (game.AllowTeams) {
       if (teamId) {
         // Add the team to the game, if it's not already added
         await game.addTeam(teamId);
         // Get the associated model
-        let gameTeam = await db.GameTeam.findOne({
+        const gameTeam = await db.GameTeam.findOne({
           where: {
             GameId: gameId,
             TeamId: teamId

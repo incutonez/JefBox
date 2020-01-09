@@ -12,7 +12,7 @@ Ext.define('JefBox.view.teams.SelectView', {
           bindTo: '{viewRecord.Teams.count}'
         },
         get: function(count) {
-          let selectedTeams = this.get('viewRecord.Teams');
+          const selectedTeams = this.get('viewRecord.Teams');
           return [{
             property: 'Id',
             value: selectedTeams && selectedTeams.collect('Id') || [],
@@ -119,7 +119,7 @@ Ext.define('JefBox.view.teams.SelectView', {
   },
 
   onCancelEditTeam: function(sender, location) {
-    let record = location.record;
+    const record = location.record;
     if (!this.savingRecord && record.phantom) {
       record.store.remove(record);
     }

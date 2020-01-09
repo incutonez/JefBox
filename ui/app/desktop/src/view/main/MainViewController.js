@@ -10,7 +10,7 @@ Ext.define('JefBox.view.main.MainViewController', {
   ],
 
   constructor: function(config) {
-    let routes = {};
+    const routes = {};
     routes[Routes.HOME] = 'onRouteHome';
     routes[Routes.USERS] = 'onRouteUsers';
     routes[Routes.TEAMS] = 'onRouteTeams';
@@ -24,7 +24,7 @@ Ext.define('JefBox.view.main.MainViewController', {
 
   onRouteHome: function() {
     for (let key in this.openWindows) {
-      let win = this.openWindows[key];
+      const win = this.openWindows[key];
       win.hide();
       win.taskButton.setPressed(false);
     }
@@ -55,13 +55,13 @@ Ext.define('JefBox.view.main.MainViewController', {
   },
 
   createTaskWindow: function(title, xtype, iconCls, key) {
-    var openWindow = this.getTaskWindowByType(key);
+    const openWindow = this.getTaskWindowByType(key);
     if (openWindow) {
       openWindow.show();
       openWindow.taskButton.setPressed(true);
       return;
     }
-    var win = Ext.create('JefBox.BaseDialog', {
+    const win = Ext.create('JefBox.BaseDialog', {
       modal: false,
       openWindowKey: key,
       items: [{
@@ -73,7 +73,7 @@ Ext.define('JefBox.view.main.MainViewController', {
         minimize: 'onMinimizeTaskWindow'
       }
     });
-    var button = Ext.create('Ext.Button', {
+    const button = Ext.create('Ext.Button', {
       iconCls: iconCls,
       text: title,
       enableToggle: true,

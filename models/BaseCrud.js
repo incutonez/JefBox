@@ -41,7 +41,7 @@ module.exports = (Model) => {
   async function updateAssociations(record, data, model) {
     model = model || Model;
     for (let key in model.associations) {
-      let items = data[key];
+      const items = data[key];
       // If the association exists in our create, let's do something about it
       if (items) {
         if (Array.isArray(items)) {
@@ -60,7 +60,7 @@ module.exports = (Model) => {
   }
 
   async function getRecordById(id, userId) {
-    let searchOptions = {
+    const searchOptions = {
       paranoid: await db.User.excludeDeleted(userId),
       where: {
         Id: id
@@ -73,7 +73,7 @@ module.exports = (Model) => {
   }
 
   async function getAllRecords(userId) {
-    let searchOptions = {
+    const searchOptions = {
       paranoid: await db.User.excludeDeleted(userId)
     };
     if (Model.includeOptions) {
@@ -97,7 +97,7 @@ module.exports = (Model) => {
       include: Model.updateInclude,
       individualHooks: true
     });
-    let record = await getRecordById(data.Id);
+    const record = await getRecordById(data.Id);
     return await updateAssociations(record, data);
   }
 

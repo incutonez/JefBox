@@ -1,5 +1,5 @@
 module.exports = (conn, types) => {
-  let TeamModel = conn.define('Team', {
+  const TeamModel = conn.define('Team', {
     Id: {
       type: types.INTEGER,
       primaryKey: true,

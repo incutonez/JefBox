@@ -25,7 +25,7 @@ Ext.define('JefBox.phone.view.teams.MainView', {
             bindTo: '{record.Users.count}'
           },
           get: function() {
-            let usersStore = this.get('record.Users');
+            const usersStore = this.get('record.Users');
             return !usersStore || usersStore.findRecord('Id', UserProfile.getId(), 0, false, true, true);
           }
         }
@@ -75,8 +75,8 @@ Ext.define('JefBox.phone.view.teams.MainView', {
   },
 
   onClickJoinTeam: function(grid, info) {
-    let record = info.record;
-    let usersStore = record && record.getUsersStore();
+    const record = info.record;
+    const usersStore = record && record.getUsersStore();
     if (usersStore) {
       usersStore.add(UserProfile);
       record.save();
@@ -84,10 +84,10 @@ Ext.define('JefBox.phone.view.teams.MainView', {
   },
 
   onClickLeaveTeam: function(grid, info) {
-    let record = info.record;
-    let usersStore = record && record.getUsersStore();
+    const record = info.record;
+    const usersStore = record && record.getUsersStore();
     if (usersStore) {
-      let found = usersStore.findRecord('Id', UserProfile.getId(), 0, false, true, true);
+      const found = usersStore.findRecord('Id', UserProfile.getId(), 0, false, true, true);
       usersStore.remove(found);
       record.save();
     }

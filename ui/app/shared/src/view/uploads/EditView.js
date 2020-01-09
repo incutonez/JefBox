@@ -38,7 +38,7 @@ Ext.define('JefBox.view.uploads.EditView', {
   }],
 
   onPaintedAttachmentField: function(field) {
-    let fileButton = field.getFileButton();
+    const fileButton = field.getFileButton();
     if (fileButton) {
       fileButton.setIconCls(Icons.SEARCH);
       fileButton.setText(null);
@@ -46,8 +46,8 @@ Ext.define('JefBox.view.uploads.EditView', {
   },
 
   onClickSaveBtn: function() {
-    let me = this;
-    let uploadForm = me.lookup('uploadForm');
+    const me = this;
+    const uploadForm = me.lookup('uploadForm');
     if (uploadForm) {
       me.clickedSave = true;
       uploadForm.submit({

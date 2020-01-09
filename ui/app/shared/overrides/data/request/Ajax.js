@@ -2,9 +2,9 @@ Ext.define('JefBox.overrides.data.request.Ajax', {
   override: 'Ext.data.request.Ajax',
 
   createResponse: function(xhr) {
-    let me = this;
+    const me = this;
     // TODOJEF: Something odd here... xhr.responseType is an empty string, even though Node is returning application/json
-    let response = this.callParent(arguments);
+    const response = this.callParent(arguments);
     response.getResponseData = function() {
       return response.responseJson || Ext.decode(response.responseText, true);
     };
@@ -25,8 +25,8 @@ Ext.define('JefBox.overrides.data.request.Ajax', {
    */
   getToastMsg: function(config) {
     config = config || {};
-    let entityType = config.entityType || 'record';
-    let actionText = this.getActionText(config);
+    const entityType = config.entityType || 'record';
+    const actionText = this.getActionText(config);
     if (actionText) {
       if (this.success) {
         return `Successfully ${actionText.past} ${entityType}.`;

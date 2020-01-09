@@ -35,10 +35,10 @@ Ext.define('JefBox.view.PainterView', {
   }],
 
   onClickSaveBtn: function() {
-    let painter = this.lookup('painter');
+    const painter = this.lookup('painter');
     if (painter) {
       painter.saveImage(function(response, successful) {
-        let toastMsg = response && response.getToastMsg({
+        const toastMsg = response && response.getToastMsg({
           entityType: 'image'
         });
         if (toastMsg) {

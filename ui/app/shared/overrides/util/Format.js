@@ -12,16 +12,16 @@ Ext.define('Shared.overrides.util.Format', {
 
   storeToList: function(config) {
     config = config || {};
-    let list = [];
-    let store = config.store;
-    let fields = config.fields;
+    const list = [];
+    const store = config.store;
+    const fields = config.fields;
     const tag = config.newLine ? 'div' : 'span';
     const comma = config.newLine ? '' : ', ';
     if (store) {
       store.each(function(record) {
         let item = null;
         if (Ext.isArray(fields)) {
-          let items = [];
+          const items = [];
           for (let i = 0; i < fields.length; i++) {
             items.push(record.get(fields[i]));
           }

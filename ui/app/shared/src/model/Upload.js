@@ -16,7 +16,7 @@ Ext.define('JefBox.model.Upload', {
     persist: false,
     depends: ['MimeType', 'Data'],
     convert: function(value, record) {
-      let data = record.get('Data');
+      const data = record.get('Data');
       if (data) {
         return '<img height="30" src="data:' + record.get('MimeType') + ';base64, ' + data + '" />';
       }

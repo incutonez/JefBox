@@ -4,12 +4,12 @@ Ext.define('JefBox.AssociationWriter', {
 
   config: {
     transform: function(data, request) {
-      let records = request.getRecords();
-      let record = records && records[0];
-      let associations = record && record.associations;
-      let associationKeys = [];
+      const records = request.getRecords();
+      const record = records && records[0];
+      const associations = record && record.associations;
+      const associationKeys = [];
       for (let key in associations) {
-        let association = associations[key];
+        const association = associations[key];
         if (association && association.transform !== false && (!association.instanceName || association.fromSingle)) {
           associationKeys.push({
             key: association.associationKey,
@@ -18,8 +18,8 @@ Ext.define('JefBox.AssociationWriter', {
         }
       }
       for (let i = 0; i < associationKeys.length; i++) {
-        let association = associationKeys[i];
-        let item = data[association.key];
+        const association = associationKeys[i];
+        const item = data[association.key];
         if (item) {
           data[association.key] = item.map(function(a) {
             return a[association.id];

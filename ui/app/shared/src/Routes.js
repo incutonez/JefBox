@@ -87,7 +87,7 @@ Ext.define('JefBox.Routes', {
         return item.replace(':', '');
       });
     }
-    let record = config.record || config;
+    const record = config.record || config;
     const optionalParams = routeUrl.match(route.optionalGroupRegex);
     for (let i = 0; i < routeKeys.length; i++) {
       let found = false;

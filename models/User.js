@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const orm = require('sequelize');
 const AccessLevels = require('../enums/AccessLevels');
 module.exports = (conn, types) => {
-  let UserModel = conn.define('User', {
+  const UserModel = conn.define('User', {
     Id: {
       type: types.INTEGER,
       primaryKey: true,

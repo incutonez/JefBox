@@ -25,7 +25,7 @@ Ext.define('JefBox.view.games.HostView', {
         },
         get: function(roundItemsStore) {
           if (roundItemsStore) {
-            let questionIndex = roundItemsStore.findBy(function(r) {
+            const questionIndex = roundItemsStore.findBy(function(r) {
               return Ext.isEmpty(r.get('AnswerDate'));
             });
             return roundItemsStore.getAt(questionIndex);

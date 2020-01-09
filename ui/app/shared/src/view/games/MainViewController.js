@@ -9,7 +9,7 @@ Ext.define('JefBox.view.games.MainViewController', {
   EDIT_VIEW: 'JefBox.view.games.EditView',
 
   onClickStartGame: function(grid, info) {
-    let record = info.record;
+    const record = info.record;
     if (record) {
       record.set('Status', Enums.GameStatuses.RUNNING);
       record.save();
@@ -17,7 +17,7 @@ Ext.define('JefBox.view.games.MainViewController', {
   },
 
   onClickPauseGame: function(grid, info) {
-    let record = info.record;
+    const record = info.record;
     if (record) {
       record.set('Status', Enums.GameStatuses.PAUSED);
       record.save();

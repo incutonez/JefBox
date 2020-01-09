@@ -5,7 +5,7 @@ Ext.define('JefBox.Schemas', {
   ],
 
   load: function(callback) {
-    let me = this;
+    const me = this;
     Ext.Ajax.request({
       method: 'GET',
       url: 'api/schemas',

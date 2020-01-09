@@ -3,8 +3,8 @@ Ext.define('JefBox.view.games.HostViewController', {
   alias: 'controller.gamesHostView',
 
   onMarkQuestionAnsweredRow: function(grid, info) {
-    let gameRecord = this.getViewRecord();
-    let record = info.record;
+    const gameRecord = this.getViewRecord();
+    const record = info.record;
     if (record && gameRecord) {
       record.set('AnswerDate', new Date());
       gameRecord.save();
@@ -12,8 +12,8 @@ Ext.define('JefBox.view.games.HostViewController', {
   },
 
   onMarkQuestionUnansweredRow: function(grid, info) {
-    let gameRecord = this.getViewRecord();
-    let record = info.record;
+    const gameRecord = this.getViewRecord();
+    const record = info.record;
     if (record && gameRecord) {
       record.set('AnswerDate', null);
       gameRecord.save();

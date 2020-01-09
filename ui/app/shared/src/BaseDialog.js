@@ -28,7 +28,7 @@ Ext.define('JefBox.BaseDialog', {
   },
 
   updateMinimizable: function(minimizable) {
-    let me = this;
+    const me = this;
     if (minimizable) {
       me.addTool({
         type: 'minimize',
@@ -46,7 +46,7 @@ Ext.define('JefBox.BaseDialog', {
 
   updateIsCrudDialog: function(isCrudDialog) {
     if (isCrudDialog) {
-      let bbar = this.getBbar();
+      const bbar = this.getBbar();
       const buttonConfig = [{
         xtype: 'button',
         handler: 'onClickSaveBtn',
@@ -86,7 +86,7 @@ Ext.define('JefBox.BaseDialog', {
   onCloseDialog: function() {
     // If the close was invoked, and the user didn't click the save button, let's revert any changes
     if (!this.clickedSave) {
-      let viewRecord = this.getViewRecord(true);
+      const viewRecord = this.getViewRecord(true);
       if (viewRecord) {
         viewRecord.reject();
       }
@@ -97,13 +97,13 @@ Ext.define('JefBox.BaseDialog', {
    * Override this if you'd like custom logic when the save button is clicked
    */
   onClickSaveBtn: function() {
-    let me = this;
-    let viewRecord = me.getViewRecord();
+    const me = this;
+    const viewRecord = me.getViewRecord();
     if (viewRecord) {
       viewRecord.save({
         callback: function(record, operation, successful) {
-          let response = operation.getResponse();
-          let toastMsg = response && response.getToastMsg();
+          const response = operation.getResponse();
+          const toastMsg = response && response.getToastMsg();
           if (toastMsg) {
             Ext.toast(toastMsg);
           }
@@ -135,8 +135,8 @@ Ext.define('JefBox.BaseDialog', {
   },
 
   getViewRecord: function(suppress) {
-    let viewModel = this.getViewModel();
-    let viewRecord = viewModel && viewModel.get('viewRecord');
+    const viewModel = this.getViewModel();
+    const viewRecord = viewModel && viewModel.get('viewRecord');
     if (!suppress && !viewRecord) {
       this.logError('viewRecord is undefined');
     }

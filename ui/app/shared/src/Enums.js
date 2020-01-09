@@ -13,7 +13,7 @@ Ext.define('JefBox.Enums', {
   ],
 
   loadEnums: function(callback) {
-    let me = this;
+    const me = this;
     Ext.Ajax.request({
       method: 'GET',
       url: 'api/enums',
@@ -22,7 +22,7 @@ Ext.define('JefBox.Enums', {
         if (successful && enums) {
           for (let i = 0; i < enums.length; i++) {
             const enumData = enums[i];
-            let enumProperties = Ext.create('JefBox.store.Enum', {
+            const enumProperties = Ext.create('JefBox.store.Enum', {
               data: enumData.Values
             });
             enumProperties.each(function(enumProperty) {

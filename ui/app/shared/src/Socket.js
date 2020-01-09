@@ -29,32 +29,32 @@ Ext.define('JefBox.Socket', {
   },
 
   on: function(event, handler) {
-    let connection = this.getConnection();
+    const connection = this.getConnection();
     if (connection) {
       connection.on(event, handler);
     }
   },
 
   off: function(event, handler) {
-    let connection = this.getConnection();
+    const connection = this.getConnection();
     if (connection) {
       connection.off(event, handler);
     }
   },
 
   emit: function(id, message) {
-    let connection = this.getConnection();
+    const connection = this.getConnection();
     if (connection) {
       connection.emit(id, message);
     }
   },
 
   setUpStoreListeners: function() {
-    let me = this;
-    let users = JefBox.store.Users;
-    let teams = JefBox.store.Teams;
-    let games = JefBox.store.Games;
-    let uploads = JefBox.store.Uploads;
+    const me = this;
+    const users = JefBox.store.Users;
+    const teams = JefBox.store.Teams;
+    const games = JefBox.store.Games;
+    const uploads = JefBox.store.Uploads;
     me.off('userStatusChange');
     me.off('updatedTeams');
     me.off('updatedUsers');

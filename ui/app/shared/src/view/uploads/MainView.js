@@ -41,8 +41,8 @@ Ext.define('JefBox.view.uploads.MainView', {
   },
 
   getColumnsConfig: function() {
-    let config = [];
-    let actionsColumnConfig = this.getActionsColumnItems();
+    const config = [];
+    const actionsColumnConfig = this.getActionsColumnItems();
     if (actionsColumnConfig) {
       config.push(actionsColumnConfig);
     }

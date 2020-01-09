@@ -212,8 +212,8 @@ Ext.define('JefBox.view.games.RoundItemView', {
   }],
 
   onClickDeleteAttachment: function() {
-    let viewRecord = this.getViewRecord();
-    let uploadRecord = JefBox.store.Uploads.findRecord('Id', viewRecord && viewRecord.get('UploadId'), 0, false, true, true);
+    const viewRecord = this.getViewRecord();
+    const uploadRecord = JefBox.store.Uploads.findRecord('Id', viewRecord && viewRecord.get('UploadId'), 0, false, true, true);
     if (uploadRecord) {
       uploadRecord.erase({
         callback: function(record, operation, success) {
@@ -226,8 +226,8 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onClickViewAttachment: function() {
-    let viewRecord = this.getViewRecord();
-    let uploadRecord = JefBox.store.Uploads.findRecord('Id', viewRecord && viewRecord.get('UploadId'), 0, false, true, true);
+    const viewRecord = this.getViewRecord();
+    const uploadRecord = JefBox.store.Uploads.findRecord('Id', viewRecord && viewRecord.get('UploadId'), 0, false, true, true);
     if (uploadRecord) {
       Ext.create('JefBox.view.uploads.ReadView', {
         viewModel: {
@@ -249,14 +249,14 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onUploadedAttachment: function(result) {
-    let viewRecord = this.getViewRecord();
+    const viewRecord = this.getViewRecord();
     if (viewRecord && result) {
       viewRecord.set('UploadId', result.UploadId);
     }
   },
 
   onClickSaveBtn: function() {
-    let viewRecord = this.getViewRecord();
+    const viewRecord = this.getViewRecord();
     if (viewRecord) {
       viewRecord.commit();
     }
@@ -270,7 +270,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onCancelEditChoiceRow: function(sender, location) {
-    let record = location.record;
+    const record = location.record;
     if (!this.savingRecord && record.phantom && !record.isValid()) {
       record.store.remove(record);
     }
@@ -282,20 +282,20 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onClickEditChoiceRow: function(grid, info) {
-    let choicesGrid = this.lookup('choicesGrid');
-    let choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
+    const choicesGrid = this.lookup('choicesGrid');
+    const choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
     if (choicesGridEditor) {
       choicesGridEditor.startEdit(info.record);
     }
   },
 
   onClickNewChoiceBtn: function() {
-    let viewRecord = this.getViewRecord();
-    let choicesGrid = this.lookup('choicesGrid');
-    let choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
-    let store = viewRecord && viewRecord.getChoicesStore();
+    const viewRecord = this.getViewRecord();
+    const choicesGrid = this.lookup('choicesGrid');
+    const choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
+    const store = viewRecord && viewRecord.getChoicesStore();
     if (store && choicesGridEditor) {
-      let added = store.add({
+      const added = store.add({
         Order: store.getCount() + 1
       });
       choicesGridEditor.startEdit(added[0]);
@@ -303,13 +303,13 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onDropChoiceRecord: function(node, data, overModel, dropPosition, eOpts) {
-    let me = this;
-    let record = data.records[0];
-    let viewRecord = me.getViewRecord();
-    let store = viewRecord && viewRecord.getChoicesStore();
+    const me = this;
+    const record = data.records[0];
+    const viewRecord = me.getViewRecord();
+    const store = viewRecord && viewRecord.getChoicesStore();
     if (record && overModel && store) {
       // Need to insert before if we're dropping it before
-      let sign = dropPosition === 'before' ? -1 : 0;
+      const sign = dropPosition === 'before' ? -1 : 0;
       let previousOrder = 1;
       record.set({
         Order: overModel.get('Order') + sign

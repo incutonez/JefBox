@@ -145,8 +145,8 @@ Ext.define('JefBox.view.BaseCrudView', {
   },
 
   getActionsColumnItems: function() {
-    let items = [];
-    let config = this.getActionsColumnConfig();
+    const items = [];
+    const config = this.getActionsColumnConfig();
     if (config.view) {
       items.push(this.getViewActionConfig());
     }
@@ -171,8 +171,8 @@ Ext.define('JefBox.view.BaseCrudView', {
   },
 
   getColumnsConfig: function() {
-    let config = [];
-    let actionsColumnConfig = this.getActionsColumnItems();
+    const config = [];
+    const actionsColumnConfig = this.getActionsColumnItems();
     if (actionsColumnConfig) {
       config.push(actionsColumnConfig);
     }

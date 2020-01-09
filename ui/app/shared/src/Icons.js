@@ -36,7 +36,7 @@ Ext.define('JefBox.Icons', {
     if (!config) {
       return;
     }
-    let colorCls = config.colorCls || '';
+    const colorCls = config.colorCls || '';
     let tooltip = '';
     if (config.tooltip) {
       tooltip = `data-qtip="${config.tooltip}"`;

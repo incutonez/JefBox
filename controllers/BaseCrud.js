@@ -2,11 +2,11 @@ module.exports = (Model, io) => {
   const BaseCrudModel = require('../models/BaseCrud')(Model);
   return {
     getAll: async (req, res) => {
-      let data = await BaseCrudModel.getAllRecords(req.session.user.Id);
+      const data = await BaseCrudModel.getAllRecords(req.session.user.Id);
       return res.send(data);
     },
     getById: async (req, res) => {
-      let data = await BaseCrudModel.getRecordById(req.params.id, req.session.user.Id);
+      const data = await BaseCrudModel.getRecordById(req.params.id, req.session.user.Id);
       if (data) {
         return res.send(data);
       }

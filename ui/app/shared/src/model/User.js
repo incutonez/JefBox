@@ -88,7 +88,7 @@ Ext.define('JefBox.model.User', {
 
   statics: {
     checkSession: function(callback) {
-      let me = this;
+      const me = this;
       Ext.Ajax.request({
         method: 'GET',
         url: 'api/login',
@@ -109,7 +109,7 @@ Ext.define('JefBox.model.User', {
     },
 
     showLogInView: function(config) {
-      let me = this;
+      const me = this;
       config = config || {};
       if (!me.authWindow) {
         me.authWindow = Ext.create('JefBox.view.auth.LoginView', {
@@ -148,7 +148,7 @@ Ext.define('JefBox.model.User', {
   },
 
   logInUser: function(callback) {
-    let me = this;
+    const me = this;
     Ext.Ajax.request({
       method: 'POST',
       url: 'api/login',

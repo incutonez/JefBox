@@ -17,8 +17,8 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   },
 
   onClickCreateRecordBtn: function() {
-    let mainStore = this.getMainStore();
-    let mainModel = mainStore && mainStore.getModel();
+    const mainStore = this.getMainStore();
+    const mainModel = mainStore && mainStore.getModel();
     if (mainModel) {
       this.showEditDialog(mainModel.loadData());
     }
@@ -29,11 +29,11 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   },
 
   refreshMainStore: function() {
-    let viewModel = this.getViewModel();
+    const viewModel = this.getViewModel();
     if (viewModel) {
       viewModel.notify();
     }
-    let mainStore = this.getMainStore();
+    const mainStore = this.getMainStore();
     if (mainStore) {
       mainStore.load();
     }
@@ -48,7 +48,7 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   },
 
   onEditRow: function(gridEditor, context) {
-    let me = this;
+    const me = this;
     me.savingRecord = true;
     context.record.save({
       callback: function(record, operation, successful) {
@@ -61,8 +61,8 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   onClickDeleteRecord: function(grid, info) {
     info.record.erase({
       callback: function(record, operation, successful) {
-        let response = operation.getResponse();
-        let toastMsg = response && response.getToastMsg();
+        const response = operation.getResponse();
+        const toastMsg = response && response.getToastMsg();
         if (toastMsg) {
           Ext.toast(toastMsg);
         }
@@ -74,14 +74,14 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   onClickViewRecord: Ext.emptyFn,
 
   onClickRevertRecord: function(grid, info) {
-    let record = info.record;
+    const record = info.record;
     // Reverting
     if (record.get('isDeleted')) {
       record.set('DeleteDate', null);
       record.save({
         callback: function(record, operation, succcessful) {
-          let response = operation.getResponse();
-          let toastMsg = response && response.getToastMsg({
+          const response = operation.getResponse();
+          const toastMsg = response && response.getToastMsg({
             actionType: 'revert'
           });
           if (toastMsg) {
@@ -93,7 +93,7 @@ Ext.define('JefBox.view.BaseCrudViewController', {
   },
 
   onCancelEditRow: function(sender, location) {
-    let record = location.record;
+    const record = location.record;
     if (!this.savingRecord && record.phantom) {
       record.store.remove(record);
     }

@@ -10,7 +10,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
     },
     formulas: {
       gameAllowsTeams: function(get) {
-        let selectedGame = get('selectedGame');
+        const selectedGame = get('selectedGame');
         return !Ext.isEmpty(selectedGame) && selectedGame.get('AllowTeams');
       },
       saveBtnDisabled: function(get) {
@@ -62,8 +62,8 @@ Ext.define('JefBox.phone.view.games.JoinView', {
   }],
 
   onClickSaveBtn: function() {
-    let me = this;
-    let viewModel = me.getViewModel();
+    const me = this;
+    const viewModel = me.getViewModel();
     this.clickedSave = true;
     if (viewModel) {
       UserProfile.joinGame({

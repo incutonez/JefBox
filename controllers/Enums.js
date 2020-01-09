@@ -3,10 +3,10 @@ const router = express.Router();
 const Enums = require('../enums/index');
 
 router.get('/enums', (req, res) => {
-  let enums = [];
+  const enums = [];
   for (let enumType in Enums) {
-    let value = Enums[enumType];
-    let result = [];
+    const value = Enums[enumType];
+    const result = [];
     for (let key in value) {
       // Skip, as this is a reserved keyword
       if (key.endsWith('_DESCRIPTION')) {

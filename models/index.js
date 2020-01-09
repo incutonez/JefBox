@@ -16,7 +16,7 @@ const sequelize = new Sequelize({
     useUTC: false
   }
 });
-let db = {
+const db = {
   conn: sequelize,
   orm: Sequelize
 };
@@ -31,7 +31,7 @@ fs.readdirSync(__dirname).filter(file => {
 });
 
 for (let key in db) {
-  let model = db[key];
+  const model = db[key];
   if (typeof model.associate === 'function') {
     model.associate(db);
   }

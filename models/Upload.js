@@ -1,5 +1,5 @@
 module.exports = (conn, types) => {
-  let UploadModel = conn.define('Upload', {
+  const UploadModel = conn.define('Upload', {
     Id: {
       type: types.INTEGER,
       primaryKey: true,

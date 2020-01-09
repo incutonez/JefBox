@@ -34,8 +34,8 @@ Ext.define('JefBox.view.auth.LoginView', {
         disabled: '{!isViewValid}'
       },
       handler: function() {
-        let viewModel = this.lookupViewModel();
-        let userProfile = viewModel && viewModel.get('userProfile');
+        const viewModel = this.lookupViewModel();
+        const userProfile = viewModel && viewModel.get('userProfile');
         if (userProfile) {
           userProfile.logInUser();
         }
@@ -67,8 +67,8 @@ Ext.define('JefBox.view.auth.LoginView', {
 
   onKeyDownField: function(field, event, eOpts) {
     if (event.getKey() === event.ENTER) {
-      let viewModel = this.getViewModel();
-      let userProfile = viewModel && viewModel.get('userProfile');
+      const viewModel = this.getViewModel();
+      const userProfile = viewModel && viewModel.get('userProfile');
       if (userProfile && viewModel.get('isViewValid')) {
         userProfile.logInUser();
       }

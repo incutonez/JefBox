@@ -8,8 +8,8 @@ Ext.define('JefBox.overrides.field.RadioGroup', {
 
   getValue: function() {
     let value = this.callParent(arguments);
-    let bind = this.getBind();
-    let bindValue = bind && bind.value;
+    const bind = this.getBind();
+    const bindValue = bind && bind.value;
     if (bindValue) {
       if (Ext.isEmpty(value) && !Ext.isEmpty(bindValue.getValue())) {
         value = bindValue.getValue();

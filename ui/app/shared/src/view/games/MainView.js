@@ -27,7 +27,7 @@ Ext.define('JefBox.view.games.MainView', {
           return get('record.Status') !== Enums.GameStatuses.RUNNING;
         },
         hideStartIcon: function(get) {
-          let statuses = Enums.GameStatuses;
+          const statuses = Enums.GameStatuses;
           return !get('canEditRecord') || get('record.isDeleted') || !Ext.Array.contains([statuses.NEW, statuses.PAUSED], get('record.Status'));
         },
         hidePauseIcon: function(get) {
@@ -43,7 +43,7 @@ Ext.define('JefBox.view.games.MainView', {
   getPluginsConfig: Ext.emptyFn,
 
   getColumnsConfig: function() {
-    let config = this.callParent();
+    const config = this.callParent();
     Ext.Array.insert(config, 3, [{
       text: 'Status',
       dataIndex: 'Status',
@@ -58,7 +58,7 @@ Ext.define('JefBox.view.games.MainView', {
   },
 
   getActionsColumnItems: function() {
-    let config = this.callParent();
+    const config = this.callParent();
     config.cell.tools.push({
       handler: 'onClickJoinGame',
       iconCls: Icons.CONNECT,
