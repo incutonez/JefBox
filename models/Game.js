@@ -75,21 +75,22 @@ module.exports = (conn, types) => {
       model: models.Team,
       as: 'Teams',
       include: models.GameTeam.includeOptions,
+      required: false,
       through: {
         attributes: []
       }
     }, {
       model: models.User,
       as: 'Users',
+      required: false,
       through: {
         attributes: []
       }
     }, {
       model: models.RoundItem,
       as: 'RoundItems',
+      required: false,
       include: models.RoundItem.includeOptions
-    }, {
-      association: GameModel.associations.Score
     });
 
     GameModel.updateInclude.push({
