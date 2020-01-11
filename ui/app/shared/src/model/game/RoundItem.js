@@ -62,6 +62,13 @@ Ext.define('JefBox.model.game.RoundItem', {
     name: 'AnswerDate',
     type: 'date',
     allowNull: true
+  }, {
+    name: 'TypeDisplay',
+    type: 'string',
+    depends: ['Type'],
+    convert: function(value, record) {
+      return Enums.RoundItemTypes.getDisplayValue(record.get('Type'));
+    }
   }],
 
   hasMany: [{
@@ -117,5 +124,23 @@ Ext.define('JefBox.model.game.RoundItem', {
         }
       });
     }
+  },
+
+  getPreviousQuestion: function() {
+    let previousRecord;
+    const store = this.store;
+    if (store) {
+      previousRecord = store.getAt(store.indexOf(this) - 1);
+    }
+    return previousRecord;
+  },
+
+  getNextQuestion: function() {
+    let previousRecord;
+    const store = this.store;
+    if (store) {
+      previousRecord = store.getAt(store.indexOf(this) + 1);
+    }
+    return previousRecord;
   }
 });

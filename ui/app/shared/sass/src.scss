@@ -41,10 +41,19 @@
   padding: 0 10px;
 }
 
+.x-titlebar-body-el,
 .x-panelheader.x-horizontal {
-  min-height: 34px;
+  min-height: 36px;
 }
 
 .x-paneltitle {
   padding: 5px 0;
+}
+
+.x-titlebar-body-el {
+  padding: 5px 10px;
+
+  .x-titlebar-right {
+    height: 24px;
+  }
 }

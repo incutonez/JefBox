@@ -13,7 +13,9 @@ module.exports = (conn, types) => {
       allowNull: false
     },
     Color: {
-      type: types.STRING
+      type: types.STRING,
+      // Generate a random color
+      defaultValue: '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
     }
   }, {
     timestamps: true,

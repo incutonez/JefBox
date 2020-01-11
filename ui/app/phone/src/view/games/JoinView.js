@@ -54,7 +54,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
     label: 'Team',
     required: true,
     queryMode: 'local',
-    valueField: 'Id',
+    valueField: 'Name',
     displayField: 'Name',
     store: JefBox.store.Teams,
     bind: {
@@ -73,6 +73,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
       UserProfile.joinGame({
         gameId: gameId,
         teamId: viewModel.get('selectedTeam.Id'),
+        teamName: viewModel.get('selectedTeam.Name'),
         callback: function(successful, response) {
           if (successful) {
             Ext.create('JefBox.phone.view.games.RoundView', {

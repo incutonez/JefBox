@@ -14,12 +14,26 @@ module.exports = (io) => {
   router.get(GameSchema.BASE_PATH, BaseCrudController.getAll);
   router.post(GameSchema.BASE_PATH, BaseCrudController.createRecord);
   router.post(GameSchema.JOIN_PATH, async (req, res) => {
-    const teamId = req.body.TeamId;
+    const teamName = req.body.TeamName;
+    let teamId = req.body.TeamId;
     const gameId = req.params.id;
     // First lookup the Game record
     const game = await Game.getRecordById(gameId);
     if (game.AllowTeams) {
       if (teamId) {
+        if (teamId < 0) {
+          const results = await db.Team.findOrCreate({
+            where: {
+              Name: teamName.replace(/\s/g, '').toLowerCase()
+            },
+            defaults: {
+              Name: teamName,
+              UpdatedById: req.session.user.Id,
+              OwnerId: req.session.user.Id
+            }
+          });
+          teamId = results[0].Id;
+        }
         // Add the team to the game, if it's not already added
         await game.addTeam(teamId);
         // Get the associated model
@@ -58,8 +72,9 @@ module.exports = (io) => {
         Id: req.params.roundItemId
       }
     });
-    roundItem.AnswerDate = req.body.isComplete ? new Date() : null;
-    await roundItem.save();
+    await roundItem.update({
+      AnswerDate: req.body.isComplete ? new Date() : null
+    });
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
     }

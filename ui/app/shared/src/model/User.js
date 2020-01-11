@@ -178,7 +178,8 @@ Ext.define('JefBox.model.User', {
         Id: config.gameId
       }),
       jsonData: {
-        TeamId: config.teamId
+        TeamId: config.teamId,
+        TeamName: config.teamName
       },
       callback: function(options, successful, response) {
         if (Ext.isFunction(config.callback)) {

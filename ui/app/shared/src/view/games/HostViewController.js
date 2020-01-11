@@ -17,12 +17,18 @@ Ext.define('JefBox.view.games.HostViewController', {
   },
 
   onUnmarkRoundItemRow: function(grid, info) {
-    this.toggleRoundItemAnswered(info.record.getId(), false);
+    this.toggleRoundItemAnswered(info.record.getId());
   },
 
   onClickNextQuestionBtn: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
     this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId(), true);
+  },
+
+  onClickPreviousQuestionBtn: function() {
+    const currentQuestion = this.getCurrentQuestionRecord();
+    const previousQuestion = currentQuestion && currentQuestion.getPreviousQuestion();
+    this.toggleRoundItemAnswered(previousQuestion && previousQuestion.getId());
   },
 
   onClickMarkAnswerCorrect: function(grid, info) {

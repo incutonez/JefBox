@@ -3,9 +3,11 @@ Ext.define('JefBox.view.games.HostView', {
   alias: 'widget.gamesHostView',
   requires: [
     'JefBox.view.teams.MainView',
-    'JefBox.view.games.HostViewController'
+    'JefBox.view.games.HostViewController',
+    'JefBox.view.games.CurrentQuestionView'
   ],
 
+  bodyPadding: 0,
   controller: {
     type: 'gamesHostView'
   },
@@ -124,117 +126,7 @@ Ext.define('JefBox.view.games.HostView', {
         }]
       }]
     }, {
-      title: 'Current Question',
-      layout: {
-        type: 'hbox'
-      },
-      items: [{
-        xtype: 'panel',
-        padding: 10,
-        flex: 1,
-        title: 'Info',
-        layout: {
-          type: 'vbox'
-        },
-        tools: [{
-          xtype: 'button',
-          text: 'Next Question',
-          iconCls: Icons.CHECKMARK_ROUND,
-          handler: 'onClickNextQuestionBtn'
-        }],
-        defaults: {
-          labelWidth: 110,
-          labelAlign: 'left'
-        },
-        items: [{
-          xtype: 'displayfield',
-          label: 'Round',
-          bind: {
-            value: '{currentQuestion.Round}'
-          }
-        }, {
-          xtype: 'displayfield',
-          label: 'Question Number',
-          bind: {
-            value: '{currentQuestion.Order}'
-          }
-        }, {
-          xtype: 'displayfield',
-          label: 'Question',
-          bind: {
-            value: '{currentQuestion.Question}'
-          }
-        }, {
-          xtype: 'displayfield',
-          label: 'Answer',
-          bind: {
-            value: '{currentQuestion.Answer}'
-          }
-        }]
-      }, {
-        xtype: 'grid',
-        flex: 1,
-        title: 'Answers',
-        bind: {
-          store: '{currentQuestion.Answers}'
-        },
-        titleBar: {
-          items: [{
-            xtype: 'button',
-            text: 'Submit Answers',
-            align: 'right',
-            handler: 'onClickSubmitAnswers'
-          }]
-        },
-        itemConfig: {
-          viewModel: {
-            formulas: {
-              entityValue: function(get) {
-                return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
-              },
-              answerDisplay: function(get) {
-                return get('record.ChoiceDisplay') || get('record.Answer');
-              }
-            }
-          }
-        },
-        columns: [{
-          text: 'Actions',
-          cell: {
-            tools: [{
-              iconCls: Icons.CHECKMARK_ROUND,
-              tooltip: 'Mark Correct',
-              handler: 'onClickMarkAnswerCorrect',
-              bind: {
-                hidden: '{record.IsCorrect}'
-              }
-            }, {
-              iconCls: Icons.CHECKMARK_ROUND_SOLID,
-              tooltip: 'Mark Incorrect',
-              handler: 'onClickMarkAnswerIncorrect',
-              bind: {
-                hidden: '{!record.IsCorrect}'
-              }
-            }]
-          }
-        }, {
-          flex: 1,
-          bind: {
-            text: '{entityText}'
-          },
-          cell: {
-            bind: '{entityValue}'
-          }
-        }, {
-          text: 'Answers',
-          flex: 2,
-          cell: {
-            bind: {
-              value: '{answerDisplay}'
-            }
-          }
-        }]
-      }]
+      xtype: 'gamesCurrentQuestionView'
     }, {
       xtype: 'grid',
       grouped: true,
