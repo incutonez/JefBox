@@ -2,31 +2,27 @@ Ext.define('JefBox.view.games.HostViewController', {
   extend: 'Ext.app.ViewController',
   alias: 'controller.gamesHostView',
 
-  onMarkQuestionAnsweredRow: function(grid, info) {
+  toggleRoundItemAnswered: function(roundItemId, isComplete) {
     const gameRecord = this.getViewRecord();
-    const record = info.record;
-    if (record && gameRecord) {
-      record.set('AnswerDate', new Date());
-      gameRecord.save();
+    if (gameRecord) {
+      gameRecord.toggleRoundItemComplete({
+        roundItemId: roundItemId,
+        isComplete: isComplete
+      });
     }
   },
 
-  onMarkQuestionUnansweredRow: function(grid, info) {
-    const gameRecord = this.getViewRecord();
-    const record = info.record;
-    if (record && gameRecord) {
-      record.set('AnswerDate', null);
-      gameRecord.save();
-    }
+  onMarkRoundItemRow: function(grid, info) {
+    this.toggleRoundItemAnswered(info.record.getId(), true);
+  },
+
+  onUnmarkRoundItemRow: function(grid, info) {
+    this.toggleRoundItemAnswered(info.record.getId(), false);
   },
 
   onClickNextQuestionBtn: function() {
-    const gameRecord = this.getViewRecord();
     const currentQuestion = this.getCurrentQuestionRecord();
-    if (currentQuestion && gameRecord) {
-      currentQuestion.set('AnswerDate', new Date());
-      gameRecord.save();
-    }
+    this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId(), true);
   },
 
   onClickMarkAnswerCorrect: function(grid, info) {
@@ -38,27 +34,10 @@ Ext.define('JefBox.view.games.HostViewController', {
   },
 
   onClickSubmitAnswers: function() {
-    const winners = [];
     const gameRecord = this.getViewRecord();
-    const currentQuestion = this.getCurrentQuestionRecord();
-    const answersStore = currentQuestion && currentQuestion.getAnswersStore();
-    if (answersStore) {
-      answersStore.each(function(answerRecord) {
-        if (answerRecord.get('IsCorrect')) {
-          winners.push({
-            RoundItemId: currentQuestion.getId(),
-            QuestionNumber: currentQuestion.get('Order'),
-            UniqueId: answerRecord.get('UniqueId')
-          });
-        }
-      });
-    }
     if (gameRecord) {
-      gameRecord.addWinners({
-        winners: winners,
-        callback: function(successful, response) {
-          console.log(successful);
-        }
+      gameRecord.markAnswers(function(successful, response) {
+        console.log(successful);
       });
     }
   },

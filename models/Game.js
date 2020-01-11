@@ -65,7 +65,7 @@ module.exports = (conn, types) => {
       foreignKey: 'GameId'
     });
 
-    GameModel.hasMany(models.GameScore, {
+    GameModel.hasMany(models.RoundItemAnswer, {
       as: 'Score',
       foreignKey: 'GameId'
     });
@@ -92,10 +92,13 @@ module.exports = (conn, types) => {
       required: false,
       include: models.RoundItem.includeOptions
     }, {
-      model: models.GameScore,
+      model: models.RoundItemAnswer,
       as: 'Score',
       required: false,
-      attributes: ['RoundItemId', 'QuestionNumber', 'UniqueId', [conn.literal('RoundItems.Points'), 'Points']]
+      where: {
+        IsCorrect: true
+      },
+      attributes: ['RoundItemId', 'UniqueId', [conn.literal('RoundItems.`Order`'), 'QuestionNumber'], [conn.literal('RoundItems.Points'), 'Points']]
     });
 
     GameModel.updateInclude.push({

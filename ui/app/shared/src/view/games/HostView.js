@@ -16,7 +16,7 @@ Ext.define('JefBox.view.games.HostView', {
     },
     formulas: {
       groupHeaderTpl: function(get) {
-        return get('entityTextSingular') + ' {name}';
+        return get('entityTextSingular') + ' {name} ' + get('standingsSum');
       },
       entityTextSingular: function(get) {
         return get('viewRecord.AllowTeams') ? 'Team' : 'User';
@@ -24,18 +24,20 @@ Ext.define('JefBox.view.games.HostView', {
       entityText: function(get) {
         return get('entityTextSingular') + 's';
       },
+      standingsSum: function(get) {
+        // This count is mainly here to trigger the binding instead of doing deep binding
+        const count = get('viewRecord.Score.count');
+        const scoreStore = get('viewRecord.Score');
+        return scoreStore && scoreStore.sum('Points', true);
+      },
       currentQuestion: {
         bind: {
           bindTo: '{viewRecord.RoundItems}',
           deep: true
         },
         get: function(roundItemsStore) {
-          if (roundItemsStore) {
-            const questionIndex = roundItemsStore.findBy(function(r) {
-              return Ext.isEmpty(r.get('AnswerDate'));
-            });
-            return roundItemsStore.getAt(questionIndex);
-          }
+          const gameRecord = this.get('viewRecord');
+          return gameRecord && gameRecord.getCurrentQuestionRecord();
         }
       },
       viewRecord: {
@@ -190,6 +192,9 @@ Ext.define('JefBox.view.games.HostView', {
               entityValue: function(get) {
                 const id = get('record.UniqueId');
                 return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
+              },
+              answerDisplay: function(get) {
+                return get('record.ChoiceDisplay') || get('record.Answer');
               }
             }
           }
@@ -224,8 +229,12 @@ Ext.define('JefBox.view.games.HostView', {
           }
         }, {
           text: 'Answers',
-          dataIndex: 'Answer',
-          flex: 2
+          flex: 2,
+          cell: {
+            bind: {
+              value: '{answerDisplay}'
+            }
+          }
         }]
       }]
     }, {
@@ -251,14 +260,14 @@ Ext.define('JefBox.view.games.HostView', {
           tools: [{
             iconCls: Icons.CHECKMARK_ROUND,
             tooltip: 'Mark Question Answered',
-            handler: 'onMarkQuestionAnsweredRow',
+            handler: 'onMarkRoundItemRow',
             bind: {
               hidden: '{record.AnswerDate}'
             }
           }, {
             iconCls: Icons.CHECKMARK_ROUND_SOLID,
             tooltip: 'Mark Question Unanswered',
-            handler: 'onMarkQuestionUnansweredRow',
+            handler: 'onUnmarkRoundItemRow',
             bind: {
               hidden: '{!record.AnswerDate}'
             }
@@ -286,10 +295,20 @@ Ext.define('JefBox.view.games.HostView', {
       title: 'Standings',
       xtype: 'grid',
       grouped: true,
+      // TODOJEF: Make better
       groupHeader: {
-        bind: {
-          tpl: '{groupHeaderTpl}'
-        }
+        tpl: Ext.create('Ext.XTemplate', '{[this.getMarkup(values)]}', {
+          getMarkup: function(values) {
+            let points = 0;
+            const children = values.children;
+            if (children) {
+              for (let i = 0; i < children.length; i++) {
+                points += children[i].get('Points');
+              }
+            }
+            return 'Teams ' + values.name + ' (' + points + ' points)';
+          }
+        })
       },
       bind: {
         store: '{viewRecord.Score}'
@@ -312,14 +331,7 @@ Ext.define('JefBox.view.games.HostView', {
         dataIndex: 'QuestionNumber'
       }, {
         text: 'Points',
-        dataIndex: 'Points',
-        // TODOJEF: Not the best way of getting this
-        renderer: function(value, record) {
-          const viewModel = this.lookupViewModel();
-          const gameRecord = viewModel && viewModel.get('viewRecord');
-          const roundItem = gameRecord && gameRecord.getRoundItemById(record.get('RoundItemId'));
-          return roundItem && roundItem.get('Points');
-        }
+        dataIndex: 'Points'
       }]
     }]
   }]

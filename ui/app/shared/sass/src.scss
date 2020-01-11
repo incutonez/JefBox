@@ -33,6 +33,18 @@
 }
 
 // TODOJEF: Change how default Material stlying is for buttons in headers
-.x-panelheader .x-text-el {
+.x-panelheader:not(.x-dialogheader) .x-text-el {
   color: #fff;
+}
+
+.x-panelheader > .x-body-el {
+  padding: 0 10px;
+}
+
+.x-panelheader.x-horizontal {
+  min-height: 34px;
+}
+
+.x-paneltitle {
+  padding: 5px 0;
 }

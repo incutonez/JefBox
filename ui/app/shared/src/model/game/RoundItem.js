@@ -102,6 +102,7 @@ Ext.define('JefBox.model.game.RoundItem', {
         url: Routes.parseRoute(Schemas.Games.ADD_ANSWER_PATH_UI, gameRecord),
         method: 'POST',
         jsonData: {
+          ChoiceId: config.choiceId,
           Answer: config.answer,
           UploadId: config.uploadId,
           RoundItemId: this.getId(),

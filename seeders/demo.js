@@ -86,7 +86,7 @@ module.exports = {
       UpdatedById: 1,
       OwnerId: 1
     }], {});
-    return queryInterface.bulkInsert('RoundItems', [{
+    queryInterface.bulkInsert('RoundItems', [{
       Type: 1,
       Round: 1,
       Order: 1,
@@ -145,6 +145,19 @@ module.exports = {
       Question: 'Draw me Mulder',
       Answer: 'no',
       GameId: 3
+    }], {});
+    return queryInterface.bulkInsert('RoundItemChoices', [{
+      Value: 'Choice 1',
+      Order: 1,
+      RoundItemId: 2
+    }, {
+      Value: 'Choice 2',
+      Order: 2,
+      RoundItemId: 2
+    }, {
+      Value: 'Fucking Choice 3',
+      Order: 3,
+      RoundItemId: 2
     }], {});
   },
 

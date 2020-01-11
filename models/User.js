@@ -108,11 +108,6 @@ module.exports = (conn, types) => {
       as: 'Answers',
       foreignKey: 'UniqueId'
     });
-
-    UserModel.hasMany(models.GameScore, {
-      as: 'Standings',
-      foreignKey: 'UniqueId'
-    });
     UserModel.includeOptions.push({
       model: models.Game,
       as: 'Games',

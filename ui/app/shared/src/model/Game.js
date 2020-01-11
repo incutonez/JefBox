@@ -96,20 +96,66 @@ Ext.define('JefBox.model.Game', {
     }
   },
 
-  addWinners: function(config) {
-    if (!config) {
+  getCurrentQuestionRecord: function() {
+    const roundItemsStore = this.getRoundItemsStore();
+    if (roundItemsStore) {
+      const questionIndex = roundItemsStore.findBy(function(r) {
+        return Ext.isEmpty(r.get('AnswerDate'));
+      });
+      return roundItemsStore.getAt(questionIndex);
+    }
+  },
+
+  markAnswers: function(cb) {
+    const currentQuestion = this.getCurrentQuestionRecord();
+    if (!currentQuestion) {
       return;
+    }
+    const winners = [];
+    const answersStore = currentQuestion.getAnswersStore();
+    const roundItemId = currentQuestion.getId();
+    const questionNumber = currentQuestion.get('Order');
+    const gameId = this.getId();
+    if (answersStore) {
+      answersStore.each(function(answer) {
+        if (answer.get('IsCorrect')) {
+          winners.push({
+            GameId: gameId,
+            RoundItemId: roundItemId,
+            QuestionNumber: questionNumber,
+            UniqueId: answer.get('UniqueId')
+          });
+        }
+      });
     }
     Ext.Ajax.request({
       url: Routes.parseRoute(Schemas.Games.ADD_WINNER_PATH_UI, this),
       method: 'POST',
       jsonData: {
-        winners: config.winners
+        RoundItemId: roundItemId,
+        QuestionNumber: questionNumber,
+        winners: winners
       },
       callback: function(operation, successful, response) {
-        if (Ext.isFunction(config.callback)) {
-          config.callback(successful, response);
+        if (Ext.isFunction(cb)) {
+          cb(successful, response);
         }
+      }
+    });
+  },
+
+  toggleRoundItemComplete: function(config) {
+    if (!config) {
+      return;
+    }
+    Ext.Ajax.request({
+      method: 'PUT',
+      url: Routes.parseRoute(Schemas.Games.UPDATE_ROUND_ITEM_PATH_UI, {
+        Id: this.getId(),
+        RoundItemId: config.roundItemId
+      }),
+      jsonData: {
+        isComplete: config.isComplete
       }
     });
   },

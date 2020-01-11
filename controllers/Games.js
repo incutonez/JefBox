@@ -44,26 +44,53 @@ module.exports = (io) => {
   router.post(GameSchema.ADD_ANSWER_PATH, async (req, res) => {
     const game = await Game.getRecordById(req.params.id);
     const roundItem = await game.getRoundItemById(req.body.RoundItemId);
-    await roundItem.createAnswer({
-      Answer: req.body.Answer,
-      UploadId: req.body.UploadId,
-      UniqueId: req.body.UniqueId
+    req.body.GameId = game.Id;
+    await roundItem.createAnswer(req.body);
+    if (io && GameModel.updateEvent) {
+      io.emit(GameModel.updateEvent);
+    }
+    res.sendStatus(204);
+  });
+  router.put(GameSchema.UPDATE_ROUND_ITEM_PATH, async (req, res) => {
+    const roundItem = await db.RoundItem.findOne({
+      where: {
+        GameId: req.params.id,
+        Id: req.params.roundItemId
+      }
     });
+    roundItem.AnswerDate = req.body.isComplete ? new Date() : null;
+    await roundItem.save();
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
     }
     res.sendStatus(204);
   });
   router.post(GameSchema.ADD_WINNER_PATH, async (req, res) => {
-    const game = await Game.getRecordById(req.params.id);
+    const gameId = req.params.id;
     const winners = req.body.winners;
-    console.log(game.createWinners);
-    for (let i = 0; i < winners.length; i++) {
-      const winner = winners[i];
-      await game.createScore({
-        RoundItemId: winner.RoundItemId,
-        QuestionNumber: winner.QuestionNumber,
-        UniqueId: winner.UniqueId
+    const roundItemId = req.body.RoundItemId;
+    const questionNumber = req.body.QuestionNumber;
+    await db.RoundItemAnswer.update({
+      IsCorrect: false
+    }, {
+      where: {
+        GameId: gameId,
+        RoundItemId: roundItemId
+      }
+    });
+    if (winners.length) {
+      await db.RoundItemAnswer.update({
+        IsCorrect: true
+      }, {
+        where: {
+          GameId: gameId,
+          RoundItemId: roundItemId,
+          UniqueId: {
+            [db.Op.in]: winners.map((item) => {
+              return item.UniqueId;
+            })
+          }
+        }
       });
     }
     if (io && GameModel.updateEvent) {

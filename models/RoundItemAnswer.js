@@ -7,6 +7,13 @@ module.exports = (conn, types) => {
     },
     Answer: {
       type: types.STRING
+    },
+    ChoiceId: {
+      type: types.INTEGER
+    },
+    IsCorrect: {
+      type: types.BOOLEAN,
+      defaultValue: false
     }
   });
 
@@ -14,7 +21,12 @@ module.exports = (conn, types) => {
     RoundItemAnswerModel.belongsTo(models.Upload, {
       foreignKey: 'UploadId'
     });
+    RoundItemAnswerModel.belongsTo(models.RoundItemChoice, {
+      foreignKey: 'ChoiceId'
+    });
   };
+
+  RoundItemAnswerModel.includeOptions = [];
 
   return RoundItemAnswerModel;
 };

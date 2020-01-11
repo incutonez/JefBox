@@ -12,6 +12,9 @@ Ext.define('JefBox.model.game.Score', {
     name: 'RoundItemId',
     type: 'int'
   }, {
+    name: 'QuestionNumber',
+    type: 'int'
+  }, {
     name: 'UniqueId',
     type: 'int'
   }],

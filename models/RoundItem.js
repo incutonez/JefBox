@@ -57,11 +57,6 @@ module.exports = (conn, types) => {
       foreignKey: 'RoundItemId'
     });
 
-    RoundItemModel.hasMany(models.GameScore, {
-      as: 'Winners',
-      foreignKey: 'RoundItemId'
-    });
-
     RoundItemModel.updateInclude.push({
       model: models.RoundItemChoice,
       as: 'Choices'
@@ -71,7 +66,12 @@ module.exports = (conn, types) => {
       model: models.RoundItemChoice,
       as: 'Choices'
     }, {
-      association: RoundItemModel.associations.Answers
+      association: RoundItemModel.associations.Answers,
+      attributes: ['Id', 'Answer', 'ChoiceId', 'RoundItemId', 'UploadId', 'UniqueId', 'IsCorrect', [conn.literal('`RoundItems->Answers->RoundItemChoice`.Value'), 'ChoiceDisplay']],
+      include: [{
+        model: models.RoundItemChoice,
+        attributes: []
+      }]
     });
   };
 

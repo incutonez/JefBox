@@ -20,7 +20,8 @@ Ext.define('JefBox.BaseDialog', {
   layout: 'fit',
   maximizable: true,
   closable: true,
-  bodyPadding: 0,
+  bodyPadding: 10,
+  referenceHolder: true,
   config: {
     autoShow: true,
     minimizable: true,

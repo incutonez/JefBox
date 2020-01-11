@@ -10,5 +10,13 @@ Ext.define('JefBox.overrides.app.ViewController', {
       this.logError('viewRecord is undefined');
     }
     return viewRecord;
+  },
+
+  setViewLoading: function(loading, ancestor) {
+    let view = this.getView();
+    if (ancestor) {
+      view = view.up(ancestor);
+    }
+    view.setLoading(loading);
   }
 });

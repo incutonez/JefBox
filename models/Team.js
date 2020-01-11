@@ -35,11 +35,6 @@ module.exports = (conn, types) => {
       foreignKey: 'UniqueId'
     });
 
-    TeamModel.hasMany(models.GameScore, {
-      as: 'Standings',
-      foreignKey: 'UniqueId'
-    });
-
     TeamModel.includeOptions.push({
       model: models.Game,
       as: 'Games',

@@ -18,7 +18,8 @@ const sequelize = new Sequelize({
 });
 const db = {
   conn: sequelize,
-  orm: Sequelize
+  orm: Sequelize,
+  Op: Sequelize.Op
 };
 
 fs.readdirSync(__dirname).filter(file => {
