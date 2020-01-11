@@ -15,7 +15,10 @@ Ext.define('JefBox.model.game.Score', {
     name: 'QuestionNumber',
     type: 'int'
   }, {
-    name: 'UniqueId',
+    name: 'TeamId',
+    type: 'int'
+  }, {
+    name: 'UserId',
     type: 'int'
   }],
 

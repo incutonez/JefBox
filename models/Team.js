@@ -32,7 +32,7 @@ module.exports = (conn, types) => {
 
     TeamModel.hasMany(models.RoundItemAnswer, {
       as: 'Answers',
-      foreignKey: 'UniqueId'
+      foreignKey: 'TeamId'
     });
 
     TeamModel.includeOptions.push({

@@ -84,15 +84,16 @@ Ext.define('JefBox.model.game.RoundItem', {
     config = config || {};
     const gameRecord = this.getGameRecord();
     if (gameRecord) {
-      let uniqueId = UserProfile.getId();
+      let teamId;
+      let userId = UserProfile.getId();
       if (gameRecord.get('AllowTeams')) {
         const teamsStore = gameRecord.getTeamsStore();
         if (teamsStore) {
           teamsStore.each(function(teamRecord) {
             const usersStore = teamRecord.getUsersStore();
-            const foundRecord = usersStore && usersStore.findRecord('Id', uniqueId, 0, false, true, true);
+            const foundRecord = usersStore && usersStore.findRecord('Id', userId, 0, false, true, true);
             if (foundRecord) {
-              uniqueId = teamRecord.getId();
+              teamId = teamRecord.getId();
               return false;
             }
           });
@@ -106,7 +107,8 @@ Ext.define('JefBox.model.game.RoundItem', {
           Answer: config.answer,
           UploadId: config.uploadId,
           RoundItemId: this.getId(),
-          UniqueId: uniqueId
+          TeamId: teamId,
+          UserId: userId
         },
         callback: function(options, successful, response) {
           if (Ext.isFunction(config.callback)) {

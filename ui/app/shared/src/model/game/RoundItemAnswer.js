@@ -10,7 +10,10 @@ Ext.define('JefBox.model.game.RoundItemAnswer', {
     name: 'RoundItemId',
     type: 'int'
   }, {
-    name: 'UniqueId',
+    name: 'UserId',
+    type: 'int'
+  }, {
+    name: 'TeamId',
     type: 'int'
   }, {
     name: 'Answer',

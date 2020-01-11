@@ -67,7 +67,7 @@ module.exports = (conn, types) => {
       as: 'Choices'
     }, {
       association: RoundItemModel.associations.Answers,
-      attributes: ['Id', 'Answer', 'ChoiceId', 'RoundItemId', 'UploadId', 'UniqueId', 'IsCorrect', [conn.literal('`RoundItems->Answers->RoundItemChoice`.Value'), 'ChoiceDisplay']],
+      attributes: ['Id', 'Answer', 'ChoiceId', 'RoundItemId', 'UploadId', 'TeamId', 'UserId', 'IsCorrect', [conn.literal('`RoundItems->Answers->RoundItemChoice`.Value'), 'ChoiceDisplay']],
       include: [{
         model: models.RoundItemChoice,
         attributes: []

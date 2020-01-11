@@ -190,8 +190,7 @@ Ext.define('JefBox.view.games.HostView', {
           viewModel: {
             formulas: {
               entityValue: function(get) {
-                const id = get('record.UniqueId');
-                return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
+                return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
               },
               answerDisplay: function(get) {
                 return get('record.ChoiceDisplay') || get('record.Answer');
@@ -219,7 +218,6 @@ Ext.define('JefBox.view.games.HostView', {
             }]
           }
         }, {
-          dataIndex: 'UniqueId',
           flex: 1,
           bind: {
             text: '{entityText}'
@@ -306,7 +304,7 @@ Ext.define('JefBox.view.games.HostView', {
                 points += children[i].get('Points');
               }
             }
-            return 'Teams ' + values.name + ' (' + points + ' points)';
+            return values.name + ' (' + points + ' points)';
           }
         })
       },
@@ -317,15 +315,14 @@ Ext.define('JefBox.view.games.HostView', {
         viewModel: {
           formulas: {
             entityValue: function(get) {
-              const id = get('record.UniqueId');
-              return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(id) : JefBox.store.Users.getUserNameById(id);
+              return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
             }
           }
         }
       },
       columns: [{
         text: 'Round',
-        dataIndex: 'RoundItemId'
+        dataIndex: 'RoundNumber'
       }, {
         text: 'Question',
         dataIndex: 'QuestionNumber'

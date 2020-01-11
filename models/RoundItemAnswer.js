@@ -24,6 +24,20 @@ module.exports = (conn, types) => {
     RoundItemAnswerModel.belongsTo(models.RoundItemChoice, {
       foreignKey: 'ChoiceId'
     });
+    RoundItemAnswerModel.belongsTo(models.RoundItem);
+    models.Game.includeOptions.push({
+      model: RoundItemAnswerModel,
+      as: 'Score',
+      required: false,
+      where: {
+        IsCorrect: true
+      },
+      include: [{
+        association: RoundItemAnswerModel.associations.RoundItem,
+        attributes: []
+      }],
+      attributes: ['RoundItemId', 'TeamId', 'UserId', [conn.literal('`Score->RoundItem`.Round'), 'RoundNumber'], [conn.literal('`Score->RoundItem`.`Order`'), 'QuestionNumber'], [conn.literal('`Score->RoundItem`.Points'), 'Points']]
+    });
   };
 
   RoundItemAnswerModel.includeOptions = [];

@@ -91,14 +91,6 @@ module.exports = (conn, types) => {
       as: 'RoundItems',
       required: false,
       include: models.RoundItem.includeOptions
-    }, {
-      model: models.RoundItemAnswer,
-      as: 'Score',
-      required: false,
-      where: {
-        IsCorrect: true
-      },
-      attributes: ['RoundItemId', 'UniqueId', [conn.literal('RoundItems.`Order`'), 'QuestionNumber'], [conn.literal('RoundItems.Points'), 'Points']]
     });
 
     GameModel.updateInclude.push({

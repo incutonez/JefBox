@@ -67,9 +67,9 @@ module.exports = (io) => {
   });
   router.post(GameSchema.ADD_WINNER_PATH, async (req, res) => {
     const gameId = req.params.id;
-    const winners = req.body.winners;
+    const teams = req.body.teams;
+    const users = req.body.users;
     const roundItemId = req.body.RoundItemId;
-    const questionNumber = req.body.QuestionNumber;
     await db.RoundItemAnswer.update({
       IsCorrect: false
     }, {
@@ -78,18 +78,22 @@ module.exports = (io) => {
         RoundItemId: roundItemId
       }
     });
-    if (winners.length) {
+    if (teams.length || users.length) {
       await db.RoundItemAnswer.update({
         IsCorrect: true
       }, {
         where: {
           GameId: gameId,
           RoundItemId: roundItemId,
-          UniqueId: {
-            [db.Op.in]: winners.map((item) => {
-              return item.UniqueId;
-            })
-          }
+          [db.Op.or]: [{
+            TeamId: {
+              [db.Op.in]: teams
+            }
+          }, {
+            UserId: {
+              [db.Op.in]: users
+            }
+          }]
         }
       });
     }

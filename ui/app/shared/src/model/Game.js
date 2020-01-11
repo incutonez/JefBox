@@ -71,7 +71,11 @@ Ext.define('JefBox.model.Game', {
     storeConfig: {
       remoteSort: false,
       remoteFilter: false,
-      groupField: 'UniqueId'
+      grouper: {
+        groupFn: function(item) {
+          return Ext.isEmpty(item.get('TeamId')) ? 'User ' + item.get('UserId') : 'Team ' + item.get('TeamId');
+        }
+      }
     }
   }],
 
@@ -111,20 +115,19 @@ Ext.define('JefBox.model.Game', {
     if (!currentQuestion) {
       return;
     }
-    const winners = [];
+    const teams = [];
+    const users = [];
     const answersStore = currentQuestion.getAnswersStore();
     const roundItemId = currentQuestion.getId();
     const questionNumber = currentQuestion.get('Order');
-    const gameId = this.getId();
     if (answersStore) {
       answersStore.each(function(answer) {
         if (answer.get('IsCorrect')) {
-          winners.push({
-            GameId: gameId,
-            RoundItemId: roundItemId,
-            QuestionNumber: questionNumber,
-            UniqueId: answer.get('UniqueId')
-          });
+          const teamId = answer.get('TeamId');
+          if (!Ext.isEmpty(teamId)) {
+            teams.push(teamId);
+          }
+          users.push(answer.get('UserId'));
         }
       });
     }
@@ -134,7 +137,8 @@ Ext.define('JefBox.model.Game', {
       jsonData: {
         RoundItemId: roundItemId,
         QuestionNumber: questionNumber,
-        winners: winners
+        teams: teams,
+        users: users
       },
       callback: function(operation, successful, response) {
         if (Ext.isFunction(cb)) {
