@@ -69,6 +69,19 @@ Ext.define('JefBox.model.game.RoundItem', {
     convert: function(value, record) {
       return Enums.RoundItemTypes.getDisplayValue(record.get('Type'));
     }
+  }, {
+    name: 'youtubeVideoId',
+    type: 'string',
+    depends: ['Url'],
+    convert: function(value, record) {
+      const url = record.get('Url');
+      const isYoutube = url.includes('youtube.com');
+      if (isYoutube) {
+        const matches = url.match(/v=([^$]+)/);
+        return matches && matches[1];
+      }
+      return value;
+    }
   }],
 
   hasMany: [{

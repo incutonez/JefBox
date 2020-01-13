@@ -175,6 +175,13 @@ Ext.define('JefBox.view.games.RoundItemView', {
         value: '{viewRecord.Url}'
       }
     }, {
+      xtype: 'displayfield',
+      label: 'Video ID',
+      bind: {
+        hidden: '{!viewRecord.Url}',
+        value: '{viewRecord.VideoId}'
+      }
+    }, {
       xtype: 'container',
       layout: {
         type: 'hbox',

@@ -60,12 +60,16 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
         value: '{currentQuestion.Answer}'
       }
     }, {
-      xtype: 'component',
-      // TODOJEF: Fix
-      html: '<iframe width="560" height="315" src="http://www.youtube.com/embed/fgT9zGkiLig" frameborder="0" allowfullscreen></iframe>'
-      // bind: {
-      //   url: '{currentQuestion.Url}'
-      // }
+      xtype: 'container',
+      layout: 'fit',
+      height: 24,
+      items: [{
+        xtype: 'youtubeVideo',
+        height: '100%',
+        bind: {
+          videoId: '{currentQuestion.youtubeVideoId}'
+        }
+      }]
     }]
   }, {
     xtype: 'grid',

@@ -26,7 +26,16 @@ Ext.define('JefBox.view.main.MainView', {
     items: [{
       xtype: 'button',
       tooltip: 'Areas',
-      iconCls: Icons.START_MENU
+      iconCls: Icons.START_MENU,
+      arrow: false,
+      menuAlign: 'bl-tl?',
+      menu: {
+        items: [{
+          text: 'Log Out',
+          iconCls: Icons.SIGN_OUT,
+          handler: 'onClickSignOut'
+        }]
+      }
     }, {
       xtype: 'component',
       width: 1,

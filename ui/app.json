@@ -42,15 +42,12 @@
   "sass": {
     "namespace": "",
     "etc": [
-      "sass/etc/all.scss"
     ],
     "var": [
-      "app/shared/sass/var.scss",
-      "app/${build.id}/sass/var.scss"
     ],
     "src": [
-      "app/shared/sass/src.scss",
-      "app/${build.id}/sass/src.scss"
+      "app/shared/sass/src/all.scss",
+      "app/shared/sass/src"
     ]
   },
   "resources": [

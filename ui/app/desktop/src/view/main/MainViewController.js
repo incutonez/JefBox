@@ -64,6 +64,7 @@ Ext.define('JefBox.view.main.MainViewController', {
     const win = Ext.create('JefBox.BaseDialog', {
       modal: false,
       openWindowKey: key,
+      bodyPadding: 0,
       items: [{
         xtype: xtype
       }],
@@ -126,5 +127,9 @@ Ext.define('JefBox.view.main.MainViewController', {
 
   onClickPainterView: function(button) {
     this.redirectTo(Routes.PAINTER);
+  },
+
+  onClickSignOut: function() {
+    UserProfile.signOut();
   }
 });
