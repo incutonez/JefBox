@@ -1,6 +1,9 @@
 Ext.define('JefBox.view.games.CurrentQuestionView', {
   extend: 'Ext.Panel',
   alias: 'widget.gamesCurrentQuestionView',
+  requires: [
+    'JefBox.YouTubeAudioButton'
+  ],
 
   title: 'Current Question',
   layout: {
@@ -43,33 +46,50 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       }
     }, {
       xtype: 'displayfield',
-      label: 'Type',
-      bind: {
-        value: '{currentQuestion.TypeDisplay}'
-      }
-    }, {
-      xtype: 'displayfield',
       label: 'Question',
       bind: {
         value: '{currentQuestion.Question}'
       }
     }, {
-      xtype: 'displayfield',
-      label: 'Answer',
-      bind: {
-        value: '{currentQuestion.Answer}'
-      }
-    }, {
       xtype: 'container',
-      layout: 'fit',
-      height: 24,
+      layout: {
+        type: 'hbox'
+      },
       items: [{
-        xtype: 'youtubeVideo',
-        height: '100%',
+        xtype: 'displayfield',
+        label: 'Type',
+        labelWidth: 110,
+        labelAlign: 'left',
         bind: {
+          value: '{currentQuestion.TypeDisplay}'
+        }
+      }, {
+        xtype: 'youTubeAudioButton',
+        bind: {
+          hidden: '{!currentQuestion.youtubeVideoId}',
           videoId: '{currentQuestion.youtubeVideoId}'
         }
       }]
+    }, {
+      xtype: 'segmentedbutton',
+      maxWidth: 100,
+      bind: {
+        value: '{showAnswer}'
+      },
+      items: [{
+        tooltip: 'Hide Answer',
+        iconCls: Icons.HIDE
+      }, {
+        tooltip: 'Show Answer',
+        iconCls: Icons.SHOW
+      }]
+    }, {
+      xtype: 'displayfield',
+      label: 'Answer',
+      bind: {
+        hidden: '{!showAnswer}',
+        value: '{currentQuestion.Answer}'
+      }
     }]
   }, {
     xtype: 'grid',

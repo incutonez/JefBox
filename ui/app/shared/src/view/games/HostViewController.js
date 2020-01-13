@@ -3,11 +3,18 @@ Ext.define('JefBox.view.games.HostViewController', {
   alias: 'controller.gamesHostView',
 
   toggleRoundItemAnswered: function(roundItemId, isComplete) {
+    const viewModel = this.getViewModel();
     const gameRecord = this.getViewRecord();
     if (gameRecord) {
       gameRecord.toggleRoundItemComplete({
         roundItemId: roundItemId,
-        isComplete: isComplete
+        isComplete: isComplete,
+        callback: function(successful, response) {
+          if (successful) {
+            // Reset if the answer is showing
+            viewModel.set('showAnswer', 0);
+          }
+        }
       });
     }
   },

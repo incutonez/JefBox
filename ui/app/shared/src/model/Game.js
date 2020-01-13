@@ -160,6 +160,11 @@ Ext.define('JefBox.model.Game', {
       }),
       jsonData: {
         isComplete: config.isComplete
+      },
+      callback: function(operation, successful, response) {
+        if (Ext.isFunction(config.callback)) {
+          config.callback(successful, response);
+        }
       }
     });
   },

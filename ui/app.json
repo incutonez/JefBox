@@ -44,6 +44,7 @@
     "etc": [
     ],
     "var": [
+      "app/shared/sass/var"
     ],
     "src": [
       "app/shared/sass/src/all.scss",

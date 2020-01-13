@@ -13,6 +13,7 @@ Ext.define('JefBox.view.games.HostView', {
   },
   viewModel: {
     data: {
+      showAnswer: 0,
       viewRecordId: null,
       store: null
     },
