@@ -14,6 +14,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     padding: 10,
     flex: 1,
     title: 'Info',
+    margin: '0 5 0 0',
     layout: {
       type: 'vbox'
     },
@@ -21,12 +22,18 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       xtype: 'button',
       tooltip: 'Previous Question',
       iconCls: Icons.ARROW_LEFT,
-      handler: 'onClickPreviousQuestionBtn'
+      handler: 'onClickPreviousQuestionBtn',
+      bind: {
+        disabled: '{viewRecord.RoundItems.first === currentQuestion}'
+      }
     }, {
       xtype: 'button',
       tooltip: 'Next Question',
       iconCls: Icons.ARROW_RIGHT,
-      handler: 'onClickNextQuestionBtn'
+      handler: 'onClickNextQuestionBtn',
+      bind: {
+        disabled: '{viewRecord.RoundItems.last === currentQuestion}'
+      }
     }],
     defaults: {
       labelWidth: 110,
@@ -95,6 +102,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     xtype: 'grid',
     flex: 1,
     title: 'Answers',
+    margin: '0 0 0 5',
     bind: {
       store: '{currentQuestion.Answers}'
     },

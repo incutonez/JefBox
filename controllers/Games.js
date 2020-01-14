@@ -52,23 +52,27 @@ module.exports = (io) => {
     }
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
+      io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
   });
   router.post(GameSchema.ADD_ANSWER_PATH, async (req, res) => {
-    const game = await Game.getRecordById(req.params.id);
+    const gameId = req.params.id;
+    const game = await Game.getRecordById(gameId);
     const roundItem = await game.getRoundItemById(req.body.RoundItemId);
-    req.body.GameId = game.Id;
+    req.body.GameId = gameId;
     await roundItem.createAnswer(req.body);
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
+      io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
   });
   router.put(GameSchema.UPDATE_ROUND_ITEM_PATH, async (req, res) => {
+    const gameId = req.params.id;
     const roundItem = await db.RoundItem.findOne({
       where: {
-        GameId: req.params.id,
+        GameId: gameId,
         Id: req.params.roundItemId
       }
     });
@@ -77,6 +81,7 @@ module.exports = (io) => {
     });
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
+      io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
   });
@@ -114,6 +119,7 @@ module.exports = (io) => {
     }
     if (io && GameModel.updateEvent) {
       io.emit(GameModel.updateEvent);
+      io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
   });

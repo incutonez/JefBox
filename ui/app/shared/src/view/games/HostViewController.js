@@ -2,6 +2,30 @@ Ext.define('JefBox.view.games.HostViewController', {
   extend: 'Ext.app.ViewController',
   alias: 'controller.gamesHostView',
 
+  init: function() {
+    const viewModel = this.getViewModel();
+    const gameId = viewModel && viewModel.get('viewRecordId');
+    sockets.on('updatedGames' + gameId, this.onUpdatedGame, this);
+    this.loadViewRecord();
+  },
+
+  loadViewRecord: function() {
+    const me = this;
+    const viewModel = me.getViewModel();
+    if (viewModel) {
+      me.setViewLoading(true);
+      viewModel.set('viewRecord', null);
+      viewModel.notify();
+      JefBox.model.Game.load(viewModel.get('viewRecordId'), {
+        callback: function(record, operation, successful) {
+          viewModel.set('viewRecord', record);
+          viewModel.notify();
+          me.setViewLoading(false);
+        }
+      });
+    }
+  },
+
   toggleRoundItemAnswered: function(roundItemId, isComplete) {
     const viewModel = this.getViewModel();
     const gameRecord = this.getViewRecord();
@@ -17,6 +41,10 @@ Ext.define('JefBox.view.games.HostViewController', {
         }
       });
     }
+  },
+
+  onUpdatedGame: function() {
+    this.loadViewRecord();
   },
 
   onMarkRoundItemRow: function(grid, info) {

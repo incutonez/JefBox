@@ -15,7 +15,7 @@ Ext.define('JefBox.view.games.HostView', {
     data: {
       showAnswer: 0,
       viewRecordId: null,
-      store: null
+      viewRecord: null
     },
     formulas: {
       groupHeaderTpl: function(get) {
@@ -46,15 +46,6 @@ Ext.define('JefBox.view.games.HostView', {
       // Don't show the Answers column until all Answers have been submitted
       hideAnswersColumn: function(get) {
         return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count');
-      },
-      viewRecord: {
-        bind: {
-          bindTo: '{store}',
-          deep: true
-        },
-        get: function(store) {
-          return store && store.findRecord('Id', this.get('viewRecordId'), 0, false, true, true);
-        }
       }
     }
   },

@@ -23,7 +23,6 @@ Ext.define('JefBox.view.games.MainViewController', {
       Ext.create('JefBox.view.games.HostView', {
         viewModel: {
           data: {
-            store: JefBox.store.Games,
             viewRecordId: params.Id
           }
         }

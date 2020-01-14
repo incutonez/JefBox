@@ -14,7 +14,7 @@ Ext.define('JefBox.view.main.MainViewController', {
     routes[Routes.HOME] = 'onRouteHome';
     routes[Routes.USERS] = 'onRouteUsers';
     routes[Routes.TEAMS] = 'onRouteTeams';
-    routes[Schemas.Games.CONNECT_PATH_UI] = 'onRouteGames';
+    routes[Schemas.Games.BASE_PATH_UI] = 'onRouteGames';
     routes[Routes.UPLOADS] = 'onRouteUploads';
     routes[Routes.PAINTER] = 'onRoutePainter';
     config.routes = routes;

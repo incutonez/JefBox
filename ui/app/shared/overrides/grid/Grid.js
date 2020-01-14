@@ -1,5 +1,9 @@
 Ext.define('Shared.shared.overrides.grid.Grid', {
   override: 'Ext.grid.Grid',
+  
+  config: {
+    infinite: false
+  },
 
   constructor: function(config) {
     if (Ext.isEmpty(config.columnLines)) {

@@ -4,10 +4,10 @@
  * required from the respective MainView, and when that happens, this requires the stores, which requires their models,
  * and allows for us to use Enums
  */
-Ext.define('JefBox.Socket', {
+Ext.define('JefBox.Sockets', {
   singleton: true,
   alternateClassName: [
-    'socket'
+    'sockets'
   ],
   requires: [
     'JefBox.store.Teams',
@@ -28,10 +28,10 @@ Ext.define('JefBox.Socket', {
     }
   },
 
-  on: function(event, handler) {
+  on: function(event, handler, scope) {
     const connection = this.getConnection();
     if (connection) {
-      connection.on(event, handler);
+      connection.on(event, Ext.bind(handler, scope || this));
     }
   },
 

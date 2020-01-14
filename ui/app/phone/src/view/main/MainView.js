@@ -4,7 +4,7 @@ Ext.define('JefBox.view.main.MainView', {
   requires: [
     'JefBox.view.main.MainViewModel',
     'JefBox.view.main.MainViewController',
-    'JefBox.Socket'
+    'JefBox.Sockets'
   ],
 
   controller: {
