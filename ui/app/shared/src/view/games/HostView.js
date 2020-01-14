@@ -43,6 +43,10 @@ Ext.define('JefBox.view.games.HostView', {
           return gameRecord && gameRecord.getCurrentQuestionRecord();
         }
       },
+      // Don't show the Answers column until all Answers have been submitted
+      hideAnswersColumn: function(get) {
+        return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count');
+      },
       viewRecord: {
         bind: {
           bindTo: '{store}',
@@ -93,11 +97,12 @@ Ext.define('JefBox.view.games.HostView', {
         },
         columns: [{
           text: 'Name',
-          dataIndex: 'Name'
+          dataIndex: 'Name',
+          flex: 1
         }, {
           text: 'Users',
           dataIndex: 'Users',
-          flex: 1,
+          flex: 2,
           cell: {
             encodeHtml: false,
             bind: {

@@ -8,6 +8,29 @@ Ext.define('JefBox.view.games.MainViewController', {
   BASE_ROUTE: Routes.GAMES,
   EDIT_VIEW: 'JefBox.view.games.EditView',
 
+  constructor: function(config) {
+    const routes = {};
+    routes[Schemas.Games.CONNECT_PATH_UI] = {
+      action: 'onRouteHostView',
+      lazy: true
+    };
+    config.routes = routes;
+    this.callParent(arguments);
+  },
+
+  onRouteHostView: function(params) {
+    if (params.Id) {
+      Ext.create('JefBox.view.games.HostView', {
+        viewModel: {
+          data: {
+            store: JefBox.store.Games,
+            viewRecordId: params.Id
+          }
+        }
+      });
+    }
+  },
+
   onClickStartGame: function(grid, info) {
     const record = info.record;
     if (record) {
@@ -25,13 +48,6 @@ Ext.define('JefBox.view.games.MainViewController', {
   },
 
   onClickJoinGame: function(grid, info) {
-    Ext.create('JefBox.view.games.HostView', {
-      viewModel: {
-        data: {
-          store: JefBox.store.Games,
-          viewRecordId: info.record.getId()
-        }
-      }
-    });
+    this.redirectTo(Routes.parseRoute(Schemas.Games.CONNECT_PATH_UI, info.record));
   }
 });

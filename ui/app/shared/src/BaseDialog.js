@@ -61,6 +61,14 @@ Ext.define('JefBox.BaseDialog', {
     this.resizeToScreen();
   },
 
+  onRender: function() {
+    this.callParent();
+    const viewModel = this.getViewModel();
+    if (viewModel) {
+      viewModel.notify();
+    }
+  },
+
   updateCanResize: function(canResize) {
     const me = this;
     if (canResize) {

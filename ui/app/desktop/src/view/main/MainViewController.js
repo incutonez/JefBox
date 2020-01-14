@@ -14,7 +14,7 @@ Ext.define('JefBox.view.main.MainViewController', {
     routes[Routes.HOME] = 'onRouteHome';
     routes[Routes.USERS] = 'onRouteUsers';
     routes[Routes.TEAMS] = 'onRouteTeams';
-    routes[Routes.GAMES] = 'onRouteGames';
+    routes[Schemas.Games.CONNECT_PATH_UI] = 'onRouteGames';
     routes[Routes.UPLOADS] = 'onRouteUploads';
     routes[Routes.PAINTER] = 'onRoutePainter';
     config.routes = routes;
@@ -118,7 +118,7 @@ Ext.define('JefBox.view.main.MainViewController', {
   },
 
   onClickGamesView: function(button) {
-    this.redirectTo(Routes.GAMES);
+    this.redirectTo(Routes.parseRoute(Schemas.Games.CONNECT_PATH_UI));
   },
 
   onClickUploadsView: function(button) {

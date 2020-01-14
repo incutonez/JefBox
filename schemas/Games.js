@@ -7,6 +7,7 @@ module.exports = {
   ID_PATH_UI: idPathUI,
   JOIN_PATH: idPath + '/join',
   JOIN_PATH_UI: idPathUI + '/join',
+  CONNECT_PATH_UI: 'games(/:{Id:num}/connect)',
   ADD_ANSWER_PATH: idPath + '/answers',
   ADD_ANSWER_PATH_UI: idPathUI + '/answers',
   UPDATE_ROUND_ITEM_PATH: idPath + '/roundItems/:roundItemId',

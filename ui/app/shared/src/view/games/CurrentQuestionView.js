@@ -101,7 +101,9 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     titleBar: {
       items: [{
         xtype: 'button',
-        text: 'Submit Answers',
+        tooltip: 'Submit Answers',
+        text: 'Answers',
+        iconCls: Icons.SEND,
         align: 'right',
         handler: 'onClickSubmitAnswers'
       }]
@@ -152,6 +154,9 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
         bind: {
           value: '{answerDisplay}'
         }
+      },
+      bind: {
+        hidden: '{hideAnswersColumn}'
       }
     }]
   }]

@@ -31,7 +31,7 @@ Ext.define('JefBox.Routes', {
      * @property GAMES
      */
     key: 'GAMES',
-    basePath: 'games'
+    basePath: 'games(/:{Id:num}/connect)'
   }, {
     /**
      * @property UPLOADS
@@ -73,6 +73,7 @@ Ext.define('JefBox.Routes', {
   },
 
   parseRoute: function(routeUrl, config) {
+    config = config || {};
     let route = Ext.route.Router.routes[routeUrl];
     if (!route) {
       route = Ext.create('Ext.route.Route', {
@@ -92,23 +93,28 @@ Ext.define('JefBox.Routes', {
     for (let i = 0; i < routeKeys.length; i++) {
       let found = false;
       let value = record[keys[i]];
+      const key = routeKeys[i];
       if (record.isModel) {
         value = record.get(keys[i]);
       }
       if (!Ext.isEmpty(optionalParams)) {
         for (let j = 0; j < optionalParams.length; j++) {
-          found = optionalParams[j].indexOf(routeKeys[i]) !== -1;
+          const param = optionalParams[j];
+          found = param.indexOf(key) !== -1;
           if (found) {
-            Ext.Array.removeAt(optionalParams, j);
+            if (Ext.isEmpty(value)) {
+              routeUrl = routeUrl.replace(param, '');
+            }
+            else {
+              routeUrl = routeUrl.replace(param, param.replace(key, value).replace(/^\(/, '').replace(/\)$/, ''));
+            }
+            Ext.Array.remove(optionalParams[j]);
             break;
           }
         }
       }
-      if (found) {
-        routeUrl = routeUrl.replace(/\((.+?)\)/, Ext.isEmpty(value) ? '' : '/' + value);
-      }
-      else {
-        routeUrl = routeUrl.replace(routeKeys[i], value);
+      if (!found) {
+        routeUrl = routeUrl.replace(key, value);
       }
     }
     return routeUrl;
