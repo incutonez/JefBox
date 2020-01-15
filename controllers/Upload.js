@@ -5,9 +5,11 @@ const db = require('../models/index');
 const fs = require('fs');
 const url = require('url');
 const Model = db.Upload;
+const basePath = '/uploads';
+const baseIdPath = `${basePath}/:id`;
 
 module.exports = (io) => {
-  router.post('/upload', (req, res) => {
+  router.post(basePath, (req, res) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
       const data = fs.readFileSync(files.uploadFile.path);
@@ -22,7 +24,7 @@ module.exports = (io) => {
     });
   });
 
-  router.delete('/upload/:id', async (req, res) => {
+  router.delete(baseIdPath, async (req, res) => {
     await Model.destroy({
       where: {
         Id: req.params.id
@@ -31,7 +33,7 @@ module.exports = (io) => {
     res.sendStatus(204);
   });
 
-  router.get('/upload', async (req, res) => {
+  router.get(basePath, async (req, res) => {
     const records = await Model.findAll();
     records.forEach(function(record) {
       record.Data = Buffer.from(record.Data).toString('base64');
@@ -39,7 +41,7 @@ module.exports = (io) => {
     res.send(records);
   });
 
-  router.get('/upload/:id', async (req, res) => {
+  router.get(baseIdPath, async (req, res) => {
     const queryParams = url.parse(req.url, true).query;
     const record = await Model.findOne({
       where: {

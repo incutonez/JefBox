@@ -25,6 +25,6 @@ Ext.define('JefBox.model.Upload', {
 
   proxy: {
     type: 'rest',
-    url: 'api/upload'
+    url: 'api/uploads'
   }
 });

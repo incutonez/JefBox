@@ -76,6 +76,14 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
           hidden: '{!currentQuestion.youtubeVideoId}',
           videoId: '{currentQuestion.youtubeVideoId}'
         }
+      }, {
+        xtype: 'button',
+        tooltip: 'View',
+        iconCls: Icons.VIEW,
+        handler: 'onClickViewMediaButton',
+        bind: {
+          hidden: '{!isImageVideo}'
+        }
       }]
     }, {
       xtype: 'segmentedbutton',

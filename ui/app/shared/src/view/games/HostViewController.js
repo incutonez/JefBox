@@ -55,6 +55,29 @@ Ext.define('JefBox.view.games.HostViewController', {
     this.toggleRoundItemAnswered(info.record.getId());
   },
 
+  onClickViewMediaButton: function() {
+    const currentQuestion = this.getCurrentQuestionRecord();
+    if (currentQuestion) {
+      let markup;
+      const uploadId = currentQuestion.get('UploadId');
+      let url = uploadId ? `api/uploads/${uploadId}` : currentQuestion.get('Url');
+      if (currentQuestion.get('Type') === Enums.RoundItemTypes.IMAGE) {
+        markup = `<img width="100%" src="${url}" />`;
+      }
+      if (url) {
+        Ext.create('JefBox.BaseDialog', {
+          width: null,
+          height: 500,
+          bodyPadding: 0,
+          items: [{
+            xtype: 'component',
+            html: markup
+          }]
+        });
+      }
+    }
+  },
+
   onClickNextQuestionBtn: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
     this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId(), true);

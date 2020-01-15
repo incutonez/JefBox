@@ -28,7 +28,7 @@ Ext.define('JefBox.view.main.MainView', {
       tooltip: 'Areas',
       iconCls: Icons.START_MENU,
       arrow: false,
-      menuAlign: 'bl-tl?',
+      menuAlign: 'b-tl',
       menu: {
         items: [{
           text: 'Log Out',

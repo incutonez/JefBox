@@ -46,6 +46,10 @@ Ext.define('JefBox.view.games.HostView', {
       // Don't show the Answers column until all Answers have been submitted
       hideAnswersColumn: function(get) {
         return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count');
+      },
+      isImageVideo: function(get) {
+        const types = Enums.RoundItemTypes;
+        return Ext.Array.contains([types.IMAGE, types.VIDEO], get('currentQuestion.Type'));
       }
     }
   },
@@ -199,15 +203,6 @@ Ext.define('JefBox.view.games.HostView', {
       },
       bind: {
         store: '{viewRecord.Score}'
-      },
-      itemConfig: {
-        viewModel: {
-          formulas: {
-            entityValue: function(get) {
-              return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
-            }
-          }
-        }
       },
       columns: [{
         text: 'Round',
