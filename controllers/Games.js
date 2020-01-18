@@ -20,31 +20,29 @@ module.exports = (io) => {
     // First lookup the Game record
     const game = await Game.getRecordById(gameId);
     if (game.AllowTeams) {
-      if (teamId) {
-        if (teamId < 0) {
-          const results = await db.Team.findOrCreate({
-            where: {
-              Name: teamName.replace(/\s/g, '').toLowerCase()
-            },
-            defaults: {
-              Name: teamName,
-              UpdatedById: req.session.user.Id,
-              OwnerId: req.session.user.Id
-            }
-          });
-          teamId = results[0].Id;
-        }
-        // Add the team to the game, if it's not already added
-        await game.addTeam(teamId);
-        // Get the associated model
-        const gameTeam = await db.GameTeam.findOne({
+      if (teamId < 0) {
+        const results = await db.Team.findOrCreate({
           where: {
-            GameId: gameId,
-            TeamId: teamId
+            Name: teamName.replace(/\s/g, '').toLowerCase()
+          },
+          defaults: {
+            Name: teamName,
+            UpdatedById: req.session.user.Id,
+            OwnerId: req.session.user.Id
           }
         });
-        await gameTeam.addUser(req.session.user.Id);
+        teamId = results[0].Id;
       }
+      // Add the team to the game, if it's not already added
+      await game.addTeam(teamId);
+      // Get the associated model
+      const gameTeam = await db.GameTeam.findOne({
+        where: {
+          GameId: gameId,
+          TeamId: teamId
+        }
+      });
+      await gameTeam.addUser(req.session.user.Id);
     }
     else {
       // Add the user to the game, if they're not already added
@@ -106,13 +104,9 @@ module.exports = (io) => {
           GameId: gameId,
           RoundItemId: roundItemId,
           [db.Op.or]: [{
-            TeamId: {
-              [db.Op.in]: teams
-            }
+            TeamId: teams
           }, {
-            UserId: {
-              [db.Op.in]: users
-            }
+            UserId: users
           }]
         }
       });

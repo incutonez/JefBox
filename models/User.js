@@ -101,8 +101,12 @@ module.exports = (conn, types) => {
     UserModel.hasOne(models.Upload, {
       foreignKey: 'OwnerId'
     });
+    UserModel.belongsToMany(models.GameTeam, {
+      through: models.GameTeamUser
+    });
+    UserModel.hasMany(models.GameTeamUser);
     UserModel.belongsToMany(models.Game, {
-      through: 'GamesUsers'
+      through: 'GameUser'
     });
     UserModel.hasMany(models.RoundItemAnswer, {
       as: 'Answers',
@@ -114,6 +118,12 @@ module.exports = (conn, types) => {
       through: {
         attributes: []
       }
+    }, {
+      model: models.RoundItemAnswer,
+      as: 'Answers',
+      include: [{
+        model: models.RoundItem
+      }]
     });
   };
 

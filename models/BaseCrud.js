@@ -21,7 +21,6 @@ module.exports = (Model) => {
             await existing[j].destroy();
           }
         }
-        console.log(items, association.as);
         if (items.length) {
           const ids = [];
           for (let j = 0; j < items.length; j++) {

@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 module.exports = (conn, types) => {
   const GameTeamModel = conn.define('GameTeam', {
     Id: {
@@ -10,25 +8,13 @@ module.exports = (conn, types) => {
   });
 
   GameTeamModel.associate = (models) => {
+    GameTeamModel.belongsTo(models.Team);
+    GameTeamModel.belongsTo(models.Game);
     GameTeamModel.belongsToMany(models.User, {
-      as: 'Users',
-      through: 'GameTeamUser'
+      through: models.GameTeamUser
     });
-    GameTeamModel.includeOptions.push({
-      // We use association instead of model
-      association: GameTeamModel.associations.Users,
-      on: {
-        '$Teams.GameTeam.Id$': {
-          [Op.eq]: conn.col('Teams.Users.GameTeamUser.GameTeamId')
-        }
-      },
-      through: {
-        attributes: []
-      }
-    });
+    GameTeamModel.hasMany(models.GameTeamUser);
   };
-
-  GameTeamModel.includeOptions = [];
 
   return GameTeamModel;
 };

@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 module.exports = (conn, types) => {
   const RoundItemModel = conn.define('RoundItem', {
     Id: {
@@ -67,10 +65,8 @@ module.exports = (conn, types) => {
       as: 'Choices'
     }, {
       association: RoundItemModel.associations.Answers,
-      attributes: ['Id', 'Answer', 'ChoiceId', 'RoundItemId', 'UploadId', 'TeamId', 'UserId', 'IsCorrect', [conn.literal('`RoundItems->Answers->RoundItemChoice`.Value'), 'ChoiceDisplay']],
       include: [{
-        model: models.RoundItemChoice,
-        attributes: []
+        model: models.RoundItemChoice
       }]
     });
   };

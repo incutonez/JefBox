@@ -27,10 +27,9 @@ module.exports = (conn, types) => {
 
   TeamModel.associate = (models) => {
     TeamModel.belongsToMany(models.Game, {
-      as: 'Games',
-      through: models.GameTeam,
-      foreignKey: 'TeamId'
+      through: models.GameTeam
     });
+    TeamModel.hasMany(models.GameTeam);
 
     TeamModel.hasMany(models.RoundItemAnswer, {
       as: 'Answers',

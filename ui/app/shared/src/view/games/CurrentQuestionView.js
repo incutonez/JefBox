@@ -129,9 +129,6 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
         formulas: {
           entityValue: function(get) {
             return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
-          },
-          answerDisplay: function(get) {
-            return get('record.ChoiceDisplay') || get('record.Answer');
           }
         }
       }
@@ -166,11 +163,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     }, {
       text: 'Answers',
       flex: 2,
-      cell: {
-        bind: {
-          value: '{answerDisplay}'
-        }
-      },
+      dataIndex: 'Answer',
       bind: {
         hidden: '{hideAnswersColumn}'
       }
