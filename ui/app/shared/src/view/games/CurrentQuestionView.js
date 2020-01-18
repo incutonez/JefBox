@@ -125,13 +125,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       }]
     },
     itemConfig: {
-      viewModel: {
-        formulas: {
-          entityValue: function(get) {
-            return get('viewRecord.AllowTeams') ? JefBox.store.Teams.getTeamNameById(get('record.TeamId')) : JefBox.store.Users.getUserNameById(get('record.UserId'));
-          }
-        }
-      }
+      viewModel: true
     },
     columns: [{
       text: 'Actions',
@@ -154,11 +148,9 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       }
     }, {
       flex: 1,
+      dataIndex: 'GroupName',
       bind: {
         text: '{entityText}'
-      },
-      cell: {
-        bind: '{entityValue}'
       }
     }, {
       text: 'Answers',

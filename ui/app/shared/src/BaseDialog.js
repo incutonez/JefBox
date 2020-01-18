@@ -29,10 +29,6 @@ Ext.define('JefBox.BaseDialog', {
     canResize: true
   },
 
-  initialize: function() {
-    this.callParent();
-  },
-
   resizeToScreen: function() {
     let hasChange = false;
     const body = Ext.getBody();

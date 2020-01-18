@@ -6,8 +6,8 @@ const GameSchema = Schemas.Games;
 const BaseCrudModel = require('../models/BaseCrud');
 const GameModel = db.Game;
 const TeamModel = db.Team;
+const UserModel = db.User;
 const Game = BaseCrudModel(GameModel);
-const Team = BaseCrudModel(TeamModel);
 
 module.exports = (io) => {
   const BaseCrudController = require('./BaseCrud')(GameModel, io);
@@ -17,11 +17,12 @@ module.exports = (io) => {
     const teamName = req.body.TeamName;
     let teamId = req.body.TeamId;
     const gameId = req.params.id;
+    const userId = req.session.user.Id;
     // First lookup the Game record
     const game = await Game.getRecordById(gameId);
     if (game.AllowTeams) {
       if (teamId < 0) {
-        const results = await db.Team.findOrCreate({
+        const results = await TeamModel.findOrCreate({
           where: {
             Name: teamName.replace(/\s/g, '').toLowerCase()
           },
@@ -42,15 +43,17 @@ module.exports = (io) => {
           TeamId: teamId
         }
       });
-      await gameTeam.addUser(req.session.user.Id);
+      await gameTeam.addUser(userId);
     }
     else {
       // Add the user to the game, if they're not already added
-      await game.addUser(req.session.user.Id);
+      await game.addUser(userId);
     }
     if (io && GameModel.updateEvent) {
-      io.emit(GameModel.updateEvent);
       io.emit(`${GameModel.updateEvent}${gameId}`);
+    }
+    if (io && UserModel.updateEvent) {
+      io.emit(`${UserModel.updateEvent}${userId}`);
     }
     res.sendStatus(204);
   });
@@ -61,7 +64,6 @@ module.exports = (io) => {
     req.body.GameId = gameId;
     await roundItem.createAnswer(req.body);
     if (io && GameModel.updateEvent) {
-      io.emit(GameModel.updateEvent);
       io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
@@ -78,7 +80,6 @@ module.exports = (io) => {
       AnswerDate: req.body.isComplete ? new Date() : null
     });
     if (io && GameModel.updateEvent) {
-      io.emit(GameModel.updateEvent);
       io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);
@@ -112,7 +113,6 @@ module.exports = (io) => {
       });
     }
     if (io && GameModel.updateEvent) {
-      io.emit(GameModel.updateEvent);
       io.emit(`${GameModel.updateEvent}${gameId}`);
     }
     res.sendStatus(204);

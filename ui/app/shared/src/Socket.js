@@ -10,6 +10,7 @@ Ext.define('JefBox.Sockets', {
     'sockets'
   ],
   requires: [
+    'JefBox.model.CurrentGame',
     'JefBox.store.Teams',
     'JefBox.store.Games',
     'JefBox.store.Users',
@@ -60,6 +61,7 @@ Ext.define('JefBox.Sockets', {
     me.off('updatedUsers');
     me.off('updatedGames');
     me.off('updatedUploads');
+    // UserProfile.connectSocket();
     me.on('updatedTeams', function() {
       teams.load();
       users.load();

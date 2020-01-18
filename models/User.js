@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const orm = require('sequelize');
 const AccessLevels = require('../enums/AccessLevels');
+const GameStatuses = require('../enums/GameStatuses');
 module.exports = (conn, types) => {
   const UserModel = conn.define('User', {
     Id: {
@@ -113,11 +114,15 @@ module.exports = (conn, types) => {
       foreignKey: 'UserId'
     });
     UserModel.includeOptions.push({
-      model: models.Game,
-      as: 'Games',
-      through: {
-        attributes: []
-      }
+      model: models.GameTeamUser,
+      include: [{
+        model: models.GameTeam,
+        include: [{
+          model: models.Game
+        }, {
+          model: models.Team
+        }]
+      }]
     }, {
       model: models.RoundItemAnswer,
       as: 'Answers',
@@ -140,6 +145,27 @@ module.exports = (conn, types) => {
       this.Salt = crypto.randomBytes(16).toString('base64');
       this.Password = this.encryptPassword(this.Password());
     }
+  };
+
+  UserModel.prototype.toJSON = function() {
+    const data = Object.assign({}, this.get());
+    const gameTeams = data.GameTeamUsers;
+    if (gameTeams) {
+      let currentGame;
+      for (let i = 0; i < gameTeams.length; i++) {
+        const gameTeam = gameTeams[i].GameTeam;
+        const game = gameTeam.Game;
+        const team = gameTeam.Team;
+        if (!currentGame && game.Status === GameStatuses.RUNNING) {
+          currentGame = game.get();
+          currentGame.GroupId = team && team.Id;
+          break;
+        }
+      }
+      data.CurrentGame = currentGame;
+      delete data.GameTeamUsers;
+    }
+    return data;
   };
 
   UserModel.prototype.isPassword = function(password) {

@@ -128,7 +128,7 @@ Ext.define('JefBox.model.game.RoundItem', {
           UploadId: config.uploadId,
           RoundItemId: this.getId(),
           TeamId: teamId,
-          UserId: userId
+          UserId: teamId ? null : userId
         },
         callback: function(options, successful, response) {
           if (Ext.isFunction(config.callback)) {

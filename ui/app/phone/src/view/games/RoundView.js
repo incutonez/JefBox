@@ -1,6 +1,9 @@
 Ext.define('JefBox.phone.view.games.RoundView', {
   extend: 'JefBox.BaseDialog',
   alias: 'widget.phoneGamesRoundView',
+  requires: [
+    'JefBox.model.Game'
+  ],
 
   viewModel: {
     data: {
@@ -8,9 +11,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       userAnswer: null,
       gameId: null,
       waitingNextQuestion: false,
-      gamesStore: JefBox.store.Games,
       currentRoundId: null,
-      selectedChoice: null
+      selectedChoice: null,
+      userRecord: UserProfile
     },
     formulas: {
       hideAnswerField: function(get) {
@@ -19,16 +22,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       isMultipleChoice: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.MULTIPLE_CHOICE;
       },
-      viewRecord: {
-        bind: {
-          bindTo: '{gamesStore}',
-          deep: true
-        },
-        get: function(gamesStore) {
-          return gamesStore && gamesStore.findRecord('Id', this.get('gameId'), 0, false, true, true);
-        }
-      },
       loadingMask: function(get) {
+        const answers = get('currentQuestion.Answers');
+        console.log(answers, get('userRecord'));
         return !Ext.isEmpty(get('currentRoundId'));
       },
       currentQuestion: {
@@ -37,20 +33,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
           deep: true
         },
         get: function(roundItemsStore) {
-          if (roundItemsStore) {
-            const questionIndex = roundItemsStore.findBy(function(r) {
-              return Ext.isEmpty(r.get('AnswerDate'));
-            });
-            const roundItem = roundItemsStore.getAt(questionIndex);
-            if (roundItem && roundItem.getId() !== this.get('currentRoundId')) {
-              this.set({
-                currentRoundId: null,
-                userAnswer: null,
-                selectedChoice: null
-              });
-            }
-            return roundItem;
-          }
+          const gameRecord = this.get('viewRecord');
+          return gameRecord && gameRecord.getCurrentQuestionRecord();
         }
       }
     }
@@ -94,6 +78,27 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       dataIndex: 'Value'
     }]
   }],
+
+  initialize: function() {
+    const me = this;
+    me.callParent();
+    const vm = me.getViewModel();
+    const choicesGrid = me.lookup('choicesGrid');
+    if (vm) {
+      JefBox.model.Game.load(vm.get('gameId'), {
+        callback: function(record) {
+          vm.set('viewRecord', record);
+          record.connectSocket(function(record, successful) {
+            if (choicesGrid) {
+              Ext.asap(function() {
+                choicesGrid.forceRefresh();
+              });
+            }
+          });
+        }
+      });
+    }
+  },
 
   onClickSaveBtn: function() {
     const viewModel = this.getViewModel();

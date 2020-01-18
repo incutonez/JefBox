@@ -5,7 +5,7 @@ Ext.define('JefBox.view.games.HostViewController', {
   init: function() {
     const viewModel = this.getViewModel();
     const gameId = viewModel && viewModel.get('viewRecordId');
-    sockets.on('updatedGames' + gameId, this.onUpdatedGame, this);
+    // sockets.on('updatedGames' + gameId, this.onUpdatedGame, this);
     this.loadViewRecord();
   },
 
@@ -13,14 +13,15 @@ Ext.define('JefBox.view.games.HostViewController', {
     const me = this;
     const viewModel = me.getViewModel();
     if (viewModel) {
-      me.setViewLoading(true);
+      // me.setViewLoading(true);
       viewModel.set('viewRecord', null);
       viewModel.notify();
       JefBox.model.Game.load(viewModel.get('viewRecordId'), {
         callback: function(record, operation, successful) {
           viewModel.set('viewRecord', record);
+          record.connectSocket();
           viewModel.notify();
-          me.setViewLoading(false);
+          // me.setViewLoading(false);
         }
       });
     }

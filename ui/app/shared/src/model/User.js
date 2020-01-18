@@ -67,8 +67,15 @@ Ext.define('JefBox.model.User', {
     }
   }],
 
+  hasOne: [{
+    model: 'JefBox.model.CurrentGame',
+    associationKey: 'CurrentGame',
+    role: 'CurrentGame',
+    getterName: 'getCurrentGameRecord'
+  }],
+
   hasMany: [{
-    model: 'JefBox.model.Game',
+    model: 'JefBox.model.BaseGame',
     associationKey: 'Games',
     role: 'Games',
     getterName: 'getGamesStore'
@@ -138,6 +145,19 @@ Ext.define('JefBox.model.User', {
     updateUserProfile: function(data) {
       window.UserProfile = this.loadData(data);
     }
+  },
+
+  connectSocket: function(cb) {
+    const me = this;
+    sockets.on('updatedUsers' + me.getId(), function() {
+      me.load({
+        callback: function(record, options, successful) {
+          if (Ext.isFunction(cb)) {
+            cb(record, successful);
+          }
+        }
+      });
+    });
   },
 
   signOut: function() {

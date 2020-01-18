@@ -24,6 +24,12 @@ Ext.define('JefBox.model.game.RoundItemAnswer', {
   }, {
     name: 'IsCorrect',
     type: 'boolean'
+  }, {
+    name: 'GroupName',
+    type: 'string'
+  }, {
+    name: 'GroupId',
+    type: 'int'
   }],
 
   proxy: {

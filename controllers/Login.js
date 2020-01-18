@@ -12,7 +12,8 @@ router.get('/login', async (req, res) => {
   const record = user && await db.User.findOne({
     where: {
       UserName: db.User.getUserNameFind(user.UserName)
-    }
+    },
+    include: db.User.includeOptions
   });
   if (record) {
     req.session.user = record.get({
@@ -28,7 +29,8 @@ router.post('/login', async (req, res) => {
     where: {
       UserName: db.User.getUserNameFind(req.body.UserName)
     },
-    defaults: req.body
+    defaults: req.body,
+    include: db.User.includeOptions
   });
   const record = results && results[0];
   if (record && record.isPassword(req.body.Password)) {

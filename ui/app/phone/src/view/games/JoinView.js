@@ -19,12 +19,6 @@ Ext.define('JefBox.phone.view.games.JoinView', {
       saveBtnDisabled: function(get) {
         return !get('selectedGame') || get('gameAllowsTeams') && !get('selectedTeam');
       }
-    },
-    stores: {
-      gamesInProgressStore: {
-        type: 'chained',
-        source: JefBox.store.Games
-      }
     }
   },
 

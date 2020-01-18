@@ -15,9 +15,16 @@ Ext.define('JefBox.view.games.HostView', {
     data: {
       showAnswer: 0,
       viewRecordId: null,
-      viewRecord: null
+      viewRecord: {
+        loading: true
+      }
     },
     formulas: {
+      loadingMask: function(get) {
+        return get('viewRecord.loading') ? {
+          message: 'Loading...'
+        } : false;
+      },
       groupHeaderTpl: function(get) {
         return get('entityTextSingular') + ' {name} ' + get('standingsSum');
       },
@@ -56,7 +63,8 @@ Ext.define('JefBox.view.games.HostView', {
 
   layout: 'fit',
   bind: {
-    title: 'Game: {viewRecord.Name}'
+    title: 'Game: {viewRecord.Name}',
+    masked: '{loadingMask}'
   },
   items: [{
     xtype: 'tabpanel',
