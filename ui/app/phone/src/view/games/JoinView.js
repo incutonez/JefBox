@@ -73,7 +73,8 @@ Ext.define('JefBox.phone.view.games.JoinView', {
             Ext.create('JefBox.phone.view.games.RoundView', {
               viewModel: {
                 data: {
-                  gameId: gameId
+                  gameId: gameId,
+                  userProfile: UserProfile
                 }
               }
             });

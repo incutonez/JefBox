@@ -61,7 +61,15 @@ Ext.define('JefBox.Sockets', {
     me.off('updatedUsers');
     me.off('updatedGames');
     me.off('updatedUploads');
-    // UserProfile.connectSocket();
+    me.on('updatedUsers' + UserProfile.getId(), function() {
+      UserProfile.load({
+        callback: function() {
+          // Need to set a global UserProfile VM property, so we can use in other views
+          const appVM = Ext.getApplication().getMainView().getViewModel();
+          appVM.set('userProfile', UserProfile);
+        }
+      });
+    });
     me.on('updatedTeams', function() {
       teams.load();
       users.load();

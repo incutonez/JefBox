@@ -54,6 +54,9 @@ Ext.define('JefBox.view.games.HostView', {
       hideAnswersColumn: function(get) {
         return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count');
       },
+      isAudio: function(get) {
+        return get('currentQuestion.Type') === Enums.RoundItemTypes.AUDIO;
+      },
       isImageVideo: function(get) {
         const types = Enums.RoundItemTypes;
         return Ext.Array.contains([types.IMAGE, types.VIDEO], get('currentQuestion.Type'));

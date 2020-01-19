@@ -147,19 +147,6 @@ Ext.define('JefBox.model.User', {
     }
   },
 
-  connectSocket: function(cb) {
-    const me = this;
-    sockets.on('updatedUsers' + me.getId(), function() {
-      me.load({
-        callback: function(record, options, successful) {
-          if (Ext.isFunction(cb)) {
-            cb(record, successful);
-          }
-        }
-      });
-    });
-  },
-
   signOut: function() {
     Ext.Ajax.request({
       method: 'GET',
@@ -178,8 +165,8 @@ Ext.define('JefBox.model.User', {
       },
       callback: function(options, successful, response) {
         if (successful) {
-          JefBox.model.User.updateUserProfile(response.getResponseData());
-          JefBox.model.User.authWindow.close();
+          me.self.updateUserProfile(response.getResponseData());
+          me.self.authWindow.close();
         }
         else {
           Ext.toast('Incorrect credentials.');

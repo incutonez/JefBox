@@ -15,6 +15,7 @@ Ext.define('JefBox.view.main.MainView', {
     type: 'mainView'
   },
 
+  fullscreen: true,
   bodyStyle: 'background-color: #222;',
   bodyPadding: 10,
   layout: {

@@ -51,7 +51,7 @@ Ext.define('JefBox.view.uploads.EditView', {
     if (uploadForm) {
       me.clickedSave = true;
       uploadForm.submit({
-        url: 'api/upload',
+        url: 'api/uploads',
         waitMsg: 'Uploading...',
         success: function(form, result, data) {
           me.fireEvent('uploaded', result);

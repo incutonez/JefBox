@@ -65,6 +65,10 @@ Ext.define('JefBox.view.games.HostViewController', {
       if (currentQuestion.get('Type') === Enums.RoundItemTypes.IMAGE) {
         markup = `<img width="100%" src="${url}" />`;
       }
+      else if (currentQuestion.get('Type') === Enums.RoundItemTypes.VIDEO) {
+        url = currentQuestion.get('youtubeVideoId');
+        markup = `<iframe width="100%" src="https://www.youtube.com/embed/${url}?enablejsapi=1" />`;
+      }
       if (url) {
         Ext.create('JefBox.BaseDialog', {
           width: null,

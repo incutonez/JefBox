@@ -2,7 +2,6 @@
  * user's session... if not logged in, show login page, otherwise, continue to loading the rest of the app */
 JefBox.Enums.loadEnums(function() {
   Ext.checkingInitialAuth = true;
-  console.log('done');
   JefBox.model.User.checkSession(function() {
     Ext.checkingInitialAuth = false;
     JefBox.Schemas.load(function() {

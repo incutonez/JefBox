@@ -1,6 +1,6 @@
 Ext.define('JefBox.shared.Application', {
   extend: 'Ext.app.Application',
-  name: 'Shared',
+  name: 'JefBox',
   requires: [
     'Ext.*',
     'Ext.Loader',
@@ -11,6 +11,12 @@ Ext.define('JefBox.shared.Application', {
     'JefBox.Icons',
     'JefBox.Styles'
   ],
+
+  viewport: {
+    layout: 'fit'
+  },
+
+  viewModel: {},
 
   defaultToken: Routes.HOME,
 

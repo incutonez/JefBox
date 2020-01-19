@@ -115,7 +115,7 @@ Ext.define('JefBox.Painter', {
       formData.append('uploadFile', blob, me.getFileName());
       Ext.Ajax.request({
         type: 'ajax',
-        url: 'api/upload',
+        url: 'api/uploads',
         method: 'POST',
         formData: formData,
         callback: function(options, successful, response) {

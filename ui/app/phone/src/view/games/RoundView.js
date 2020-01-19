@@ -12,8 +12,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       gameId: null,
       waitingNextQuestion: false,
       currentRoundId: null,
-      selectedChoice: null,
-      userRecord: UserProfile
+      selectedChoice: null
     },
     formulas: {
       hideAnswerField: function(get) {
@@ -24,8 +23,14 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       },
       loadingMask: function(get) {
         const answers = get('currentQuestion.Answers');
-        console.log(answers, get('userRecord'));
-        return !Ext.isEmpty(get('currentRoundId'));
+        const found = answers && answers.findRecord('GroupId', get('userProfile.CurrentGame.GroupId'), 0, false, true, true);
+        if (found) {
+          return {
+            xtype: 'loadmask',
+            message: 'Answer submitted...\nAwaiting next round.'
+          };
+        }
+        return false;
       },
       currentQuestion: {
         bind: {

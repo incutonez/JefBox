@@ -14,6 +14,7 @@ Ext.define('JefBox.view.main.MainView', {
     type: 'mainView'
   },
 
+  fullscreen: true,
   layout: 'fit',
   title: 'Welcome ' + UserProfile.get('UserName'),
   tools: [{

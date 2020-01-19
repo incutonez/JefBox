@@ -73,7 +73,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       }, {
         xtype: 'youTubeAudioButton',
         bind: {
-          hidden: '{!currentQuestion.youtubeVideoId}',
+          hidden: '{!isAudio}',
           videoId: '{currentQuestion.youtubeVideoId}'
         }
       }, {
