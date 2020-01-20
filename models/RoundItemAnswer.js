@@ -1,10 +1,5 @@
 module.exports = (conn, types) => {
   const RoundItemAnswerModel = conn.define('RoundItemAnswer', {
-    Id: {
-      type: types.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     Answer: {
       type: types.STRING
     },
@@ -14,6 +9,14 @@ module.exports = (conn, types) => {
     IsCorrect: {
       type: types.BOOLEAN,
       defaultValue: false
+    },
+    RoundItemId: {
+      type: types.INTEGER,
+      primaryKey: true
+    },
+    GroupId: {
+      type: types.INTEGER,
+      primaryKey: true
     }
   });
 
@@ -24,7 +27,6 @@ module.exports = (conn, types) => {
     RoundItemAnswerModel.belongsTo(models.RoundItemChoice, {
       foreignKey: 'ChoiceId'
     });
-    RoundItemAnswerModel.belongsTo(models.Game);
     RoundItemAnswerModel.belongsTo(models.RoundItem);
     RoundItemAnswerModel.belongsTo(models.Team);
     RoundItemAnswerModel.belongsTo(models.User);

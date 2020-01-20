@@ -64,11 +64,6 @@ module.exports = (conn, types) => {
       foreignKey: 'GameId'
     });
 
-    GameModel.hasMany(models.RoundItemAnswer, {
-      as: 'Score',
-      foreignKey: 'GameId'
-    });
-
     // I add this in here because we need the GameTeamModel association to exist in order to use it below
     GameModel.includeOptions.push({
       model: models.GameTeam,

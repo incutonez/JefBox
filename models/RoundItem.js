@@ -61,13 +61,9 @@ module.exports = (conn, types) => {
     });
 
     RoundItemModel.includeOptions.push({
-      model: models.RoundItemChoice,
-      as: 'Choices'
+      association: RoundItemModel.associations.Choices
     }, {
-      association: RoundItemModel.associations.Answers,
-      include: [{
-        model: models.RoundItemChoice
-      }]
+      association: RoundItemModel.associations.Answers
     });
   };
 

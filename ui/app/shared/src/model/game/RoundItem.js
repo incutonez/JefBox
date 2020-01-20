@@ -105,7 +105,7 @@ Ext.define('JefBox.model.game.RoundItem', {
     const gameRecord = this.getGameRecord();
     if (gameRecord) {
       let teamId;
-      let userId = UserProfile.getId();
+      const userId = UserProfile.getId();
       if (gameRecord.get('AllowTeams')) {
         const teamsStore = gameRecord.getTeamsStore();
         if (teamsStore) {
@@ -127,8 +127,7 @@ Ext.define('JefBox.model.game.RoundItem', {
           Answer: config.answer,
           UploadId: config.uploadId,
           RoundItemId: this.getId(),
-          TeamId: teamId,
-          UserId: teamId ? null : userId
+          TeamId: teamId
         },
         callback: function(options, successful, response) {
           if (Ext.isFunction(config.callback)) {

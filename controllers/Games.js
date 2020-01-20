@@ -58,13 +58,31 @@ module.exports = (io) => {
     res.sendStatus(204);
   });
   router.post(GameSchema.ADD_ANSWER_PATH, async (req, res) => {
-    const gameId = req.params.id;
-    const game = await Game.getRecordById(gameId);
-    const roundItem = await game.getRoundItemById(req.body.RoundItemId);
-    req.body.GameId = gameId;
-    await roundItem.createAnswer(req.body);
-    if (io && GameModel.updateEvent) {
-      io.emit(`${GameModel.updateEvent}${gameId}`);
+    try {
+      const gameId = req.params.id;
+      const roundItem = await db.RoundItem.findOne({
+        where: {
+          Id: req.body.RoundItemId
+        }
+      });
+      const teamId = req.body.TeamId;
+      let groupId = req.session.user.Id;
+      if (teamId) {
+        groupId = teamId;
+      }
+      else {
+        req.body.UserId = groupId;
+      }
+      req.body.GameId = gameId;
+      req.body.GroupId = groupId;
+      await roundItem.createAnswer(req.body);
+      if (io && GameModel.updateEvent) {
+        io.emit(`${GameModel.updateEvent}${gameId}`);
+      }
+    }
+    catch (e) {
+      // TODOJEF: HERE
+      console.log(e);
     }
     res.sendStatus(204);
   });

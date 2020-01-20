@@ -130,7 +130,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     }
   },
 
-  onKeyDownAnswerField: function(event) {
+  onKeyDownAnswerField: function(field, event) {
     if (event.isEnterKey()) {
       this.submitAnswer();
     }
