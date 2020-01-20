@@ -23,10 +23,10 @@ Ext.define('JefBox.BaseDialog', {
   bodyPadding: 10,
   referenceHolder: true,
   config: {
+    canResize: true,
     autoShow: true,
     minimizable: true,
-    isCrudDialog: false,
-    canResize: true
+    isCrudDialog: false
   },
 
   resizeToScreen: function() {

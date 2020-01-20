@@ -50,13 +50,17 @@ Ext.define('JefBox.model.Game', {
     }
   }],
 
-  connectSocket: function(cb) {
+  connectSocket: function(config) {
     const me = this;
+    config = config || {};
     sockets.on('updatedGames' + me.getId(), function() {
+      if (Ext.isFunction(config.before)) {
+        config.before();
+      }
       me.load({
         callback: function(record, options, successful) {
-          if (Ext.isFunction(cb)) {
-            cb(record, successful);
+          if (Ext.isFunction(config.after)) {
+            config.after(record, successful);
           }
         }
       });

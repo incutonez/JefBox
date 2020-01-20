@@ -118,7 +118,7 @@ Ext.define('JefBox.view.main.MainViewController', {
   },
 
   onClickGamesView: function(button) {
-    this.redirectTo(Routes.parseRoute(Schemas.Games.CONNECT_PATH_UI));
+    this.redirectTo(Routes.parseRoute(Schemas.Games.BASE_PATH_UI));
   },
 
   onClickUploadsView: function(button) {

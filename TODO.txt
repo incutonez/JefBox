@@ -1,4 +1,1 @@
-- strip whitespace from end of answer
-- don't allow multiple submits
-- constrain teams to one answer per round
 - don't allow creating teams with same name

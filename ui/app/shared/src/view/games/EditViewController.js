@@ -5,6 +5,35 @@ Ext.define('JefBox.view.games.EditViewController', {
     'JefBox.view.games.RoundItemView'
   ],
 
+  constructor: function(config) {
+    const routes = {};
+    routes[Schemas.Games.BASE_PATH_ID_UI] = {
+      action: 'onRouteGameView',
+      lazy: true
+    };
+    config.routes = routes;
+    this.callParent(arguments);
+  },
+
+  onRouteGameView: function(params) {
+    this.loadViewRecord(params.Id);
+  },
+
+  loadViewRecord: function(gameId) {
+    const me = this;
+    const viewModel = me.getViewModel();
+    me.setViewLoading(true);
+    JefBox.model.Game.load(gameId, {
+      callback: function(record, operation, successful) {
+        if (successful) {
+          viewModel.set('viewRecord', record);
+          viewModel.notify();
+        }
+        me.setViewLoading(false);
+      }
+    });
+  },
+
   showQuestionView: function(record) {
     const questionsStore = this.getRoundItemsStore();
     const lastRecord = questionsStore && questionsStore.last();

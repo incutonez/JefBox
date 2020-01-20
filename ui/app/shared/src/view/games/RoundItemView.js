@@ -4,7 +4,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
   requires: [
     'JefBox.model.Upload',
     'JefBox.view.uploads.EditView',
-    'JefBox.view.uploads.ReadView'
+    'JefBox.view.uploads.MediaViewer'
   ],
 
   viewModel: {
@@ -234,16 +234,13 @@ Ext.define('JefBox.view.games.RoundItemView', {
 
   onClickViewAttachment: function() {
     const viewRecord = this.getViewRecord();
-    const uploadRecord = JefBox.store.Uploads.findRecord('Id', viewRecord && viewRecord.get('UploadId'), 0, false, true, true);
-    if (uploadRecord) {
-      Ext.create('JefBox.view.uploads.ReadView', {
-        viewModel: {
-          data: {
-            viewRecord: uploadRecord
-          }
+    Ext.create('JefBox.view.uploads.MediaViewer', {
+      viewModel: {
+        data: {
+          uploadId: viewRecord && viewRecord.get('UploadId')
         }
-      });
-    }
+      }
+    });
   },
 
   onClickAddAttachmentBtn: function() {

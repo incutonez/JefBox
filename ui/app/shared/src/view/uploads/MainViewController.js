@@ -3,16 +3,16 @@ Ext.define('JefBox.view.uploads.MainViewController', {
   alias: 'controller.uploadsMainView',
   requires: [
     'JefBox.view.uploads.EditView',
-    'JefBox.view.uploads.ReadView'
+    'JefBox.view.uploads.MediaViewer'
   ],
 
   EDIT_VIEW: 'JefBox.view.uploads.EditView',
 
   onClickViewRecord: function(grid, info) {
-    Ext.create('JefBox.view.uploads.ReadView', {
+    Ext.create('JefBox.view.uploads.MediaViewer', {
       viewModel: {
         data: {
-          viewRecord: info.record
+          uploadId: info.record.getId()
         }
       }
     });

@@ -11,8 +11,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       userAnswer: null,
       gameId: null,
       waitingNextQuestion: false,
-      currentRoundId: null,
-      selectedChoice: null
+      selectedChoice: null,
+      submittingAnswer: false
     },
     formulas: {
       hideAnswerField: function(get) {
@@ -24,13 +24,14 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       loadingMask: function(get) {
         const answers = get('currentQuestion.Answers');
         const found = answers && answers.findRecord('GroupId', get('userProfile.CurrentGame.GroupId'), 0, false, true, true);
-        if (found) {
-          this.set('userAnswer', null);
+        if (found || get('submittingAnswer')) {
+          this.set('userAnswer', found && found.get('Answer'));
           return {
             xtype: 'loadmask',
             message: 'Answer submitted...\nAwaiting next round.'
           };
         }
+        this.set('userAnswer', null);
         return false;
       },
       currentQuestion: {
@@ -48,6 +49,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
 
   defaultListenerScope: true,
   isCrudDialog: true,
+  height: '100%',
+  width: '100%',
   layout: {
     type: 'vbox'
   },
@@ -59,6 +62,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     xtype: 'textfield',
     label: 'Your Answer',
     maxWidth: 300,
+    reference: 'answerField',
     bind: {
       value: '{userAnswer}',
       hidden: '{hideAnswerField}'
@@ -98,11 +102,14 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       JefBox.model.Game.load(vm.get('gameId'), {
         callback: function(record) {
           vm.set('viewRecord', record);
-          record.connectSocket(function(record, successful) {
-            if (choicesGrid) {
-              Ext.asap(function() {
-                choicesGrid.forceRefresh();
-              });
+          record.connectSocket({
+            after: function(record, successful) {
+              if (choicesGrid) {
+                Ext.asap(function() {
+                  choicesGrid.forceRefresh();
+                });
+              }
+              vm.set('submittingAnswer', false);
             }
           });
         }
@@ -115,17 +122,18 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     const questionRecord = viewModel && viewModel.get('currentQuestion');
     if (questionRecord) {
       let choice;
+      let answer = viewModel.get('userAnswer');
       if (viewModel.get('isMultipleChoice')) {
         const selectedChoice = viewModel.get('selectedChoice');
         choice = selectedChoice && selectedChoice.getId();
       }
-      viewModel.set('currentRoundId', questionRecord.getId());
+      if (answer) {
+        answer = answer.replace(/\s*$/, '');
+      }
+      viewModel.set('submittingAnswer', true);
       questionRecord.addAnswer({
         choiceId: choice,
-        answer: viewModel.get('userAnswer'),
-        callback: function(successful, response) {
-          console.log(successful);
-        }
+        answer: answer
       });
     }
   },

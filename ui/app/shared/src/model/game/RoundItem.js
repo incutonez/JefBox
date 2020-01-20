@@ -80,7 +80,7 @@ Ext.define('JefBox.model.game.RoundItem', {
         const matches = url.match(/v=([^$]+)/);
         return matches && matches[1];
       }
-      return value;
+      return value || '';
     }
   }],
 

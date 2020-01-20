@@ -54,16 +54,6 @@ Ext.define('JefBox.view.uploads.MainView', {
       dataIndex: 'FileName',
       flex: 1
     }, {
-      text: 'File',
-      dataIndex: 'Data',
-      flex: 1,
-      cell: {
-        encodeHtml: false,
-        bind: {
-          value: '{record.displayValue}'
-        }
-      }
-    }, {
       text: 'Created',
       dataIndex: 'CreateDate',
       formatter: 'dateMonthDayYearHourMinuteSecond',

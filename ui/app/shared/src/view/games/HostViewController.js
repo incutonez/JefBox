@@ -1,27 +1,45 @@
 Ext.define('JefBox.view.games.HostViewController', {
   extend: 'Ext.app.ViewController',
   alias: 'controller.gamesHostView',
+  requires: [
+    'JefBox.view.uploads.MediaViewer'
+  ],
 
-  init: function() {
-    const viewModel = this.getViewModel();
-    const gameId = viewModel && viewModel.get('viewRecordId');
-    // sockets.on('updatedGames' + gameId, this.onUpdatedGame, this);
-    this.loadViewRecord();
+// TODOJEF: There's an issue here with the host view being behind the main grid view when the page reloads
+  constructor: function(config) {
+    const routes = {};
+    routes[Schemas.Games.CONNECT_PATH_UI] = {
+      action: 'onRouteHostView',
+      lazy: true
+    };
+    config.routes = routes;
+    this.callParent(arguments);
   },
 
-  loadViewRecord: function() {
+  onRouteHostView: function(params) {
+    this.loadViewRecord(params.Id);
+  },
+
+  loadViewRecord: function(gameId) {
     const me = this;
     const viewModel = me.getViewModel();
     if (viewModel) {
-      // me.setViewLoading(true);
+      me.setViewLoading(true);
       viewModel.set('viewRecord', null);
       viewModel.notify();
-      JefBox.model.Game.load(viewModel.get('viewRecordId'), {
+      JefBox.model.Game.load(gameId, {
         callback: function(record, operation, successful) {
           viewModel.set('viewRecord', record);
-          record.connectSocket();
+          record.connectSocket({
+            before: function() {
+              me.setViewLoading(true);
+            },
+            after: function() {
+              me.setViewLoading(false);
+            }
+          });
           viewModel.notify();
-          // me.setViewLoading(false);
+          me.setViewLoading(false);
         }
       });
     }
@@ -44,10 +62,6 @@ Ext.define('JefBox.view.games.HostViewController', {
     }
   },
 
-  onUpdatedGame: function() {
-    this.loadViewRecord();
-  },
-
   onMarkRoundItemRow: function(grid, info) {
     this.toggleRoundItemAnswered(info.record.getId(), true);
   },
@@ -59,27 +73,15 @@ Ext.define('JefBox.view.games.HostViewController', {
   onClickViewMediaButton: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
     if (currentQuestion) {
-      let markup;
-      const uploadId = currentQuestion.get('UploadId');
-      let url = uploadId ? `api/uploads/${uploadId}` : currentQuestion.get('Url');
-      if (currentQuestion.get('Type') === Enums.RoundItemTypes.IMAGE) {
-        markup = `<img width="100%" src="${url}" />`;
-      }
-      else if (currentQuestion.get('Type') === Enums.RoundItemTypes.VIDEO) {
-        url = currentQuestion.get('youtubeVideoId');
-        markup = `<iframe width="100%" src="https://www.youtube.com/embed/${url}?enablejsapi=1" />`;
-      }
-      if (url) {
-        Ext.create('JefBox.BaseDialog', {
-          width: null,
-          height: 500,
-          bodyPadding: 0,
-          items: [{
-            xtype: 'component',
-            html: markup
-          }]
-        });
-      }
+      Ext.create('JefBox.view.uploads.MediaViewer', {
+        viewModel: {
+          data: {
+            uploadId: currentQuestion.get('UploadId'),
+            imageUrl: currentQuestion.get('Url'),
+            videoId: currentQuestion.get('youtubeVideoId')
+          }
+        }
+      });
     }
   },
 

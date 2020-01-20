@@ -22,6 +22,9 @@ Ext.define('JefBox.overrides.app.ViewController', {
       maskConfig = {
         xtype: 'loadmask'
       };
+      if (Ext.isString(loading)) {
+        maskConfig.message = loading;
+      }
     }
     else {
       maskConfig = false;

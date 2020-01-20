@@ -111,7 +111,6 @@ module.exports = (io) => {
       IsCorrect: false
     }, {
       where: {
-        GameId: gameId,
         RoundItemId: roundItemId
       }
     });
@@ -120,7 +119,6 @@ module.exports = (io) => {
         IsCorrect: true
       }, {
         where: {
-          GameId: gameId,
           RoundItemId: roundItemId,
           [db.Op.or]: [{
             TeamId: teams

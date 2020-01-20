@@ -34,9 +34,10 @@ module.exports = (io) => {
   });
 
   router.get(basePath, async (req, res) => {
-    const records = await Model.findAll();
-    records.forEach(function(record) {
-      record.Data = Buffer.from(record.Data).toString('base64');
+    const records = await Model.findAll({
+      attributes: {
+        exclude: ['Data']
+      }
     });
     res.send(records);
   });
