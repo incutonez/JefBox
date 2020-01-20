@@ -67,7 +67,7 @@ Ext.define('JefBox.view.auth.LoginView', {
   }],
 
   onKeyDownField: function(field, event, eOpts) {
-    if (event.getKey() === event.ENTER) {
+    if (event.isEnterKey()) {
       const viewModel = this.getViewModel();
       const userProfile = viewModel && viewModel.get('userProfile');
       if (userProfile && viewModel.get('isViewValid')) {

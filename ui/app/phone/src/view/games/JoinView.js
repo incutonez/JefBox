@@ -24,8 +24,9 @@ Ext.define('JefBox.phone.view.games.JoinView', {
 
   title: 'Join Game',
   isCrudDialog: true,
-  height: '50%',
   width: '100%',
+  height: '100%',
+  defaultListenerScope: true,
   layout: {
     type: 'vbox'
   },
@@ -55,10 +56,13 @@ Ext.define('JefBox.phone.view.games.JoinView', {
       disabled: '{!gameAllowsTeams}',
       hidden: '{!gameAllowsTeams}',
       selection: '{selectedTeam}'
+    },
+    listeners: {
+      keydown: 'onKeyDownTeamField'
     }
   }],
 
-  onClickSaveBtn: function() {
+  joinGame: function() {
     const me = this;
     const viewModel = me.getViewModel();
     this.clickedSave = true;
@@ -81,6 +85,16 @@ Ext.define('JefBox.phone.view.games.JoinView', {
           }
         }
       });
+    }
+  },
+
+  onClickSaveBtn: function() {
+    this.joinGame();
+  },
+
+  onKeyDownTeamField: function(field, event, eOpts) {
+    if (event.isEnterKey()) {
+      this.joinGame();
     }
   }
 });

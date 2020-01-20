@@ -90,28 +90,7 @@ module.exports = (conn, types) => {
         as: 'Choices'
       }, {
         model: models.RoundItemAnswer,
-        as: 'Answers',
-        include: [{
-          model: models.RoundItemChoice
-        }, {
-          model: models.User
-        }, {
-          model: models.Team
-        }]
-      }]
-    }, {
-      model: models.RoundItemAnswer,
-      as: 'Score',
-      required: false,
-      where: {
-        IsCorrect: true
-      },
-      include: [{
-        model: models.Team
-      }, {
-        model: models.RoundItem
-      }, {
-        model: models.User
+        as: 'Answers'
       }]
     });
 
@@ -125,7 +104,7 @@ module.exports = (conn, types) => {
   GameModel.prototype.toJSON = function() {
     const teams = [];
     const data = Object.assign({}, this.get());
-    const standings = data.Score;
+    const standings = [];
     const gameTeams = data.GameTeams;
     const roundItems = data.RoundItems;
     if (gameTeams) {
@@ -143,32 +122,39 @@ module.exports = (conn, types) => {
       delete data.GameTeams;
     }
     if (roundItems) {
+      // TODOJEF: Add support for user only games
+      const teamIds = teams.map(x => x.Id);
       for (let i = 0; i < roundItems.length; i++) {
         const roundItem = roundItems[i];
         const answers = roundItem.Answers;
+        const choices = roundItem.Choices;
+        const choiceIds = choices && choices.map(x => x.Id);
         if (answers) {
           for (let j = 0; j < answers.length; j++) {
-            const answer = answers[j];
-            if (roundItem.Type === RoundItemTypes.MULTIPLE_CHOICE) {
-              answer.Answer = answer.RoundItemChoice.Value;
-              delete answer.RoundItemChoice;
+            const answer = answers[j].get();
+            const groupId = answer.TeamId || answer.UserId;
+            const group = teams[teamIds.indexOf(groupId)];
+            const groupName = group && group.Name;
+            if (answer.IsCorrect) {
+              standings.push({
+                RoundNumber: answer.RoundItemId,
+                QuestionNumber: roundItem.Order,
+                Points: roundItem.Points,
+                GroupId: groupId,
+                GroupName: groupName
+              });
             }
+            if (choiceIds && choiceIds.length) {
+              const choice = choices[choiceIds.indexOf(answer.ChoiceId)];
+              answer.Answer = choice && choice.Value;
+            }
+            answer.GroupName = groupName;
+            answer.GroupId = groupId;
           }
         }
       }
     }
-    if (standings) {
-      for (let i = 0; i < standings.length; i++) {
-        const score = standings[i];
-        const roundItem = score.RoundItem;
-        if (roundItem) {
-          score.Points = roundItem.Points;
-          score.RoundNumber = roundItem.Round;
-          score.QuestionNumber = roundItem.Order;
-          delete score.dataValues.RoundItem;
-        }
-      }
-    }
+    data.Score = standings;
     return data;
   };
 

@@ -14,41 +14,6 @@ module.exports = (conn, types) => {
     IsCorrect: {
       type: types.BOOLEAN,
       defaultValue: false
-    },
-    GroupId: {
-      type: new types.VIRTUAL(types.INTEGER)
-    },
-    GroupName: {
-      type: new types.VIRTUAL(types.STRING, ['Team', 'User']),
-      get() {
-        let groupId;
-        let groupName;
-        const user = this.User;
-        const team = this.Team;
-        delete this.dataValues.Team;
-        delete this.dataValues.User;
-        if (team) {
-          groupId = team.Id;
-          groupName = team.Name;
-        }
-        else if (user) {
-          groupId = user.Id;
-          groupName = user.UserName;
-        }
-        if (groupId) {
-          this.setDataValue('GroupId', groupId);
-        }
-        return groupName;
-      }
-    },
-    Points: {
-      type: new types.VIRTUAL(types.INTEGER)
-    },
-    RoundNumber: {
-      type: new types.VIRTUAL(types.INTEGER)
-    },
-    QuestionNumber: {
-      type: new types.VIRTUAL(types.INTEGER)
     }
   });
 

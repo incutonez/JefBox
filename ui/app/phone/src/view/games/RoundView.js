@@ -25,6 +25,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         const answers = get('currentQuestion.Answers');
         const found = answers && answers.findRecord('GroupId', get('userProfile.CurrentGame.GroupId'), 0, false, true, true);
         if (found) {
+          this.set('userAnswer', null);
           return {
             xtype: 'loadmask',
             message: 'Answer submitted...\nAwaiting next round.'
@@ -45,6 +46,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     }
   },
 
+  defaultListenerScope: true,
   isCrudDialog: true,
   layout: {
     type: 'vbox'
@@ -60,6 +62,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     bind: {
       value: '{userAnswer}',
       hidden: '{hideAnswerField}'
+    },
+    listeners: {
+      keydown: 'onKeyDownAnswerField'
     }
   }, {
     xtype: 'grid',
@@ -105,7 +110,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     }
   },
 
-  onClickSaveBtn: function() {
+  submitAnswer: function() {
     const viewModel = this.getViewModel();
     const questionRecord = viewModel && viewModel.get('currentQuestion');
     if (questionRecord) {
@@ -123,5 +128,15 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         }
       });
     }
+  },
+
+  onKeyDownAnswerField: function(event) {
+    if (event.isEnterKey()) {
+      this.submitAnswer();
+    }
+  },
+
+  onClickSaveBtn: function() {
+    this.submitAnswer();
   }
 });
