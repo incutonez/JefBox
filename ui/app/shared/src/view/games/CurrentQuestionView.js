@@ -144,6 +144,13 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
           bind: {
             hidden: '{!record.IsCorrect}'
           }
+        }, {
+          iconCls: Icons.VIEW,
+          tooltip: 'View Image',
+          handler: 'onClickViewImage',
+          bind: {
+            hidden: '{!record.UploadId}'
+          }
         }]
       }
     }, {

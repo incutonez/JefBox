@@ -54,14 +54,10 @@ Ext.define('JefBox.model.Game', {
     const me = this;
     config = config || {};
     sockets.on('updatedGames' + me.getId(), function() {
-      if (Ext.isFunction(config.before)) {
-        config.before();
-      }
+      Ext.callback(config.before, config.scope);
       me.load({
         callback: function(record, options, successful) {
-          if (Ext.isFunction(config.after)) {
-            config.after(record, successful);
-          }
+          Ext.callback(config.after, config.scope);
         }
       });
     });

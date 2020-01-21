@@ -8,7 +8,7 @@ module.exports = {
   BASE_PATH: basePath,
   /* The ellipsis indicates that we can match anything... this is useful for deep linking but wanting to open the
    * parent view, which figures out what to do with the deep link */
-  BASE_PATH_UI: `${baseUrl}(/:{Anything:...})`,
+  BASE_PATH_UI: `${baseUrl}(/:{Anything...})`,
   BASE_PATH_ID_UI: `${baseUrl}/:{Id:num}`,
   ID_PATH: idPath,
   ID_PATH_UI: idPathUI,

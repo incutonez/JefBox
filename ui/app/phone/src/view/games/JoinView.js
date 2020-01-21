@@ -65,9 +65,10 @@ Ext.define('JefBox.phone.view.games.JoinView', {
   joinGame: function() {
     const me = this;
     const viewModel = me.getViewModel();
-    this.clickedSave = true;
+    me.clickedSave = true;
     if (viewModel) {
       const gameId = viewModel.get('selectedGame.Id');
+      me.setLoading(true);
       UserProfile.joinGame({
         gameId: gameId,
         teamId: viewModel.get('selectedTeam.Id'),
@@ -83,6 +84,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
               }
             });
           }
+          me.setLoading(false);
         }
       });
     }

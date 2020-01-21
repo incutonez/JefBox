@@ -1,15 +1,13 @@
 const db = require('./models/index');
-let people = {};
+const people = {};
 module.exports = function(server) {
   const io = require('socket.io')(server);
   io.on('connection', (client) => {
     let user;
+    const clientId = client.id;
     console.log('client connected');
-    client.on('pickingTeam', (config) => {
-      console.log('pickingTeam', config);
-    });
-    client.on('authenticated', async (config) => {
-      user = people[client.id] = config;
+    client.on('setUser', async (config) => {
+      user = people[clientId] = config;
       await db.User.updateUser({
         Id: user.Id,
         IsActive: true
@@ -25,7 +23,7 @@ module.exports = function(server) {
         });
         io.emit('userStatusChange', user);
       }
-      delete people[client.id];
+      delete people[clientId];
     });
   });
   return io;

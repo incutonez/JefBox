@@ -11,8 +11,7 @@ Ext.define('JefBox.Painter', {
     lineJoin: 'round',
     lineCap: 'round',
     context: null,
-    memoryCanvas: null,
-    memoryContext: null,
+    points: [],
     fileName: UserProfile.get('UserName') + '_paint.png'
   },
 
@@ -23,89 +22,52 @@ Ext.define('JefBox.Painter', {
     listeners: {
       painted: 'onPaintCanvas',
       touchstart: 'onTouchStartCanvas',
+      touchend: 'onTouchEndCanvas',
       drag: 'onDragCanvas'
     }
   },
 
-  initialize: function() {
-    const memoryCanvas = document.createElement('canvas');
-    // In memory canvas idea taken from https://stackoverflow.com/questions/11179274/html-canvas-drawing-disappear-on-resizing
-    this.setMemoryCanvas(memoryCanvas);
-    this.setMemoryContext(memoryCanvas.getContext('2d'));
-    this.callParent();
-  },
-
-  resize: function() {
-    const me = this;
-    const parent = me.parent;
-    const parentEl = parent && parent.el;
-    const canvas = me.getCanvas();
-    const memoryCanvas = me.getMemoryCanvas();
-    const memoryContext = me.getMemoryContext();
-    if (parentEl && canvas && memoryCanvas && memoryContext) {
-      const parentWidth = parentEl.getWidth();
-      const parentHeight = parentEl.getHeight();
-      memoryCanvas.width = parentWidth;
-      memoryCanvas.height = parentHeight;
-      memoryContext.drawImage(canvas, 0, 0);
-      canvas.width = parentWidth;
-      canvas.height = parentHeight;
-      const context = canvas.getContext('2d');
-      context.drawImage(memoryCanvas, 0, 0);
-      me.setContext(context);
-    }
-  },
-
-  onPaintCanvas: function() {
-    const parent = this.parent;
-    if (parent) {
-      parent.on('resize', 'onResizeParent', this);
-      this.resize();
-    }
-  },
-
-  onTouchStartCanvas: function(event) {
-    const me = this;
-    const context = me.getContext();
-    const coords = me.getMouseCoords(event);
-    if (context && coords) {
-      context.lineWidth = me.getLineWidth();
-      context.lineJoin = me.getLineJoin();
-      context.lineCap = me.getLineCap();
-      context.strokeStyle = me.getStrokeStyle();
-      context.moveTo(coords.x, coords.y);
-      context.beginPath();
-    }
-  },
-
-  onDragCanvas: function(event) {
+  redrawAll: function() {
     const context = this.getContext();
-    const coords = this.getMouseCoords(event);
-    if (context && coords) {
-      context.lineTo(coords.x, coords.y);
-      context.stroke();
+    const points = this.getPoints();
+    this.clearImage(true);
+    for (let i = 0; i < points.length; i++) {
+      const pointSet = points[i];
+      const coords = pointSet.points;
+      if (context.lineWidth !== pointSet.size) {
+        context.lineWidth = pointSet.size;
+      }
+      if (context.strokeStyle !== pointSet.color) {
+        context.strokeStyle = pointSet.color;
+      }
+      for (let j = 0; j < coords.length; j++) {
+        const pt = coords[j];
+        if (j === 0) {
+          context.moveTo(pt[0], pt[1]);
+          context.beginPath();
+        }
+        else {
+          context.lineTo(pt[0], pt[1]);
+        }
+        context.stroke();
+      }
     }
   },
 
-  onResizeParent: function() {
-    this.resize();
-  },
-
-  getMouseCoords: function(event) {
+  clearImage: function(softDelete) {
+    const context = this.getContext();
     const canvas = this.getCanvas();
-    const rect = canvas && canvas.getBoundingClientRect();
-    if (rect) {
-      const xy = event.getXY();
-      return {
-        // Need to adjust for scaling at the end in case widths and heights aren't the same
-        x: (xy[0] - rect.left) * canvas.width / rect.width,
-        y: (xy[1] - rect.top) * canvas.height / rect.height
-      };
+    if (context && canvas) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      if (!softDelete) {
+        this.setPoints([]);
+      }
     }
   },
 
-  getCanvas: function() {
-    return this.el.dom;
+  undoLast: function() {
+    this.getPoints().pop();
+    this.redrawAll();
   },
 
   saveImage: function(cb) {
@@ -125,5 +87,82 @@ Ext.define('JefBox.Painter', {
         }
       });
     });
+  },
+
+  onPaintCanvas: function() {
+    const me = this;
+    const parent = me.parent;
+    const parentEl = parent && parent.el;
+    const canvas = me.getCanvas();
+    me.setPoints([]);
+    if (parentEl && canvas) {
+      const parentWidth = parentEl.getWidth();
+      const parentHeight = parentEl.getHeight();
+      canvas.width = parentWidth;
+      canvas.height = parentHeight;
+      me.setContext(canvas.getContext('2d'));
+      parent.on('resize', me.onResizeParent, me);
+    }
+  },
+
+  onTouchStartCanvas: function(event) {
+    const me = this;
+    const context = me.getContext();
+    const coords = me.getMouseCoords(event);
+    if (context && coords) {
+      context.lineWidth = me.getLineWidth();
+      context.lineJoin = me.getLineJoin();
+      context.lineCap = me.getLineCap();
+      context.strokeStyle = me.getStrokeStyle();
+      context.moveTo(coords.x, coords.y);
+      context.beginPath();
+      me.pointSet = [
+        [coords.x, coords.y]
+      ];
+    }
+  },
+
+  onTouchEndCanvas: function(event) {
+    const me = this;
+    const coords = me.getMouseCoords(event);
+    if (coords) {
+      me.pointSet.push([coords.x, coords.y]);
+      me.getPoints().push({
+        points: me.pointSet,
+        size: 3,
+        color: me.getStrokeStyle()
+      });
+    }
+  },
+
+  onDragCanvas: function(event) {
+    const context = this.getContext();
+    const coords = this.getMouseCoords(event);
+    if (context && coords) {
+      context.lineTo(coords.x, coords.y);
+      context.stroke();
+      this.pointSet.push([coords.x, coords.y]);
+    }
+  },
+
+  onResizeParent: function() {
+    this.redrawAll();
+  },
+
+  getMouseCoords: function(event) {
+    const canvas = this.getCanvas();
+    const rect = canvas && canvas.getBoundingClientRect();
+    if (rect) {
+      const xy = event.getXY();
+      return {
+        // Need to adjust for scaling at the end in case widths and heights aren't the same
+        x: (xy[0] - rect.left) * canvas.width / rect.width,
+        y: (xy[1] - rect.top) * canvas.height / rect.height
+      };
+    }
+  },
+
+  getCanvas: function() {
+    return this.el.dom;
   }
 });

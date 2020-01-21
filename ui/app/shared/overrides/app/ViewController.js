@@ -17,18 +17,8 @@ Ext.define('JefBox.overrides.app.ViewController', {
     if (ancestor) {
       view = view.up(ancestor);
     }
-    let maskConfig;
-    if (loading) {
-      maskConfig = {
-        xtype: 'loadmask'
-      };
-      if (Ext.isString(loading)) {
-        maskConfig.message = loading;
-      }
+    if (view) {
+      view.setLoading(loading);
     }
-    else {
-      maskConfig = false;
-    }
-    view.setMasked(maskConfig);
   }
 });

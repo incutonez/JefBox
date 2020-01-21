@@ -2,10 +2,10 @@ Ext.define('JefBox.view.games.MainViewController', {
   extend: 'JefBox.view.BaseCrudViewController',
   alias: 'controller.gamesMainView',
   requires: [
-    'JefBox.view.games.EditView'
+    'JefBox.view.games.EditView',
+    'JefBox.view.games.HostView'
   ],
 
-  BASE_ROUTE: Routes.GAMES,
   EDIT_VIEW: 'JefBox.view.games.EditView',
 
   constructor: function(config) {
@@ -54,7 +54,13 @@ Ext.define('JefBox.view.games.MainViewController', {
   },
 
   onRouteHostView: function(params) {
-    if (!this.hostView) {
+    const hostView = this.hostView;
+    if (hostView) {
+      /* There's a weird issue where if we have more than 1 argument in the Anything... route, then the route gets hit
+       * twice due to the lazy: true config that we use... not sure why this is */
+      hostView.toFront();
+    }
+    else {
       this.hostView = Ext.create('JefBox.view.games.HostView', {
         listeners: {
           scope: this,

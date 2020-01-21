@@ -1,1 +1,2 @@
-- don't allow creating teams with same name
+- Add routing for phone view
+- Fix issue with image viewer still not opening properly

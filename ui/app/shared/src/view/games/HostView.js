@@ -51,7 +51,7 @@ Ext.define('JefBox.view.games.HostView', {
       },
       // Don't show the Answers column until all Answers have been submitted
       hideAnswersColumn: function(get) {
-        return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count');
+        return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count') || get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
       isAudio: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.AUDIO;
@@ -63,7 +63,6 @@ Ext.define('JefBox.view.games.HostView', {
     }
   },
 
-  layout: 'fit',
   bind: {
     title: 'Game: {viewRecord.Name}',
     masked: '{loadingMask}'

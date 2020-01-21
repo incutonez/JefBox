@@ -2,7 +2,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   extend: 'JefBox.BaseDialog',
   alias: 'widget.phoneGamesRoundView',
   requires: [
-    'JefBox.model.Game'
+    'JefBox.model.Game',
+    'JefBox.view.PainterView'
   ],
 
   viewModel: {
@@ -12,11 +13,15 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       gameId: null,
       waitingNextQuestion: false,
       selectedChoice: null,
-      submittingAnswer: false
+      submittingAnswer: false,
+      uploadId: null
     },
     formulas: {
       hideAnswerField: function(get) {
-        return get('isMultipleChoice');
+        return get('isMultipleChoice') || get('isDrawing');
+      },
+      isDrawing: function(get) {
+        return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
       isMultipleChoice: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.MULTIPLE_CHOICE;
@@ -25,13 +30,18 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         const answers = get('currentQuestion.Answers');
         const found = answers && answers.findRecord('GroupId', get('userProfile.CurrentGame.GroupId'), 0, false, true, true);
         if (found || get('submittingAnswer')) {
-          this.set('userAnswer', found && found.get('Answer'));
-          return {
-            xtype: 'loadmask',
-            message: 'Answer submitted...\nAwaiting next round.'
-          };
+          if (found) {
+            this.set({
+              userAnswer: found.get('Answer'),
+              uploadId: found.get('UploadId')
+            });
+          }
+          return 'Answer submitted...\nAwaiting next round.';
         }
-        this.set('userAnswer', null);
+        this.set({
+          userAnswer: null,
+          uploadId: null
+        });
         return false;
       },
       currentQuestion: {
@@ -42,6 +52,12 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         get: function(roundItemsStore) {
           const gameRecord = this.get('viewRecord');
           return gameRecord && gameRecord.getCurrentQuestionRecord();
+        }
+      },
+      mediaMarkup: function(get) {
+        const uploadId = get('uploadId');
+        if (uploadId) {
+          return `<img style="max-height: 100%; max-width: 100%;" src="api/uploads/${uploadId}" />`;
         }
       }
     }
@@ -56,7 +72,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   },
   bind: {
     title: 'Round: {currentQuestion.RoundName || currentQuestion.Round}, Question: {currentQuestion.Order}',
-    masked: '{loadingMask}'
+    loading: '{loadingMask}'
   },
   items: [{
     xtype: 'textfield',
@@ -91,6 +107,23 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       flex: 1,
       dataIndex: 'Value'
     }]
+  }, {
+    xtype: 'painterView',
+    flex: 1,
+    reference: 'painterView',
+    bind: {
+      hidden: '{!isDrawing || uploadId}'
+    },
+    viewModel: {
+      data: {
+        hideSaveBtn: true
+      }
+    }
+  }, {
+    xtype: 'component',
+    bind: {
+      html: '{mediaMarkup}'
+    }
   }],
 
   initialize: function() {
@@ -118,23 +151,42 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   },
 
   submitAnswer: function() {
-    const viewModel = this.getViewModel();
+    const me = this;
+    const viewModel = me.getViewModel();
     const questionRecord = viewModel && viewModel.get('currentQuestion');
     if (questionRecord) {
-      let choice;
-      let answer = viewModel.get('userAnswer');
-      if (viewModel.get('isMultipleChoice')) {
-        const selectedChoice = viewModel.get('selectedChoice');
-        choice = selectedChoice && selectedChoice.getId();
+      if (viewModel.get('isDrawing')) {
+        const painterView = me.lookup('painterView');
+        if (painterView) {
+          viewModel.set('submittingAnswer', true);
+          painterView.uploadImage({
+            callback: function(response, successful) {
+              const data = response.getResponseData();
+              if (successful && data) {
+                questionRecord.addAnswer({
+                  uploadId: data.UploadId
+                });
+              }
+            }
+          });
+        }
       }
-      if (answer) {
-        answer = answer.replace(/\s*$/, '');
+      else {
+        let choice;
+        let answer = viewModel.get('userAnswer');
+        if (viewModel.get('isMultipleChoice')) {
+          const selectedChoice = viewModel.get('selectedChoice');
+          choice = selectedChoice && selectedChoice.getId();
+        }
+        if (answer) {
+          answer = answer.replace(/\s*$/, '');
+        }
+        viewModel.set('submittingAnswer', true);
+        questionRecord.addAnswer({
+          choiceId: choice,
+          answer: answer
+        });
       }
-      viewModel.set('submittingAnswer', true);
-      questionRecord.addAnswer({
-        choiceId: choice,
-        answer: answer
-      });
     }
   },
 

@@ -39,7 +39,7 @@ Ext.define('JefBox.view.main.MainViewController', {
   },
 
   onRouteGames: function(params) {
-    this.createTaskWindow('Games', 'gamesMainView', Icons.GAMES, Routes.GAMES);
+    this.createTaskWindow('Games', 'gamesMainView', Icons.GAMES, Schemas.Games.BASE_PATH_UI);
   },
 
   onRouteUploads: function(params) {

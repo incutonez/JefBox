@@ -25,7 +25,6 @@ Ext.define('JefBox.Sockets', {
     if (window.io) {
       this.setConnection(io());
       this.setUpStoreListeners();
-      this.emit('authenticated', UserProfile.getData());
     }
   },
 
@@ -61,6 +60,9 @@ Ext.define('JefBox.Sockets', {
     me.off('updatedUsers');
     me.off('updatedGames');
     me.off('updatedUploads');
+    me.on('connect', function() {
+      me.emit('setUser', UserProfile.getData());
+    });
     me.on('updatedUsers' + UserProfile.getId(), function() {
       UserProfile.load({
         callback: function() {

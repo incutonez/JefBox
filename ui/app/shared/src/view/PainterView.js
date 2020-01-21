@@ -7,6 +7,7 @@ Ext.define('JefBox.view.PainterView', {
 
   viewModel: {
     data: {
+      hideSaveBtn: false,
       selectedColor: '#000000'
     }
   },
@@ -22,9 +23,22 @@ Ext.define('JefBox.view.PainterView', {
     }
   }, {
     xtype: 'button',
+    tooltip: 'Undo',
+    iconCls: Icons.UNDO,
+    handler: 'onClickUndoBtn'
+  }, {
+    xtype: 'button',
+    tooltip: 'Clear',
+    iconCls: Icons.CLEAR,
+    handler: 'onClickClearBtn'
+  }, {
+    xtype: 'button',
     text: 'Save',
     iconCls: Icons.SAVE,
-    handler: 'onClickSaveBtn'
+    handler: 'onClickSaveBtn',
+    bind: {
+      hidden: '{hideSaveBtn}'
+    }
   }],
   items: [{
     xtype: 'painter',
@@ -34,8 +48,9 @@ Ext.define('JefBox.view.PainterView', {
     }
   }],
 
-  onClickSaveBtn: function() {
+  uploadImage: function(config) {
     const painter = this.lookup('painter');
+    config = config || {};
     if (painter) {
       painter.saveImage(function(response, successful) {
         const toastMsg = response && response.getToastMsg({
@@ -44,7 +59,26 @@ Ext.define('JefBox.view.PainterView', {
         if (toastMsg) {
           Ext.toast(toastMsg);
         }
+        Ext.callback(config.callback, config.scope, [response, successful]);
       });
     }
+  },
+
+  onClickUndoBtn: function() {
+    const painter = this.lookup('painter');
+    if (painter) {
+      painter.undoLast();
+    }
+  },
+
+  onClickClearBtn: function() {
+    const painter = this.lookup('painter');
+    if (painter) {
+      painter.clearImage();
+    }
+  },
+
+  onClickSaveBtn: function() {
+    this.uploadImage();
   }
 });

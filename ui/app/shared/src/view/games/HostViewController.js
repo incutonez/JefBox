@@ -5,7 +5,7 @@ Ext.define('JefBox.view.games.HostViewController', {
     'JefBox.view.uploads.MediaViewer'
   ],
 
-// TODOJEF: There's an issue here with the host view being behind the main grid view when the page reloads
+  // TODOJEF: Issue with this... it gets hit twice, but it doesn't get hit twice when loading the edit
   constructor: function(config) {
     const routes = {};
     routes[Schemas.Games.CONNECT_PATH_UI] = {
@@ -31,6 +31,7 @@ Ext.define('JefBox.view.games.HostViewController', {
         callback: function(record, operation, successful) {
           viewModel.set('viewRecord', record);
           record.connectSocket({
+            scope: me,
             before: function() {
               me.setViewLoading(true);
             },
@@ -102,6 +103,16 @@ Ext.define('JefBox.view.games.HostViewController', {
 
   onClickMarkAnswerIncorrect: function(grid, info) {
     info.record.set('IsCorrect', false);
+  },
+
+  onClickViewImage: function(grid, info) {
+    Ext.create('JefBox.view.uploads.MediaViewer', {
+      viewModel: {
+        data: {
+          uploadId: info.record.get('UploadId')
+        }
+      }
+    });
   },
 
   onClickSubmitAnswers: function() {
