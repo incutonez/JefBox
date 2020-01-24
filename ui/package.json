@@ -29,9 +29,10 @@
     "build": "npm run clean && npm run buildDesktop && npm run buildPhone"
   },
   "dependencies": {
+    "@sencha/ext": "~7.0.0",
     "@sencha/ext-modern": "~7.0.0",
     "@sencha/ext-modern-theme-material": "~7.0.0",
-    "@sencha/ext": "~7.0.0"
+    "canvas-confetti": "^1.0.3"
   },
   "devDependencies": {
     "@sencha/ext-webpack-plugin": "~7.0.1",

@@ -27,10 +27,6 @@ Ext.define('JefBox.view.main.MainView', {
         iconCls: Icons.SIGN_OUT,
         handler: 'onClickSignOut'
       }, {
-        text: 'Change Team',
-        iconCls: Icons.TEAMS,
-        handler: 'onClickChangeTeam'
-      }, {
         text: 'Join Game',
         iconCls: Icons.CONNECT,
         handler: 'onClickJoinGame'

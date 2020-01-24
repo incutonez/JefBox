@@ -13,15 +13,15 @@
 }
 
 .jefbox-base-color {
-  color: var(--base-color);
+  color: $base-color;
 }
 
 .jefbox-color-success {
-  color: var(--confirm-color);
+  color: $confirm-color;
 }
 
 .jefbox-color-failure {
-  color: var(--alert-color);
+  color: $alert-color;
 }
 
 .jefbox-element-hidden {
@@ -30,4 +30,15 @@
 
 .jefbox-element-invisible {
   visibility: hidden !important;;
+}
+
+.jefbox-media-viewer .x-innerhtml {
+  height: 100%;
+}
+
+.jefbox-media-tag {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }

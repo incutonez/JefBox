@@ -150,7 +150,10 @@ Ext.define('JefBox.model.User', {
   signOut: function() {
     Ext.Ajax.request({
       method: 'GET',
-      url: 'api/logout'
+      url: 'api/logout',
+      callback: function(options, successful, response) {
+        location.reload();
+      }
     });
   },
 

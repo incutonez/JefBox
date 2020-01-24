@@ -1,27 +1,31 @@
 Ext.define('JefBox.overrides.Base', {
   override: 'Ext.Base',
 
-  logError: function(msg) {
-    Ext.log({
-      msg: msg,
-      level: 'error',
-      stack: true
-    });
+  privates: {
+    logMessage: function(message, level, showDialog) {
+      Ext.log({
+        msg: message,
+        level: level,
+        stack: true
+      });
+      if (showDialog) {
+        Ext.create('Ext.MessageBox').show({
+          title: Ext.String.capitalize(level),
+          message: message
+        });
+      }
+    }
   },
 
-  logWarning: function(msg) {
-    Ext.log({
-      msg: msg,
-      level: 'warn',
-      stack: true
-    });
+  logError: function(msg, showDialog) {
+    this.logMessage(msg, 'error', showDialog);
   },
 
-  logInfo: function(msg) {
-    Ext.log({
-      msg: msg,
-      level: 'log',
-      stack: true
-    });
+  logWarning: function(msg, showDialog) {
+    this.logMessage(msg, 'warn', showDialog);
+  },
+
+  logInfo: function(msg, showDialog) {
+    this.logMessage(msg, 'log', showDialog);
   }
 });

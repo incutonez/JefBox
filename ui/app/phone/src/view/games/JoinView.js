@@ -75,14 +75,7 @@ Ext.define('JefBox.phone.view.games.JoinView', {
         teamName: viewModel.get('selectedTeam.Name'),
         callback: function(successful, response) {
           if (successful) {
-            Ext.create('JefBox.phone.view.games.RoundView', {
-              viewModel: {
-                data: {
-                  gameId: gameId,
-                  userProfile: UserProfile
-                }
-              }
-            });
+            Routes.redirectTo(Routes.parseRoute(Schemas.Games.BASE_PATH_ID_UI, {Id: gameId}));
           }
           me.setLoading(false);
         }

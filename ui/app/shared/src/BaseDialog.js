@@ -22,6 +22,8 @@ Ext.define('JefBox.BaseDialog', {
   closable: true,
   bodyPadding: 10,
   referenceHolder: true,
+  maximizeAnimation: null,
+  restoreAnimation: null,
   config: {
     canResize: true,
     autoShow: true,
@@ -55,6 +57,7 @@ Ext.define('JefBox.BaseDialog', {
 
   onShowDialog: function() {
     this.resizeToScreen();
+    this.center();
   },
 
   onRender: function() {
@@ -100,8 +103,9 @@ Ext.define('JefBox.BaseDialog', {
     }
   },
 
-  updateAutoShow: function(autoShow) {
-    if (autoShow) {
+  initialize: function(autoShow) {
+    this.callParent();
+    if (this.getAutoShow()) {
       this.show();
     }
   },

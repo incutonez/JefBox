@@ -35,10 +35,10 @@ Ext.define('JefBox.Sockets', {
     }
   },
 
-  off: function(event, handler) {
+  off: function(event, handler, scope) {
     const connection = this.getConnection();
     if (connection) {
-      connection.off(event, handler);
+      connection.off(event, Ext.bind(handler, scope || this));
     }
   },
 
@@ -51,51 +51,61 @@ Ext.define('JefBox.Sockets', {
 
   setUpStoreListeners: function() {
     const me = this;
-    const users = JefBox.store.Users;
-    const teams = JefBox.store.Teams;
-    const games = JefBox.store.Games;
-    const uploads = JefBox.store.Uploads;
-    me.off('userStatusChange');
-    me.off('updatedTeams');
-    me.off('updatedUsers');
-    me.off('updatedGames');
-    me.off('updatedUploads');
     me.on('connect', function() {
       me.emit('setUser', UserProfile.getData());
+      // Unhook the previous events
+      me.off('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
+      me.off('updatedTeams', me.onUpdatedTeams);
+      me.off('updatedUsers', me.onUpdatedUsers);
+      me.off('userStatusChange', me.onUserStatusChanged);
+      me.off('updatedGames', me.onUpdatedGames);
+      me.off('updatedUploads', me.onUpdatedUploads);
+      me.on('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
+      me.on('updatedTeams', me.onUpdatedTeams);
+      me.on('updatedUsers', me.onUpdatedUsers);
+      me.on('userStatusChange', me.onUserStatusChanged);
+      me.on('updatedGames', me.onUpdatedGames);
+      me.on('updatedUploads', me.onUpdatedUploads);
     });
-    me.on('updatedUsers' + UserProfile.getId(), function() {
-      UserProfile.load({
-        callback: function() {
-          // Need to set a global UserProfile VM property, so we can use in other views
-          const appVM = Ext.getApplication().getMainView().getViewModel();
-          appVM.set('userProfile', UserProfile);
-        }
-      });
-    });
-    me.on('updatedTeams', function() {
-      teams.load();
-      users.load();
-      games.load();
-    });
-    me.on('updatedUsers', function() {
-      users.load();
-      teams.load();
-    });
-    me.on('userStatusChange', function() {
-      users.load();
-      games.load();
-      if (!teams.isLoaded()) {
-        teams.load();
+  },
+
+  onUpdatedUploads: function() {
+    JefBox.store.Uploads.load();
+  },
+
+  onUpdatedGames: function() {
+    JefBox.store.Games.load();
+  },
+
+  onUpdatedTeams: function() {
+    JefBox.store.Teams.load();
+    JefBox.store.Users.load();
+    JefBox.store.Games.load();
+  },
+
+  onUpdatedUser: function() {
+    UserProfile.load({
+      callback: function() {
+        // Need to set a global UserProfile VM property, so we can use in other views
+        const appVM = Ext.getApplication().getMainView().getViewModel();
+        appVM.set('userProfile', UserProfile);
       }
-      if (!uploads.isLoaded()) {
-        uploads.load();
-      }
     });
-    me.on('updatedGames', function() {
-      games.load();
-    });
-    me.on('updatedUploads', function() {
-      uploads.load();
-    });
+  },
+
+  onUpdatedUsers: function() {
+    JefBox.store.Users.load();
+    JefBox.store.Teams.load();
+  },
+
+  onUserStatusChanged: function() {
+    JefBox.store.Users.load();
+    JefBox.store.Games.load();
+    if (!JefBox.store.Teams.isLoaded()) {
+      JefBox.store.Teams.load();
+    }
+    if (!JefBox.store.Uploads.isLoaded()) {
+      JefBox.store.Uploads.load();
+    }
   }
 });

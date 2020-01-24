@@ -1,2 +1,0 @@
-- Add routing for phone view
-- Fix issue with image viewer still not opening properly

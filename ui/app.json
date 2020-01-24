@@ -12,7 +12,7 @@
   "builds": {
     "desktop": {
       "toolkit": "modern",
-      "theme": "theme-material",
+      "theme": "theme-neptune",
       "sass": {
         "generated": {
           "var": "${build.id}/sass/save.scss",
@@ -22,7 +22,7 @@
     },
     "phone": {
       "toolkit": "modern",
-      "theme": "theme-material",
+      "theme": "theme-neptune",
       "sass": {
         "generated": {
           "var": "${build.id}/sass/save.scss",

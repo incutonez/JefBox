@@ -5,6 +5,7 @@ Ext.define('JefBox.Icons', {
   ],
 
   ACTIONS: 'x-fa fa-tools',
+  ANNOUNCE: 'x-fa fa-bullhorn',
   ARROW_LEFT: 'x-fa fa-arrow-left',
   ARROW_RIGHT: 'x-fa fa-arrow-right',
   CHECKMARK: 'x-fa fa-check',

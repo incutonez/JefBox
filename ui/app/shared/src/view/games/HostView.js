@@ -195,7 +195,6 @@ Ext.define('JefBox.view.games.HostView', {
       title: 'Standings',
       xtype: 'grid',
       grouped: true,
-      // TODOJEF: Make better
       groupHeader: {
         tpl: Ext.create('Ext.XTemplate', '{[this.getMarkup(values)]}', {
           getMarkup: function(values) {
@@ -212,6 +211,18 @@ Ext.define('JefBox.view.games.HostView', {
       },
       bind: {
         store: '{viewRecord.Score}'
+      },
+      titleBar: {
+        items: [{
+          xtype: 'button',
+          align: 'right',
+          text: 'Announce Winner',
+          iconCls: Icons.ANNOUNCE,
+          handler: 'onClickAnnounceWinner',
+          bind: {
+            disabled: '{viewRecord.RoundItems.last !== currentQuestion}'
+          }
+        }]
       },
       columns: [{
         text: 'Round',

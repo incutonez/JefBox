@@ -19,17 +19,15 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       type: 'vbox'
     },
     tools: [{
-      xtype: 'button',
+      type: 'prev',
       tooltip: 'Previous Question',
-      iconCls: Icons.ARROW_LEFT,
       handler: 'onClickPreviousQuestionBtn',
       bind: {
         disabled: '{viewRecord.RoundItems.first === currentQuestion}'
       }
     }, {
-      xtype: 'button',
+      type: 'next',
       tooltip: 'Next Question',
-      iconCls: Icons.ARROW_RIGHT,
       handler: 'onClickNextQuestionBtn',
       bind: {
         disabled: '{viewRecord.RoundItems.last === currentQuestion}'

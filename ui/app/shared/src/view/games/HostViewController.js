@@ -7,12 +7,11 @@ Ext.define('JefBox.view.games.HostViewController', {
 
   // TODOJEF: Issue with this... it gets hit twice, but it doesn't get hit twice when loading the edit
   constructor: function(config) {
-    const routes = {};
+    const routes = config.routes = {};
     routes[Schemas.Games.CONNECT_PATH_UI] = {
       action: 'onRouteHostView',
       lazy: true
     };
-    config.routes = routes;
     this.callParent(arguments);
   },
 
@@ -61,6 +60,10 @@ Ext.define('JefBox.view.games.HostViewController', {
         }
       });
     }
+  },
+
+  // TODO: https://www.npmjs.com/package/canvas-confetti
+  onClickAnnounceWinner: function() {
   },
 
   onMarkRoundItemRow: function(grid, info) {
@@ -118,9 +121,7 @@ Ext.define('JefBox.view.games.HostViewController', {
   onClickSubmitAnswers: function() {
     const gameRecord = this.getViewRecord();
     if (gameRecord) {
-      gameRecord.markAnswers(function(successful, response) {
-        console.log(successful);
-      });
+      gameRecord.markAnswers();
     }
   },
 
