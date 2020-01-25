@@ -9,5 +9,7 @@ Ext.define('JefBox.Styles', {
   COLOR_FAILURE: 'jefbox-color-failure',
   COLOR_SUCCESS: 'jefbox-color-success',
   ELEMENT_HIDDEN: 'jefbox-element-hidden',
-  ELEMENT_INVISIBLE: 'jefbox-element-invisible'
+  ELEMENT_INVISIBLE: 'jefbox-element-invisible',
+  INNER_ELEMENT_FULL: 'jefbox-inner-element-full',
+  MEDIA_TAG: 'jefbox-media-tag'
 });

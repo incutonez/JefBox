@@ -91,7 +91,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     type: 'vbox'
   },
   bind: {
-    title: 'Round: {currentQuestion.RoundName || currentQuestion.Round}, Question: {currentQuestion.Order}',
+    title: 'Round: {currentQuestion.Round}, Question: {currentQuestion.Order}',
     loading: '{loadingMask}'
   },
   items: [{
@@ -111,9 +111,6 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     flex: 1,
     maxWidth: 400,
     reference: 'choicesGrid',
-    selectable: {
-      mode: 'SINGLE'
-    },
     bind: {
       store: '{currentQuestion.Choices}',
       hidden: '{!isMultipleChoice}',

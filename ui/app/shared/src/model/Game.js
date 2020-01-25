@@ -29,7 +29,10 @@ Ext.define('JefBox.model.Game', {
     storeConfig: {
       remoteSort: false,
       remoteFilter: false,
-      groupField: 'Round',
+      grouper: {
+        property: 'Round',
+        sortProperty: 'RoundIndex'
+      },
       sorters: [{
         property: 'Order',
         direction: 'ASC'

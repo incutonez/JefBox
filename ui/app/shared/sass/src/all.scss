@@ -32,8 +32,9 @@
   visibility: hidden !important;;
 }
 
-.jefbox-media-viewer .x-innerhtml {
+.jefbox-inner-element-full .x-innerhtml {
   height: 100%;
+  width: 100%;
 }
 
 .jefbox-media-tag {
@@ -41,4 +42,5 @@
   height: 100%;
   object-fit: contain;
   display: block;
+  border: none;
 }

@@ -57,7 +57,6 @@ Ext.define('JefBox.BaseDialog', {
 
   onShowDialog: function() {
     this.resizeToScreen();
-    this.center();
   },
 
   onRender: function() {

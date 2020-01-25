@@ -70,7 +70,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
         type: 'vbox'
       },
       items: [{
-        xtype: 'numberfield',
+        xtype: 'textfield',
         label: 'Round',
         minValue: 1,
         required: true,

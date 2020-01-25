@@ -36,7 +36,17 @@ Ext.define('JefBox.YouTubeAudioButton', {
   updateVideoId: function(videoId) {
     let src = '';
     if (videoId) {
-      src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+      let extraConfig = {
+        enablejsapi: 1
+      };
+      if (Ext.isObject(videoId)) {
+        const temp = videoId.videoId;
+        delete videoId.videoId;
+        Ext.Object.merge(extraConfig, videoId);
+        videoId = temp;
+      }
+      extraConfig = Ext.Object.toQueryString(extraConfig);
+      src = `https://www.youtube.com/embed/${videoId}?${extraConfig}`;
     }
     this.iframe.dom.src = src;
   },

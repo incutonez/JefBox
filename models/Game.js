@@ -132,7 +132,7 @@ module.exports = (conn, types) => {
             const groupName = group && group.Name;
             if (answer.IsCorrect) {
               standings.push({
-                RoundNumber: answer.RoundItemId,
+                Round: roundItem.Round,
                 QuestionNumber: roundItem.Order,
                 Points: roundItem.Points,
                 GroupId: groupId,

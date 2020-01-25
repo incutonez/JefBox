@@ -23,129 +23,122 @@ Ext.define('JefBox.view.games.EditView', {
     type: 'gamesEditView'
   },
 
-  title: 'Games',
   isCrudDialog: true,
+  bodyPadding: 0,
+  bind: {
+    title: 'Game: {viewRecord.Name}'
+  },
   items: [{
-    xtype: 'tabpanel',
-    tabBarPosition: 'left',
-    tabRotation: 'none',
-    defaults: {
-      tab: {
-        height: 50,
-        width: 50,
-        flex: null
-      }
-    },
-    tabBar: {
-      layout: {
-        pack: 'start'
-      }
+    xtype: 'container',
+    layout: {
+      type: 'vbox'
     },
     items: [{
-      iconCls: Icons.INFO,
-      bodyPadding: '0 0 0 10',
+      xtype: 'container',
+      margin: '0 0 0 10',
       layout: {
-        type: 'vbox'
+        type: 'hbox'
       },
       items: [{
-        xtype: 'container',
-        layout: {
-          type: 'hbox'
-        },
-        items: [{
-          xtype: 'textfield',
-          label: 'Name',
-          required: true,
-          margin: '0 10 0 0',
-          bind: {
-            value: '{viewRecord.Name}'
-          }
-        }, {
-          xtype: 'enumComboBox',
-          label: 'Type',
-          store: Enums.GameTypes,
-          margin: '0 10 0 0',
-          bind: {
-            value: '{viewRecord.Type}'
-          }
-        }, {
-          xtype: 'textfield',
-          label: 'Room',
-          bind: {
-            value: '{viewRecord.Room}'
-          }
-        }, {
-          xtype: 'checkbox',
-          boxLabel: 'Teams',
-          bind: {
-            checked: '{viewRecord.AllowTeams}'
-          }
-        }]
-      }, {
-        xtype: 'grid',
-        title: 'Items',
-        flex: 1,
-        margin: '10 0 0 0',
-        grouped: true,
-        groupHeader: {
-          tpl: 'Round: {name}'
-        },
-        plugins: [{
-          type: 'gridrowdragdrop'
-        }],
+        xtype: 'textfield',
+        label: 'Name',
+        required: true,
+        margin: '0 10 0 0',
         bind: {
-          hidden: '{hideRoundItems}',
-          store: '{viewRecord.RoundItems}'
-        },
-        listeners: {
-          drop: 'onDropQuestionRecord'
-        },
-        titleBar: {
-          items: [{
-            xtype: 'button',
-            text: 'Round Item',
-            align: 'right',
-            iconCls: Icons.NEW,
-            handler: 'onClickAddQuestionBtn'
-          }]
-        },
-        columns: [{
-          text: 'Actions',
-          align: 'right',
-          width: 75,
-          cell: {
-            tools: [{
-              iconCls: Icons.EDIT,
-              tooltip: 'Edit Round Item',
-              handler: 'onEditQuestionRow'
-            }, {
-              iconCls: Icons.DELETE,
-              tooltip: 'Delete Round Item',
-              handler: 'onDeleteQuestionRow'
-            }]
-          }
-        }, {
-          text: 'Order',
-          dataIndex: 'Order'
-        }, {
-          text: 'Type',
-          dataIndex: 'Type',
-          width: 120,
-          renderer: function(value) {
-            return Enums.RoundItemTypes.getDisplayValue(value);
-          }
-        }, {
-          text: 'Question',
-          dataIndex: 'Question',
-          flex: 1
-        }, {
-          text: 'Points',
-          dataIndex: 'Points'
-        }]
+          value: '{viewRecord.Name}'
+        }
+      }, {
+        xtype: 'enumComboBox',
+        label: 'Type',
+        store: Enums.GameTypes,
+        margin: '0 10 0 0',
+        bind: {
+          value: '{viewRecord.Type}'
+        }
+      }, {
+        xtype: 'textfield',
+        label: 'Room',
+        margin: '0 10 0 0',
+        bind: {
+          value: '{viewRecord.Room}'
+        }
+      }, {
+        xtype: 'checkbox',
+        label: 'Teams',
+        labelAlign: 'top',
+        bind: {
+          checked: '{viewRecord.AllowTeams}'
+        }
       }]
     }, {
-      xtype: 'teamsSelectView',
-      iconCls: Icons.TEAMS
+      xtype: 'grid',
+      title: 'Rounds',
+      flex: 1,
+      margin: '10 0 0 0',
+      grouped: true,
+      reference: 'roundsGrid',
+      groupHeader: {
+        tpl: 'Round: {name}',
+        tools: {
+          edit: {
+            zone: 'tail',
+            tooltip: 'Edit Order',
+            handler: 'onClickEditRoundOrder'
+          }
+        }
+      },
+      plugins: [{
+        type: 'gridrowdragdrop'
+      }],
+      bind: {
+        hidden: '{hideRoundItems}',
+        store: '{viewRecord.RoundItems}'
+      },
+      listeners: {
+        drop: 'onDropQuestionRecord'
+      },
+      titleBar: {
+        items: [{
+          xtype: 'button',
+          text: 'Round Item',
+          align: 'right',
+          iconCls: Icons.NEW,
+          handler: 'onClickAddQuestionBtn'
+        }]
+      },
+      columns: [{
+        text: 'Actions',
+        align: 'right',
+        width: 75,
+        cell: {
+          tools: [{
+            iconCls: Icons.EDIT,
+            tooltip: 'Edit Round Item',
+            handler: 'onEditQuestionRow'
+          }, {
+            iconCls: Icons.DELETE,
+            tooltip: 'Delete Round Item',
+            handler: 'onDeleteQuestionRow'
+          }]
+        }
+      }, {
+        text: 'Order',
+        dataIndex: 'Order'
+      }, {
+        text: 'Type',
+        dataIndex: 'Type',
+        width: 120,
+        renderer: function(value) {
+          return Enums.RoundItemTypes.getDisplayValue(value);
+        }
+      }, {
+        text: 'Question',
+        dataIndex: 'Question',
+        flex: 1
+      }, {
+        text: 'Points',
+        dataIndex: 'Points'
+      }]
     }]
   }]
 });

@@ -19,13 +19,14 @@ Ext.define('JefBox.model.game.RoundItem', {
     }]
   }, {
     name: 'Round',
-    type: 'int',
+    type: 'string',
     validators: [{
       type: 'presence'
     }]
   }, {
-    name: 'RoundName',
-    type: 'string'
+    name: 'RoundIndex',
+    type: 'int',
+    allowNull: true
   }, {
     name: 'Order',
     type: 'int',

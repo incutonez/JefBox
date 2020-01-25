@@ -26,11 +26,6 @@ Ext.define('JefBox.view.uploads.MainView', {
     }
   },
 
-  selectable: {
-    cells: true,
-    rows: false
-  },
-
   getPluginsConfig: Ext.emptyFn,
 
   getActionsColumnConfig: function() {

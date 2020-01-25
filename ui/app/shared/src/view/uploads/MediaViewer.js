@@ -15,13 +15,13 @@ Ext.define('JefBox.view.uploads.MediaViewer', {
         const imageUrl = get('imageUrl');
         const videoId = get('videoId');
         if (uploadId) {
-          return `<img class="jefbox-media-tag" src="api/uploads/${uploadId}" />`;
+          return `<img class="${Styles.MEDIA_TAG}" src="api/uploads/${uploadId}" />`;
         }
         else if (videoId) {
-          return `<iframe style="height: 100%; max-width: 100%;" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" />`;
+          return `<iframe class="${Styles.MEDIA_TAG}" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" />`;
         }
         else if (imageUrl) {
-          return `<img class="jefbox-media-tag" src="${imageUrl}" />`;
+          return `<img class="${Styles.MEDIA_TAG}" src="${imageUrl}" />`;
         }
       }
     }
@@ -32,7 +32,7 @@ Ext.define('JefBox.view.uploads.MediaViewer', {
   minWidth: 0,
   bodyPadding: 0,
   layout: 'auto',
-  cls: 'jefbox-media-viewer',
+  cls: Styles.INNER_ELEMENT_FULL,
   bind: {
     html: '{mediaMarkup}'
   }

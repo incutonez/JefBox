@@ -24,20 +24,11 @@ Ext.define('JefBox.view.games.HostView', {
           message: 'Loading...'
         } : false;
       },
-      groupHeaderTpl: function(get) {
-        return get('entityTextSingular') + ' {name} ' + get('standingsSum');
-      },
       entityTextSingular: function(get) {
         return get('viewRecord.AllowTeams') ? 'Team' : 'User';
       },
       entityText: function(get) {
         return get('entityTextSingular') + 's';
-      },
-      standingsSum: function(get) {
-        // This count is mainly here to trigger the binding instead of doing deep binding
-        const count = get('viewRecord.Score.count');
-        const scoreStore = get('viewRecord.Score');
-        return scoreStore && scoreStore.sum('Points', true);
       },
       currentQuestion: {
         bind: {
@@ -226,7 +217,7 @@ Ext.define('JefBox.view.games.HostView', {
       },
       columns: [{
         text: 'Round',
-        dataIndex: 'RoundNumber'
+        dataIndex: 'Round'
       }, {
         text: 'Question',
         dataIndex: 'QuestionNumber'

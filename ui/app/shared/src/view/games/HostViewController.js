@@ -2,7 +2,9 @@ Ext.define('JefBox.view.games.HostViewController', {
   extend: 'Ext.app.ViewController',
   alias: 'controller.gamesHostView',
   requires: [
-    'JefBox.view.uploads.MediaViewer'
+    'JefBox.view.uploads.MediaViewer',
+    'JefBox.view.games.WinnerView',
+    'JefBox.view.games.TieView'
   ],
 
   // TODOJEF: Issue with this... it gets hit twice, but it doesn't get hit twice when loading the edit
@@ -62,41 +64,53 @@ Ext.define('JefBox.view.games.HostViewController', {
     }
   },
 
-  getRandomHex: function() {
-    return '#' + (16777216 + Math.floor(Math.random() * 16777216)).toString(16).slice(-6);
-  },
-
-
-  // https://www.youtube.com/watch?v=1Bix44C1EzY
-  generateConfetti: function(x, y) {
-    const spread = 50;
-    const zIndex = 999999;
-    const particles = 20;
-    const ticks = 300;
-    const me = this;
-    // launch a few confetti from the left edge
-    confetti({
-      particleCount: 50,
-      angle: Math.floor(Math.random() * 120),
-      spread: Math.random() * 100,
-      zIndex: zIndex,
-      ticks: ticks,
-      colors: [me.getRandomHex(), me.getRandomHex(), me.getRandomHex()],
-      origin: {
-        x: x,
-        y: y
-      }
-    });
-  },
-
-  // TODO: https://www.npmjs.com/package/canvas-confetti
   onClickAnnounceWinner: function() {
-    const taskRunner = Ext.create('Ext.util.TaskRunner');
     const me = this;
-    taskRunner.start({
-      interval: 100,
-      run: function() {
-        me.generateConfetti(Math.random(), Math.random());
+    const viewModel = me.getViewModel();
+    const standingsStore = viewModel && viewModel.get('viewRecord.Score');
+    const groups = standingsStore && standingsStore.getGroups();
+    if (groups) {
+      let tiedGroups = [];
+      let highestGroup = {};
+      groups.each(function(group) {
+        const groupPoints = group.sum('Points');
+        if (!highestGroup.points || highestGroup.points < groupPoints) {
+          highestGroup = {
+            points: groupPoints,
+            group: group.getGroupKey()
+          };
+          tiedGroups = [group];
+        }
+        else if (highestGroup.points === groupPoints) {
+          tiedGroups.push(group);
+        }
+      });
+      if (tiedGroups.length > 1) {
+        Ext.create('JefBox.view.games.TieView', {
+          viewModel: {
+            data: {
+              winners: tiedGroups
+            }
+          },
+          listeners: {
+            selectedWinner: function(winner) {
+              me.showWinnerView(winner);
+            }
+          }
+        });
+      }
+      else {
+        me.showWinnerView(highestGroup.group);
+      }
+    }
+  },
+
+  showWinnerView: function(winner) {
+    Ext.create('JefBox.view.games.WinnerView', {
+      viewModel: {
+        data: {
+          winnerName: winner
+        }
       }
     });
   },
@@ -113,6 +127,7 @@ Ext.define('JefBox.view.games.HostViewController', {
     const currentQuestion = this.getCurrentQuestionRecord();
     if (currentQuestion) {
       Ext.create('JefBox.view.uploads.MediaViewer', {
+        maximized: true,
         viewModel: {
           data: {
             uploadId: currentQuestion.get('UploadId'),

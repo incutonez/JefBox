@@ -1,5 +1,8 @@
 Ext.define('JefBox.overrides.grid.Grid', {
   override: 'Ext.grid.Grid',
+  selectable: {
+    mode: 'SINGLE'
+  },
 
   constructor: function(config) {
     const me = this;

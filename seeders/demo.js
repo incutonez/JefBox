@@ -88,7 +88,8 @@ module.exports = {
     }], {});
     queryInterface.bulkInsert('RoundItems', [{
       Type: 1,
-      Round: 1,
+      Round: 'Music',
+      RoundIndex: 0,
       Order: 1,
       Points: 12,
       Question: 'This is a text question?',
@@ -96,7 +97,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 2,
-      Round: 1,
+      Round: 'Music',
+      RoundIndex: 0,
       Order: 2,
       Points: -10,
       Question: 'This is a multiple choice question?',
@@ -104,7 +106,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 3,
-      Round: 1,
+      Round: 'Music',
+      RoundIndex: 0,
       Order: 3,
       Points: 122,
       Question: 'Who is this band?',
@@ -113,7 +116,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 4,
-      Round: 2,
+      Round: 'Blah',
+      RoundIndex: 1,
       Order: 1,
       Points: 12222,
       Question: 'What is this a picture of?',
@@ -121,7 +125,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 4,
-      Round: 2,
+      Round: 'Blah',
+      RoundIndex: 1,
       Order: 2,
       Points: 4,
       Question: 'What is this?',
@@ -130,7 +135,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 5,
-      Round: 2,
+      Round: 'Blah',
+      RoundIndex: 1,
       Order: 3,
       Points: 122222,
       Question: 'Who is in this video?',
@@ -139,7 +145,8 @@ module.exports = {
       GameId: 3
     }, {
       Type: 6,
-      Round: 2,
+      Round: 'Blah',
+      RoundIndex: 1,
       Order: 4,
       Points: 12,
       Question: 'Draw me Mulder',

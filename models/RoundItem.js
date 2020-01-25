@@ -13,10 +13,10 @@ module.exports = (conn, types) => {
       allowNull: false
     },
     Round: {
-      type: types.INTEGER
-    },
-    RoundName: {
       type: types.STRING
+    },
+    RoundIndex: {
+      type: types.INTEGER
     },
     Order: {
       type: types.INTEGER
