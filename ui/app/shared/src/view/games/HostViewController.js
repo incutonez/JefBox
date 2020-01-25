@@ -62,8 +62,43 @@ Ext.define('JefBox.view.games.HostViewController', {
     }
   },
 
+  getRandomHex: function() {
+    return '#' + (16777216 + Math.floor(Math.random() * 16777216)).toString(16).slice(-6);
+  },
+
+
+  // https://www.youtube.com/watch?v=1Bix44C1EzY
+  generateConfetti: function(x, y) {
+    const spread = 50;
+    const zIndex = 999999;
+    const particles = 20;
+    const ticks = 300;
+    const me = this;
+    // launch a few confetti from the left edge
+    confetti({
+      particleCount: 50,
+      angle: Math.floor(Math.random() * 120),
+      spread: Math.random() * 100,
+      zIndex: zIndex,
+      ticks: ticks,
+      colors: [me.getRandomHex(), me.getRandomHex(), me.getRandomHex()],
+      origin: {
+        x: x,
+        y: y
+      }
+    });
+  },
+
   // TODO: https://www.npmjs.com/package/canvas-confetti
   onClickAnnounceWinner: function() {
+    const taskRunner = Ext.create('Ext.util.TaskRunner');
+    const me = this;
+    taskRunner.start({
+      interval: 100,
+      run: function() {
+        me.generateConfetti(Math.random(), Math.random());
+      }
+    });
   },
 
   onMarkRoundItemRow: function(grid, info) {
