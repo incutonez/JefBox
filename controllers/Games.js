@@ -135,6 +135,17 @@ module.exports = (io) => {
   });
   router.get(GameSchema.ID_PATH, BaseCrudController.getById);
   router.put(GameSchema.ID_PATH, BaseCrudController.updateById);
+  router.put(GameSchema.ID_PATH + '/winner/:WinnerId', async (req, res) => {
+    const gameId = req.params.id;
+    await db.Game.update({
+      WinnerId: req.params.WinnerId
+    }, {
+      where: {
+        Id: gameId
+      }
+    });
+    res.sendStatus(204);
+  });
   router.delete(GameSchema.ID_PATH, BaseCrudController.deleteById);
   return router;
 };

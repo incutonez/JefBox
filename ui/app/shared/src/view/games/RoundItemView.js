@@ -12,9 +12,6 @@ Ext.define('JefBox.view.games.RoundItemView', {
       viewRecord: null
     },
     formulas: {
-      hideChoicesGrid: function(get) {
-        return get('viewRecord.Type') !== Enums.RoundItemTypes.MULTIPLE_CHOICE;
-      },
       hideMediaField: function(get) {
         const types = Enums.RoundItemTypes;
         return !Ext.Array.contains([types.AUDIO, types.IMAGE, types.VIDEO], get('viewRecord.Type'));
@@ -22,7 +19,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
     }
   },
 
-  width: 300,
+  width: 400,
   height: 600,
   title: 'Round Item',
   minimizable: false,
@@ -97,23 +94,35 @@ Ext.define('JefBox.view.games.RoundItemView', {
   }, {
     xtype: 'textfield',
     label: 'Answer',
-    required: true,
     bind: {
-      value: '{viewRecord.Answer}'
+      value: '{viewRecord.Answer}',
+      disabled: '{viewRecord.IsMultipleChoice}',
+      required: '{!viewRecord.IsMultipleChoice}'
+    }
+  }, {
+    xtype: 'checkbox',
+    boxLabel: 'Multiple Choice',
+    bind: {
+      checked: '{viewRecord.IsMultipleChoice}'
     }
   }, {
     xtype: 'grid',
     title: 'Choices',
     reference: 'choicesGrid',
     flex: 1,
+    sortable: false,
+    columnMenu: false,
+    itemConfig: {
+      viewModel: true
+    },
     plugins: [{
       type: 'gridrowdragdrop'
     }, {
-      type: 'rowedit',
-      id: 'rowEditingPlugin'
+      type: 'gridcellediting',
+      id: 'editingPlugin'
     }],
     bind: {
-      hidden: '{hideChoicesGrid}',
+      hidden: '{!viewRecord.IsMultipleChoice}',
       store: '{viewRecord.Choices}'
     },
     listeners: {
@@ -131,24 +140,35 @@ Ext.define('JefBox.view.games.RoundItemView', {
       }]
     },
     columns: [{
-      text: 'Actions',
-      align: 'right',
-      width: 75,
+      text: '',
+      width: 35,
+      minWidth: 35,
       cell: {
         tools: [{
-          tooltip: 'Edit Record',
-          handler: 'onClickEditChoiceRow',
-          iconCls: Icons.EDIT
-        }, {
           tooltip: 'Delete Record',
           handler: 'onClickDeleteChoiceRow',
           iconCls: Icons.DELETE
         }]
       }
     }, {
+      // TODO: get this to center the checkbox
+      text: 'Answer',
+      width: 70,
+      align: 'center',
+      cell: {
+        xtype: 'widgetcell',
+        widget: {
+          xtype: 'checkbox',
+          bind: {
+            checked: '{record.IsAnswer}'
+          }
+        }
+      }
+    }, {
       text: 'Order',
       dataIndex: 'Order',
-      width: 80
+      align: 'center',
+      width: 60
     }, {
       text: 'Text',
       dataIndex: 'Value',
@@ -285,24 +305,16 @@ Ext.define('JefBox.view.games.RoundItemView', {
     grid.store.remove(info.record);
   },
 
-  onClickEditChoiceRow: function(grid, info) {
-    const choicesGrid = this.lookup('choicesGrid');
-    const choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
-    if (choicesGridEditor) {
-      choicesGridEditor.startEdit(info.record);
-    }
-  },
-
   onClickNewChoiceBtn: function() {
     const viewRecord = this.getViewRecord();
     const choicesGrid = this.lookup('choicesGrid');
-    const choicesGridEditor = choicesGrid && choicesGrid.getPlugin('rowEditingPlugin');
+    const choicesGridEditor = choicesGrid && choicesGrid.getPlugin('editingPlugin');
     const store = viewRecord && viewRecord.getChoicesStore();
     if (store && choicesGridEditor) {
       const added = store.add({
         Order: store.getCount() + 1
       });
-      choicesGridEditor.startEdit(added[0]);
+      choicesGridEditor.startEdit(added[0], 3);
     }
   },
 

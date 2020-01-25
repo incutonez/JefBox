@@ -22,13 +22,10 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     },
     formulas: {
       hideAnswerField: function(get) {
-        return get('isMultipleChoice') || get('isDrawing');
+        return get('isDrawing') || get('currentQuestion.IsMultipleChoice');
       },
       isDrawing: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
-      },
-      isMultipleChoice: function(get) {
-        return get('currentQuestion.Type') === Enums.RoundItemTypes.MULTIPLE_CHOICE;
       },
       groupId: function(get) {
         let groupId;
@@ -85,8 +82,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
 
   defaultListenerScope: true,
   isCrudDialog: true,
-  height: '100%',
-  width: '100%',
+  minimizable: false,
+  maximizable: false,
+  maximized: true,
   layout: {
     type: 'vbox'
   },
@@ -113,7 +111,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     reference: 'choicesGrid',
     bind: {
       store: '{currentQuestion.Choices}',
-      hidden: '{!isMultipleChoice}',
+      hidden: '{!currentQuestion.IsMultipleChoice}',
       selection: '{selectedChoice}'
     },
     columns: [{
@@ -211,7 +209,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       else {
         let choice;
         let answer = viewModel.get('userAnswer');
-        if (viewModel.get('isMultipleChoice')) {
+        if (viewModel.get('currentQuestion.IsMultipleChoice')) {
           const selectedChoice = viewModel.get('selectedChoice');
           choice = selectedChoice && selectedChoice.getId();
         }

@@ -47,6 +47,19 @@ Ext.define('JefBox.model.BaseGame', {
     }
   },
 
+  setWinner: function(winnerId, cb) {
+    this.set('WinnerId', winnerId);
+    Ext.Ajax.request({
+      url: Routes.parseRoute(Schemas.Games.ID_PATH_UI + '/winner/:{WinnerId:num}', this),
+      method: 'PUT',
+      callback: function(options, successful, response) {
+        if (Ext.isFunction(cb)) {
+          cb(successful, response);
+        }
+      }
+    });
+  },
+
   getCurrentQuestionRecord: function() {
     const roundItemsStore = this.getRoundItemsStore();
     if (roundItemsStore) {

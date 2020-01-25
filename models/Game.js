@@ -27,6 +27,9 @@ module.exports = (conn, types) => {
     },
     AllowTeams: {
       type: types.BOOLEAN
+    },
+    WinnerId: {
+      type: types.INTEGER
     }
   }, {
     timestamps: true,

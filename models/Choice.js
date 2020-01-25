@@ -15,6 +15,10 @@ module.exports = (conn, types) => {
     Order: {
       type: types.INTEGER,
       allowNull: false
+    },
+    IsAnswer: {
+      type: types.BOOLEAN,
+      defaultValue: false
     }
   });
 

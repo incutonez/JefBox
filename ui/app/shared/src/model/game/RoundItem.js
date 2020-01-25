@@ -49,6 +49,9 @@ Ext.define('JefBox.model.game.RoundItem', {
     name: 'Answer',
     type: 'string'
   }, {
+    name: 'IsMultipleChoice',
+    type: 'boolean'
+  }, {
     name: 'Url',
     type: 'string'
   }, {

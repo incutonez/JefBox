@@ -19,6 +19,9 @@ Ext.define('JefBox.model.game.RoundItemChoice', {
     name: 'RoundItemId',
     type: 'int',
     allowNull: true
+  }, {
+    name: 'IsAnswer',
+    type: 'boolean'
   }],
 
   proxy: {

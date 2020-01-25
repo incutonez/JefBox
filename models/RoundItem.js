@@ -31,6 +31,9 @@ module.exports = (conn, types) => {
     Answer: {
       type: types.STRING
     },
+    IsMultipleChoice: {
+      type: types.BOOLEAN
+    },
     Url: {
       type: types.STRING
     },

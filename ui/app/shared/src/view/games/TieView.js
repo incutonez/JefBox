@@ -17,7 +17,8 @@ Ext.define('JefBox.view.games.TieView', {
         if (tiedGroups) {
           return tiedGroups.map(function(x) {
             return {
-              GroupName: x.getGroupKey()
+              GroupName: x.getGroupKey(),
+              Group: x
             };
           });
         }
@@ -26,7 +27,7 @@ Ext.define('JefBox.view.games.TieView', {
 
     stores: {
       winnersStore: {
-        fields: ['GroupName'],
+        fields: ['GroupName', 'Group'],
         data: '{winnersData}'
       }
     }
@@ -55,8 +56,7 @@ Ext.define('JefBox.view.games.TieView', {
 
   onClickSaveBtn: function() {
     const viewModel = this.getViewModel();
-    const winner = viewModel && viewModel.get('selectedGroup');
-    this.fireEvent('selectedWinner', winner && winner.get('GroupName'));
+    this.fireEvent('selectedWinner', viewModel && viewModel.get('selectedGroup.Group'));
     this.close();
   }
 });

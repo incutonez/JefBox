@@ -77,7 +77,7 @@ Ext.define('JefBox.view.games.HostViewController', {
         if (!highestGroup.points || highestGroup.points < groupPoints) {
           highestGroup = {
             points: groupPoints,
-            group: group.getGroupKey()
+            group: group
           };
           tiedGroups = [group];
         }
@@ -106,13 +106,21 @@ Ext.define('JefBox.view.games.HostViewController', {
   },
 
   showWinnerView: function(winner) {
-    Ext.create('JefBox.view.games.WinnerView', {
-      viewModel: {
-        data: {
-          winnerName: winner
-        }
-      }
-    });
+    const me = this;
+    const gameRecord = me.getViewRecord();
+    if (gameRecord) {
+      me.setViewLoading(true);
+      gameRecord.setWinner(winner.first().get('GroupId'), function(successful, response) {
+        me.setViewLoading(false);
+        Ext.create('JefBox.view.games.WinnerView', {
+          viewModel: {
+            data: {
+              winnerName: winner.getGroupKey()
+            }
+          }
+        });
+      });
+    }
   },
 
   onMarkRoundItemRow: function(grid, info) {

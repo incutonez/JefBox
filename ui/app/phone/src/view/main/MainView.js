@@ -16,8 +16,11 @@ Ext.define('JefBox.view.main.MainView', {
 
   fullscreen: true,
   layout: 'fit',
-  title: 'Welcome ' + UserProfile.get('UserName'),
+  bind: {
+    title: 'Welcome {userProfile.UserName}'
+  },
   tools: [{
+    // TODO: Can't turn this into a tool type because I can't use menu on it... would have to rework it
     xtype: 'button',
     iconCls: Icons.MENU,
     arrow: false,

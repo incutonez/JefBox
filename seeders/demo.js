@@ -1,3 +1,4 @@
+const RoundItemTypes = require('../enums/RoundItemTypes');
 module.exports = {
   up: (queryInterface, Sequelize) => {
     queryInterface.bulkInsert('Users', [{
@@ -87,7 +88,7 @@ module.exports = {
       OwnerId: 1
     }], {});
     queryInterface.bulkInsert('RoundItems', [{
-      Type: 1,
+      Type: RoundItemTypes.TEXT,
       Round: 'Music',
       RoundIndex: 0,
       Order: 1,
@@ -96,16 +97,17 @@ module.exports = {
       Answer: 'Yes',
       GameId: 3
     }, {
-      Type: 2,
+      Type: RoundItemTypes.TEXT,
       Round: 'Music',
       RoundIndex: 0,
       Order: 2,
       Points: -10,
       Question: 'This is a multiple choice question?',
+      IsMultipleChoice: true,
       Answer: 'Yes',
       GameId: 3
     }, {
-      Type: 3,
+      Type: RoundItemTypes.AUDIO,
       Round: 'Music',
       RoundIndex: 0,
       Order: 3,
@@ -115,7 +117,7 @@ module.exports = {
       Url: 'https://www.youtube.com/watch?v=fgT9zGkiLig',
       GameId: 3
     }, {
-      Type: 4,
+      Type: RoundItemTypes.IMAGE,
       Round: 'Blah',
       RoundIndex: 1,
       Order: 1,
@@ -124,7 +126,7 @@ module.exports = {
       Answer: 'Some dude',
       GameId: 3
     }, {
-      Type: 4,
+      Type: RoundItemTypes.IMAGE,
       Round: 'Blah',
       RoundIndex: 1,
       Order: 2,
@@ -134,7 +136,7 @@ module.exports = {
       Url: 'https://knpr.org/sites/default/files/public/styles/detail_small/public/images/story/a5tumbleweed.jpg?itok=bMd6sqn-',
       GameId: 3
     }, {
-      Type: 5,
+      Type: RoundItemTypes.VIDEO,
       Round: 'Blah',
       RoundIndex: 1,
       Order: 3,
@@ -144,7 +146,7 @@ module.exports = {
       Url: 'https://www.youtube.com/watch?v=seZMOTGCDag',
       GameId: 3
     }, {
-      Type: 6,
+      Type: RoundItemTypes.DRAWING,
       Round: 'Blah',
       RoundIndex: 1,
       Order: 4,
@@ -156,7 +158,8 @@ module.exports = {
     return queryInterface.bulkInsert('RoundItemChoices', [{
       Value: 'Choice 1',
       Order: 1,
-      RoundItemId: 2
+      RoundItemId: 2,
+      IsAnswer: true
     }, {
       Value: 'Choice 2',
       Order: 2,
@@ -164,7 +167,8 @@ module.exports = {
     }, {
       Value: 'Fucking Choice 3',
       Order: 3,
-      RoundItemId: 2
+      RoundItemId: 2,
+      IsAnswer: true
     }], {});
   },
 

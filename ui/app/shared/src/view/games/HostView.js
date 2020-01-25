@@ -51,6 +51,17 @@ Ext.define('JefBox.view.games.HostView', {
         const types = Enums.RoundItemTypes;
         return Ext.Array.contains([types.IMAGE, types.VIDEO], get('currentQuestion.Type'));
       }
+    },
+
+    stores: {
+      multipleAnswersStore: {
+        type: 'chained',
+        source: '{currentQuestion.Choices}',
+        filters: [{
+          property: 'IsAnswer',
+          value: true
+        }]
+      }
     }
   },
 

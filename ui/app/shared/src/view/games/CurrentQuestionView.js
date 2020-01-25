@@ -100,9 +100,21 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       xtype: 'displayfield',
       label: 'Answer',
       bind: {
-        hidden: '{!showAnswer}',
+        hidden: '{!showAnswer || currentQuestion.IsMultipleChoice}',
         value: '{currentQuestion.Answer}'
       }
+    }, {
+      xtype: 'grid',
+      flex: 1,
+      bind: {
+        hidden: '{!showAnswer || !currentQuestion.IsMultipleChoice}',
+        store: '{multipleAnswersStore}'
+      },
+      columns: [{
+        text: 'Answers',
+        flex: 1,
+        dataIndex: 'Value'
+      }]
     }]
   }, {
     xtype: 'grid',
