@@ -11,6 +11,10 @@ Ext.define('JefBox.view.games.EditViewController', {
       action: 'onRouteGameView',
       lazy: true
     };
+    routes['games/new'] = {
+      action: 'onRouteNewGameView',
+      lazy: true
+    };
     config.routes = routes;
     this.callParent(arguments);
   },
@@ -19,15 +23,25 @@ Ext.define('JefBox.view.games.EditViewController', {
     this.loadViewRecord(params.Id);
   },
 
+  onRouteNewGameView: function(params) {
+    this.processViewRecord(JefBox.model.Game.loadData());
+  },
+
+  processViewRecord: function(record) {
+    const viewModel = this.getViewModel();
+    if (viewModel) {
+      viewModel.set('viewRecord', record);
+      viewModel.notify();
+    }
+  },
+
   loadViewRecord: function(gameId) {
     const me = this;
-    const viewModel = me.getViewModel();
     me.setViewLoading(true);
     JefBox.model.Game.load(gameId, {
       callback: function(record, operation, successful) {
         if (successful) {
-          viewModel.set('viewRecord', record);
-          viewModel.notify();
+          me.processViewRecord(record);
         }
         me.setViewLoading(false);
       }

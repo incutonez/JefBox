@@ -53,7 +53,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
       }, {
         xtype: 'numberfield',
         label: 'Points',
-        minValue: -10,
+        minValue: -1000,
         required: true,
         bind: {
           value: '{viewRecord.Points}'

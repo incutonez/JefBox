@@ -158,14 +158,6 @@ Ext.define('JefBox.view.games.HostViewController', {
     this.toggleRoundItemAnswered(previousQuestion && previousQuestion.getId());
   },
 
-  onClickMarkAnswerCorrect: function(grid, info) {
-    info.record.set('IsCorrect', true);
-  },
-
-  onClickMarkAnswerIncorrect: function(grid, info) {
-    info.record.set('IsCorrect', false);
-  },
-
   onClickViewImage: function(grid, info) {
     Ext.create('JefBox.view.uploads.MediaViewer', {
       viewModel: {

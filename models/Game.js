@@ -137,7 +137,7 @@ module.exports = (conn, types) => {
               standings.push({
                 Round: roundItem.Round,
                 QuestionNumber: roundItem.Order,
-                Points: roundItem.Points,
+                Points: answer.Points,
                 GroupId: groupId,
                 GroupName: groupName
               });
@@ -148,6 +148,9 @@ module.exports = (conn, types) => {
             }
             answer.GroupName = groupName;
             answer.GroupId = groupId;
+            if (answer.Points === null) {
+              answer.Points = roundItem.Points;
+            }
           }
         }
       }

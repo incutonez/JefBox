@@ -91,6 +91,7 @@ Ext.define('JefBox.view.games.EditView', {
         type: 'gridrowdragdrop'
       }],
       bind: {
+        title: 'Rounds, Total Questions: {viewRecord.RoundItems.count}',
         hidden: '{hideRoundItems}',
         store: '{viewRecord.RoundItems}'
       },

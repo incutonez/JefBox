@@ -40,12 +40,18 @@ Ext.define('JefBox.view.games.HostView', {
           return gameRecord && gameRecord.getCurrentQuestionRecord();
         }
       },
+      allAnswersSubmitted: function(get) {
+        return get('currentQuestion.Answers.count') === get('viewRecord.Teams.count')
+      },
       // Don't show the Answers column until all Answers have been submitted
       hideAnswersColumn: function(get) {
-        return get('currentQuestion.Answers.count') !== get('viewRecord.Teams.count') || get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
+        return !get('allAnswersSubmitted') || get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
       isAudio: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.AUDIO;
+      },
+      isUploadType: function(get) {
+        return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
       isImageVideo: function(get) {
         const types = Enums.RoundItemTypes;

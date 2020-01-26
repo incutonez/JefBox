@@ -131,7 +131,10 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
         text: 'Answers',
         iconCls: Icons.SEND,
         align: 'right',
-        handler: 'onClickSubmitAnswers'
+        handler: 'onClickSubmitAnswers',
+        bind: {
+          disabled: '{!allAnswersSubmitted}'
+        }
       }]
     },
     itemConfig: {
@@ -139,22 +142,11 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     },
     columns: [{
       text: 'Actions',
+      bind: {
+        hidden: '{!isUploadType}'
+      },
       cell: {
         tools: [{
-          iconCls: Icons.CHECKMARK_ROUND,
-          tooltip: 'Mark Correct',
-          handler: 'onClickMarkAnswerCorrect',
-          bind: {
-            hidden: '{record.IsCorrect}'
-          }
-        }, {
-          iconCls: Icons.CHECKMARK_ROUND_SOLID,
-          tooltip: 'Mark Incorrect',
-          handler: 'onClickMarkAnswerIncorrect',
-          bind: {
-            hidden: '{!record.IsCorrect}'
-          }
-        }, {
           iconCls: Icons.VIEW,
           tooltip: 'View Image',
           handler: 'onClickViewImage',
@@ -162,6 +154,29 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
             hidden: '{!record.UploadId}'
           }
         }]
+      }
+    }, {
+      text: 'Is Correct',
+      cell: {
+        xtype: 'widgetcell',
+        widget: {
+          xtype: 'container',
+          layout: {
+            type: 'hbox'
+          },
+          items: [{
+            xtype: 'checkbox',
+            bind: {
+              checked: '{record.IsCorrect}'
+            }
+          }, {
+            xtype: 'numberfield',
+            bind: {
+              hidden: '{!record.IsCorrect}',
+              value: '{record.Points}'
+            }
+          }]
+        }
       }
     }, {
       flex: 1,

@@ -10,6 +10,10 @@ module.exports = (conn, types) => {
       type: types.BOOLEAN,
       defaultValue: false
     },
+    Points: {
+      type: types.INTEGER,
+      allowNull: true
+    },
     RoundItemId: {
       type: types.INTEGER,
       primaryKey: true

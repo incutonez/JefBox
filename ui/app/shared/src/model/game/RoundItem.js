@@ -92,7 +92,15 @@ Ext.define('JefBox.model.game.RoundItem', {
     model: 'JefBox.model.game.RoundItemChoice',
     associationKey: 'Choices',
     role: 'Choices',
-    getterName: 'getChoicesStore'
+    getterName: 'getChoicesStore',
+    storeConfig: {
+      remoteFilter: false,
+      remoteSort: false,
+      sorters: [{
+        property: 'Order',
+        direction: 'ASC'
+      }]
+    }
   }, {
     model: 'JefBox.model.game.RoundItemAnswer',
     associationKey: 'Answers',

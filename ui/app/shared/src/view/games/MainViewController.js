@@ -22,12 +22,21 @@ Ext.define('JefBox.view.games.MainViewController', {
       action: 'onRouteGameView',
       lazy: true
     };
+    routes['games/new'] = {
+      action: 'onRouteNewGameView',
+      lazy: true
+    };
     config.routes = routes;
     this.callParent(arguments);
   },
 
   showEditDialog: function(record) {
-    Routes.redirectTo(Routes.parseRoute(Schemas.Games.BASE_PATH_ID_UI, record));
+    if (record.phantom) {
+      Routes.redirectTo(Routes.parseRoute('games/new', record));
+    }
+    else {
+      Routes.redirectTo(Routes.parseRoute(Schemas.Games.BASE_PATH_ID_UI, record));
+    }
   },
 
   onRouteMainView: function() {
@@ -43,14 +52,11 @@ Ext.define('JefBox.view.games.MainViewController', {
   },
 
   onRouteGameView: function(params) {
-    if (!this.editView) {
-      this.editView = Ext.create(this.EDIT_VIEW, {
-        listeners: {
-          scope: this,
-          destroy: 'onDestroyGameView'
-        }
-      });
-    }
+    this.showEditGameView();
+  },
+
+  onRouteNewGameView: function(params) {
+    this.showEditGameView();
   },
 
   onRouteHostView: function(params) {
@@ -76,6 +82,21 @@ Ext.define('JefBox.view.games.MainViewController', {
 
   onDestroyHostView: function() {
     this.redirectTo(Routes.parseRoute(Schemas.Games.BASE_PATH_UI));
+  },
+
+  showEditGameView: function() {
+    const editView = this.editView;
+    if (editView) {
+      editView.toFront();
+    }
+    else {
+      this.editView = Ext.create(this.EDIT_VIEW, {
+        listeners: {
+          scope: this,
+          destroy: 'onDestroyGameView'
+        }
+      });
+    }
   },
 
   onClickStartGame: function(grid, info) {

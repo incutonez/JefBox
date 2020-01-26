@@ -108,25 +108,26 @@ module.exports = (io) => {
     const users = req.body.users;
     const roundItemId = req.body.RoundItemId;
     await db.RoundItemAnswer.update({
-      IsCorrect: false
+      IsCorrect: false,
+      Points: 0
     }, {
       where: {
         RoundItemId: roundItemId
       }
     });
     if (teams.length || users.length) {
-      await db.RoundItemAnswer.update({
-        IsCorrect: true
-      }, {
-        where: {
-          RoundItemId: roundItemId,
-          [db.Op.or]: [{
-            TeamId: teams
-          }, {
-            UserId: users
-          }]
-        }
-      });
+      for (let i = 0; i < teams.length; i++) {
+        const team = teams[i];
+        await db.RoundItemAnswer.update({
+          IsCorrect: true,
+          Points: team.Points
+        }, {
+          where: {
+            RoundItemId: roundItemId,
+            TeamId: team.Id
+          }
+        });
+      }
     }
     if (io && GameModel.updateEvent) {
       io.emit(`${GameModel.updateEvent}${gameId}`);

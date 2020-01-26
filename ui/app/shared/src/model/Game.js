@@ -53,6 +53,27 @@ Ext.define('JefBox.model.Game', {
     }
   }],
 
+  proxy: {
+    type: 'rest',
+    url: Schemas.Games.BASE_PATH,
+    writer: {
+      type: 'associationWriter',
+      writeAllFields: true,
+      allDataOptions: {
+        associated: {
+          RoundItems: {
+            Choices: true
+          }
+        },
+        critical: true
+      },
+      partialDataOptions: {
+        associated: true,
+        critical: true
+      }
+    }
+  },
+
   connectSocket: function(config) {
     const me = this;
     config = config || {};

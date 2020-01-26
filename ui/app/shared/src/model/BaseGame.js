@@ -28,23 +28,7 @@ Ext.define('JefBox.model.BaseGame', {
 
   proxy: {
     type: 'rest',
-    url: Schemas.Games.BASE_PATH,
-    writer: {
-      type: 'associationWriter',
-      writeAllFields: true,
-      allDataOptions: {
-        associated: {
-          RoundItems: {
-            Choices: true
-          }
-        },
-        critical: true
-      },
-      partialDataOptions: {
-        associated: true,
-        critical: true
-      }
-    }
+    url: Schemas.Games.BASE_PATH
   },
 
   setWinner: function(winnerId, cb) {
@@ -85,7 +69,10 @@ Ext.define('JefBox.model.BaseGame', {
         if (answer.get('IsCorrect')) {
           const teamId = answer.get('TeamId');
           if (!Ext.isEmpty(teamId)) {
-            teams.push(teamId);
+            teams.push({
+              Id: teamId,
+              Points: answer.get('Points')
+            });
           }
           users.push(answer.get('UserId'));
         }

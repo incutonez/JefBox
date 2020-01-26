@@ -1,1 +1,3 @@
 - Adding easier way of creating next question/pager
+- Add ability to give partial credit
+- When changing the Round name, we have to also update its RoundIndex
