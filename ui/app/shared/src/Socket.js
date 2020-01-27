@@ -49,6 +49,11 @@ Ext.define('JefBox.Sockets', {
     }
   },
 
+  // TODO: Inspect socket sleeping and reconnecting
+  // TODO: Add a time limit
+  // TODO: Answers are submitting while being typed
+  // TODO: Deal with long answers and how to display
+  // TODO: Answers are erasing when typing in... but second time works
   setUpStoreListeners: function() {
     const me = this;
     me.on('connect', function() {
@@ -77,10 +82,11 @@ Ext.define('JefBox.Sockets', {
     JefBox.store.Games.load();
   },
 
+  // TODO: Probably remove this
   onUpdatedTeams: function() {
     JefBox.store.Teams.load();
-    JefBox.store.Users.load();
-    JefBox.store.Games.load();
+    // JefBox.store.Users.load();
+    // JefBox.store.Games.load();
   },
 
   onUpdatedUser: function() {
@@ -93,14 +99,15 @@ Ext.define('JefBox.Sockets', {
     });
   },
 
+  // TODO: Optimize this
   onUpdatedUsers: function() {
     JefBox.store.Users.load();
-    JefBox.store.Teams.load();
+    // JefBox.store.Teams.load();
   },
 
   onUserStatusChanged: function() {
     JefBox.store.Users.load();
-    JefBox.store.Games.load();
+    // JefBox.store.Games.load();
     if (!JefBox.store.Teams.isLoaded()) {
       JefBox.store.Teams.load();
     }

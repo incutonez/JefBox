@@ -86,6 +86,10 @@
     {
       "path": "app.js",
       "bundle": true
+    },
+    {
+      "path": "node_modules/canvas-confetti/dist/confetti.browser.js",
+      "includeInBundle": true
     }
   ],
   "css": [
