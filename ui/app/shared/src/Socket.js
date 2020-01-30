@@ -10,7 +10,6 @@ Ext.define('JefBox.Sockets', {
     'sockets'
   ],
   requires: [
-    'JefBox.model.CurrentGame',
     'JefBox.store.Teams',
     'JefBox.store.Games',
     'JefBox.store.Users',
@@ -23,7 +22,9 @@ Ext.define('JefBox.Sockets', {
 
   constructor: function(config) {
     if (window.io) {
-      this.setConnection(io());
+      this.setConnection(io({
+        forceNew: true
+      }));
       this.setUpStoreListeners();
     }
   },
@@ -49,22 +50,11 @@ Ext.define('JefBox.Sockets', {
     }
   },
 
-  // TODO: Inspect socket sleeping and reconnecting
-  // TODO: Add a time limit
-  // TODO: Answers are submitting while being typed
-  // TODO: Deal with long answers and how to display
-  // TODO: Answers are erasing when typing in... but second time works
   setUpStoreListeners: function() {
     const me = this;
     me.on('connect', function() {
       me.emit('setUser', UserProfile.getData());
       // Unhook the previous events
-      me.off('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
-      me.off('updatedTeams', me.onUpdatedTeams);
-      me.off('updatedUsers', me.onUpdatedUsers);
-      me.off('userStatusChange', me.onUserStatusChanged);
-      me.off('updatedGames', me.onUpdatedGames);
-      me.off('updatedUploads', me.onUpdatedUploads);
       me.on('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
       me.on('updatedTeams', me.onUpdatedTeams);
       me.on('updatedUsers', me.onUpdatedUsers);
@@ -82,14 +72,12 @@ Ext.define('JefBox.Sockets', {
     JefBox.store.Games.load();
   },
 
-  // TODO: Probably remove this
   onUpdatedTeams: function() {
     JefBox.store.Teams.load();
-    // JefBox.store.Users.load();
-    // JefBox.store.Games.load();
   },
 
   onUpdatedUser: function() {
+    console.log('onUpdatedUser');
     UserProfile.load({
       callback: function() {
         // Need to set a global UserProfile VM property, so we can use in other views
@@ -99,20 +87,11 @@ Ext.define('JefBox.Sockets', {
     });
   },
 
-  // TODO: Optimize this
   onUpdatedUsers: function() {
     JefBox.store.Users.load();
-    // JefBox.store.Teams.load();
   },
 
   onUserStatusChanged: function() {
     JefBox.store.Users.load();
-    // JefBox.store.Games.load();
-    if (!JefBox.store.Teams.isLoaded()) {
-      JefBox.store.Teams.load();
-    }
-    if (!JefBox.store.Uploads.isLoaded()) {
-      JefBox.store.Uploads.load();
-    }
   }
 });

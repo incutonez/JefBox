@@ -44,6 +44,9 @@ module.exports = (io) => {
         }
       });
       await gameTeam.addUser(userId);
+      if (io && TeamModel.updateEvent) {
+        io.emit(TeamModel.updateEvent);
+      }
     }
     else {
       // Add the user to the game, if they're not already added

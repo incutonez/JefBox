@@ -9,28 +9,6 @@ module.exports = {
       CreateDate: new Date(),
       UpdateDate: new Date()
     }], {});
-    queryInterface.bulkInsert('Teams', [{
-      Name: 'Team 1',
-      Color: '#ff8040',
-      CreateDate: new Date(),
-      UpdateDate: new Date(),
-      UpdatedById: 1,
-      OwnerId: 1
-    }, {
-      Name: 'Team 2',
-      Color: '#ff8040',
-      CreateDate: new Date(),
-      UpdateDate: new Date(),
-      UpdatedById: 1,
-      OwnerId: 1
-    }, {
-      Name: 'Team 3',
-      Color: '#ff8040',
-      CreateDate: new Date(),
-      UpdateDate: new Date(),
-      UpdatedById: 1,
-      OwnerId: 1
-    }], {});
     queryInterface.bulkInsert('Games', [
       {
         'Id': 1,

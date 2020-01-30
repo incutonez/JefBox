@@ -67,13 +67,6 @@ Ext.define('JefBox.model.User', {
     }
   }],
 
-  hasOne: [{
-    model: 'JefBox.model.CurrentGame',
-    associationKey: 'CurrentGame',
-    role: 'CurrentGame',
-    getterName: 'getCurrentGameRecord'
-  }],
-
   hasMany: [{
     model: 'JefBox.model.BaseGame',
     associationKey: 'Games',

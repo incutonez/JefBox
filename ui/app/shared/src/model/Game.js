@@ -3,8 +3,7 @@ Ext.define('JefBox.model.Game', {
   requires: [
     'JefBox.model.Team',
     'JefBox.model.game.RoundItem',
-    'JefBox.model.game.Score',
-    'JefBox.model.CurrentGame'
+    'JefBox.model.game.Score'
   ],
 
   hasMany: [{
