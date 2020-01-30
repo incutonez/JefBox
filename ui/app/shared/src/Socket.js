@@ -52,15 +52,24 @@ Ext.define('JefBox.Sockets', {
 
   setUpStoreListeners: function() {
     const me = this;
+    let connected = false;
     me.on('connect', function() {
       me.emit('setUser', UserProfile.getData());
-      // Unhook the previous events
-      me.on('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
-      me.on('updatedTeams', me.onUpdatedTeams);
-      me.on('updatedUsers', me.onUpdatedUsers);
-      me.on('userStatusChange', me.onUserStatusChanged);
-      me.on('updatedGames', me.onUpdatedGames);
-      me.on('updatedUploads', me.onUpdatedUploads);
+      if (!JefBox.store.Games.isLoaded()) {
+        JefBox.store.Games.load();
+      }
+      if (!JefBox.store.Teams.isLoaded()) {
+        JefBox.store.Teams.load();
+      }
+      if (!connected) {
+        me.on('updatedUsers' + UserProfile.getId(), me.onUpdatedUser);
+        me.on('updatedTeams', me.onUpdatedTeams);
+        me.on('updatedUsers', me.onUpdatedUsers);
+        me.on('userStatusChange', me.onUserStatusChanged);
+        me.on('updatedGames', me.onUpdatedGames);
+        me.on('updatedUploads', me.onUpdatedUploads);
+        connected = true;
+      }
     });
   },
 
@@ -77,12 +86,13 @@ Ext.define('JefBox.Sockets', {
   },
 
   onUpdatedUser: function() {
-    console.log('onUpdatedUser');
+    // Need to set a global UserProfile VM property, so we can use in other views
+    const appVM = Ext.getApplication().getMainView().getViewModel();
     UserProfile.load({
       callback: function() {
-        // Need to set a global UserProfile VM property, so we can use in other views
-        const appVM = Ext.getApplication().getMainView().getViewModel();
-        appVM.set('userProfile', UserProfile);
+        if (appVM) {
+          appVM.set('userProfile', UserProfile);
+        }
       }
     });
   },

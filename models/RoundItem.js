@@ -15,6 +15,10 @@ module.exports = (conn, types) => {
     Round: {
       type: types.STRING
     },
+    TimeLimit: {
+      type: types.INTEGER,
+      allowNull: true
+    },
     RoundIndex: {
       type: types.INTEGER
     },

@@ -69,7 +69,6 @@ Ext.define('JefBox.view.games.RoundItemView', {
       items: [{
         xtype: 'textfield',
         label: 'Round',
-        minValue: 1,
         required: true,
         bind: {
           value: '{viewRecord.Round}'

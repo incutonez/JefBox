@@ -82,8 +82,8 @@ Ext.define('JefBox.view.games.EditView', {
         tools: {
           edit: {
             zone: 'tail',
-            tooltip: 'Edit Order',
-            handler: 'onClickEditRoundOrder'
+            tooltip: 'Edit Round',
+            handler: 'onClickEditRound'
           }
         }
       },

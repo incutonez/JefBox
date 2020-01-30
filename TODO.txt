@@ -1,10 +1,9 @@
 - Adding easier way of creating next question/pager
-- When changing the Round name, we have to also update its RoundIndex
 - Add training video
-- Add ability to bulk change round name
 - Inspect socket sleeping and reconnecting
 - Add a time limit
 - Answers are submitting while being typed
 - Deal with long answers and how to display
 - Answers are erasing when typing in... but second time works
 - Add ability to remove teams from lobby
+- Remove user from previous team if they rejoin game with a new team

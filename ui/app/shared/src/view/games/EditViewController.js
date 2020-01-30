@@ -52,6 +52,7 @@ Ext.define('JefBox.view.games.EditViewController', {
     const questionsStore = this.getRoundItemsStore();
     const lastRecord = questionsStore && questionsStore.last();
     if (questionsStore) {
+      questionsStore.suspendEvents();
       Ext.create('JefBox.view.games.RoundItemView', {
         viewModel: {
           data: {
@@ -63,7 +64,8 @@ Ext.define('JefBox.view.games.EditViewController', {
         },
         listeners: {
           scope: this,
-          clickSave: 'onClickSaveQuestionBtn'
+          clickSave: 'onClickSaveQuestionBtn',
+          destroy: 'onDestroyQuestionView'
         }
       });
     }
@@ -85,33 +87,19 @@ Ext.define('JefBox.view.games.EditViewController', {
     }
   },
 
-  onClickEditRoundOrder: function(grid, info) {
-    const group = info.group.data;
+  onDestroyQuestionView: function() {
+    const gameRecord = this.getViewRecord();
     const questionsStore = this.getRoundItemsStore();
-    const groups = questionsStore && questionsStore.getGroups();
-    const roundsGrid = this.lookup('roundsGrid');
-    if (group && groups && roundsGrid) {
-      Ext.Msg.prompt('Change Order', 'Current Order', function(buttonId, value) {
-        if (buttonId === 'ok') {
-          // We want to go 1 more, so we know this comes after the next item
-          value = value + 1;
-          group.each(function(record) {
-            record.set('RoundIndex', value);
-          });
-          // Trigger a sort, so our groupings update appropriately
-          questionsStore.sort();
-          /* We need to re-run through the store and set the proper index values... this is in case the user sets a
-           * higher number that's basically out of bounds */
-          groups.each(function(g) {
-            const roundIndex = groups.indexOf(g);
-            g.each(function(record) {
-              record.set('RoundIndex', roundIndex);
-            });
-          });
-        }
-      }, null, false, String(groups.indexOf(group)), {
-        xtype: 'numberfield'
-      });
+    if (questionsStore && gameRecord) {
+      questionsStore.resumeEvents();
+      gameRecord.reIndexGroups();
+    }
+  },
+
+  onClickEditRound: function(grid, info) {
+    const gameRecord = this.getViewRecord();
+    if (gameRecord) {
+      gameRecord.editRoundGroup(info.group.data);
     }
   },
 
@@ -204,7 +192,7 @@ Ext.define('JefBox.view.games.EditViewController', {
   },
 
   getRoundItemsStore: function() {
-    const viewRecord = this.getViewRecord();
-    return viewRecord && viewRecord.getRoundItemsStore();
+    const roundsGrid = this.lookup('roundsGrid');
+    return roundsGrid && roundsGrid.getStore();
   }
 });
