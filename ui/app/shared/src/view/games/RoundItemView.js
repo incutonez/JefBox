@@ -9,12 +9,17 @@ Ext.define('JefBox.view.games.RoundItemView', {
 
   viewModel: {
     data: {
-      viewRecord: null
+      viewRecord: null,
+      createAnotherQuestion: false
     },
     formulas: {
       hideMediaField: function(get) {
         const types = Enums.RoundItemTypes;
         return !Ext.Array.contains([types.AUDIO, types.IMAGE, types.VIDEO], get('viewRecord.Type'));
+      },
+      saveBtnDisabled: function(get) {
+        const isMultipleChoice = get('viewRecord.IsMultipleChoice');
+        return !get('viewRecord.valid') || isMultipleChoice && !get('viewRecord.Choices.count') || !isMultipleChoice && Ext.isEmpty(get('viewRecord.Answer'));
       }
     }
   },
@@ -31,6 +36,20 @@ Ext.define('JefBox.view.games.RoundItemView', {
   layout: {
     type: 'vbox'
   },
+  bbar: {
+    layout: {
+      type: 'hbox',
+      pack: 'end'
+    },
+    items: [{
+      xtype: 'checkbox',
+      label: 'Create Another',
+      align: 'right',
+      bind: {
+        checked: '{createAnotherQuestion}'
+      }
+    }]
+  },
   items: [{
     xtype: 'container',
     layout: {
@@ -44,11 +63,11 @@ Ext.define('JefBox.view.games.RoundItemView', {
         type: 'vbox'
       },
       items: [{
-        xtype: 'enumComboBox',
-        store: Enums.RoundItemTypes,
-        label: 'Type',
+        xtype: 'textfield',
+        label: 'Round',
+        required: true,
         bind: {
-          value: '{viewRecord.Type}'
+          value: '{viewRecord.Round}'
         }
       }, {
         xtype: 'numberfield',
@@ -57,6 +76,13 @@ Ext.define('JefBox.view.games.RoundItemView', {
         required: true,
         bind: {
           value: '{viewRecord.Points}'
+        }
+      }, {
+        xtype: 'enumComboBox',
+        store: Enums.RoundItemTypes,
+        label: 'Type',
+        bind: {
+          value: '{viewRecord.Type}'
         }
       }]
     }, {
@@ -67,19 +93,26 @@ Ext.define('JefBox.view.games.RoundItemView', {
         type: 'vbox'
       },
       items: [{
-        xtype: 'textfield',
-        label: 'Round',
-        required: true,
-        bind: {
-          value: '{viewRecord.Round}'
-        }
-      }, {
         xtype: 'numberfield',
         label: 'Order',
         minValue: 1,
         required: true,
         bind: {
           value: '{viewRecord.Order}'
+        }
+      }, {
+        xtype: 'numberfield',
+        label: 'Time Limit (in seconds)',
+        minValue: 0,
+        bind: {
+          value: '{viewRecord.TimeLimit}'
+        }
+      }, {
+        xtype: 'checkbox',
+        label: 'Multiple Choice',
+        labelAlign: 'top',
+        bind: {
+          checked: '{viewRecord.IsMultipleChoice}'
         }
       }]
     }]
@@ -97,12 +130,6 @@ Ext.define('JefBox.view.games.RoundItemView', {
       value: '{viewRecord.Answer}',
       disabled: '{viewRecord.IsMultipleChoice}',
       required: '{!viewRecord.IsMultipleChoice}'
-    }
-  }, {
-    xtype: 'checkbox',
-    boxLabel: 'Multiple Choice',
-    bind: {
-      checked: '{viewRecord.IsMultipleChoice}'
     }
   }, {
     xtype: 'grid',
@@ -279,13 +306,30 @@ Ext.define('JefBox.view.games.RoundItemView', {
   },
 
   onClickSaveBtn: function() {
-    const viewRecord = this.getViewRecord();
+    const me = this;
+    const viewModel = me.getViewModel();
+    const viewRecord = me.getViewRecord();
     if (viewRecord) {
       viewRecord.commit();
     }
-    this.clickedSave = true;
-    this.fireEvent('clickSave', viewRecord);
-    this.close();
+    me.clickedSave = true;
+    me.fireEvent('clickSave', viewRecord);
+    if (viewModel && viewModel.get('createAnotherQuestion')) {
+      this.createNewQuestion();
+      return;
+    }
+    me.close();
+  },
+
+  createNewQuestion: function() {
+    const viewModel = this.getViewModel();
+    const viewRecord = this.getViewRecord();
+    if (viewRecord) {
+      viewModel.set('viewRecord', JefBox.model.game.RoundItem.loadData({
+        Order: viewRecord.get('Order') + 1 || 1,
+        Round: viewRecord.get('Round') || 1
+      }));
+    }
   },
 
   onEditChoiceRow: function() {

@@ -83,6 +83,7 @@ Ext.define('JefBox.view.games.EditViewController', {
           previousRound = currentRound;
         }
         record.set('Order', previousOrder++);
+        record.commit();
       });
     }
   },
@@ -160,6 +161,7 @@ Ext.define('JefBox.view.games.EditViewController', {
     if (store) {
       store.remove(record);
     }
+    this.reorderQuestionsStore();
   },
 
   onClickAddQuestionBtn: function() {

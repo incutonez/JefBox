@@ -14,9 +14,6 @@ module.exports = (conn, types) => {
       type: types.STRING,
       allowNull: false
     },
-    Room: {
-      type: types.STRING
-    },
     Type: {
       type: types.INTEGER,
       allowNull: false

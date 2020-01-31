@@ -67,6 +67,11 @@ Ext.define('JefBox.model.game.RoundItem', {
     type: 'date',
     allowNull: true
   }, {
+    name: 'TimeLimit',
+    type: 'int',
+    defaultValue: 120,
+    allowNull: true
+  }, {
     name: 'TypeDisplay',
     type: 'string',
     depends: ['Type'],

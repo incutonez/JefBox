@@ -56,13 +56,6 @@ Ext.define('JefBox.view.games.EditView', {
           value: '{viewRecord.Type}'
         }
       }, {
-        xtype: 'textfield',
-        label: 'Room',
-        margin: '0 10 0 0',
-        bind: {
-          value: '{viewRecord.Room}'
-        }
-      }, {
         xtype: 'checkbox',
         label: 'Teams',
         labelAlign: 'top',
@@ -138,7 +131,13 @@ Ext.define('JefBox.view.games.EditView', {
         flex: 1
       }, {
         text: 'Points',
-        dataIndex: 'Points'
+        dataIndex: 'Points',
+        formatter: 'numberWithTwoDecimals'
+      }, {
+        text: 'Time Limit',
+        dataIndex: 'TimeLimit',
+        width: 160,
+        formatter: 'minutesSeconds'
       }]
     }]
   }]

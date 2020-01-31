@@ -140,6 +140,7 @@ Ext.define('JefBox.model.Game', {
             RoundIndex: roundIndex,
             Order: order + 1
           });
+          record.commit();
         });
         group.resumeEvents();
       });

@@ -34,5 +34,37 @@ Ext.define('Shared.overrides.util.Format', {
       });
     }
     return `<${tag}>` + list.join(`</${tag}>${comma}<${tag}>`) + `</${tag}>`;
+  },
+
+  integer: function(value) {
+    return Ext.util.Format.number(value, '0,000');
+  },
+
+  decimal: function(value) {
+    return Ext.util.Format.number(value, '0,000.00');
+  },
+
+  numberWithTwoDecimals: function(value) {
+    // No decimals, so return as integer
+    if (value % 1 === 0) {
+      return Ext.util.Format.integer(value);
+    }
+    return Ext.util.Format.decimal(value);
+  },
+
+  minutesSeconds: function(timeInSeconds) {
+    let display = '';
+    if (Ext.isEmpty(timeInSeconds)) {
+      return display;
+    }
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    if (minutes) {
+      display += minutes + ' mins ';
+    }
+    if (seconds) {
+      display += seconds + ' secs';
+    }
+    return display;
   }
 });

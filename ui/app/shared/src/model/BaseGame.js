@@ -15,9 +15,6 @@ Ext.define('JefBox.model.BaseGame', {
       type: 'presence'
     }]
   }, {
-    name: 'Room',
-    type: 'string'
-  }, {
     name: 'Status',
     type: 'int'
   }, {

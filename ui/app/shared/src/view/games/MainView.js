@@ -50,9 +50,6 @@ Ext.define('JefBox.view.games.MainView', {
       renderer: function(value) {
         return Enums.GameStatuses.getDisplayValue(value);
       }
-    }, {
-      text: 'Room',
-      dataIndex: 'Room'
     }]);
     return config;
   },
