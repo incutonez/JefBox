@@ -2,11 +2,15 @@ Desktop:
 - Add training video
 - Add ability to remove teams from lobby
 - When game is over, change the state to finished
+- Add ability to delete answers... this will have to fire an event to the team that submitted the answer, so they can reanswer
+- Add nuclear button, which submits empty answers for users that haven't submitted after the time limit
+- Implement time limit
 
 Phone:
 - Inspect socket sleeping and reconnecting
-- Implement time limit in phone version
 - Answers are submitting while being typed
-- Deal with long answers and how to display
 - Answers are erasing when typing in... but second time works
+-- I think I know why this is... because every time someone submits or the game updates, the phone version refreshes the game
+store... will need to think how the game store reloads for teams... make it more specific and listen for team only changes
+- Deal with long answers and how to display
 - Remove user from previous team if they rejoin game with a new team
