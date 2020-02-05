@@ -42,7 +42,8 @@ module.exports = (conn, types) => {
       type: types.STRING
     },
     AnswerDate: {
-      type: types.DATE
+      type: types.DATE,
+      allowNull: true
     }
   });
 

@@ -27,6 +27,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       isDrawing: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
+      // TODOJEF: How to get groupId?  Include in URL?
       groupId: function(get) {
         let groupId;
         const userId = get('userProfile.Id');

@@ -96,12 +96,9 @@ module.exports = (conn, types) => {
     });
   };
 
-  GameModel.prototype.toJSON = function() {
+  GameModel.prototype.getTeams = function(data) {
     const teams = [];
-    const data = Object.assign({}, this.get());
-    const standings = [];
     const gameTeams = data.GameTeams;
-    const roundItems = data.RoundItems;
     if (gameTeams) {
       for (let i = 0; i < gameTeams.length; i++) {
         const gameTeam = gameTeams[i];
@@ -116,9 +113,15 @@ module.exports = (conn, types) => {
       data.Teams = teams;
       delete data.GameTeams;
     }
+  };
+
+  GameModel.prototype.getScore = function(data, scoreOnly) {
+    const standings = [];
+    data = data || Object.assign({}, this.get());
+    const roundItems = data.RoundItems;
     if (roundItems) {
       // TODOJEF: Add support for user only games
-      const teamIds = teams.map(x => x.Id);
+      const teamIds = data.Teams.map(x => x.Id);
       for (let i = 0; i < roundItems.length; i++) {
         const roundItem = roundItems[i];
         const answers = roundItem.Answers;
@@ -128,7 +131,7 @@ module.exports = (conn, types) => {
           for (let j = 0; j < answers.length; j++) {
             const answer = answers[j].get();
             const groupId = answer.TeamId || answer.UserId;
-            const group = teams[teamIds.indexOf(groupId)];
+            const group = data.Teams[teamIds.indexOf(groupId)];
             const groupName = group && group.Name;
             if (answer.IsCorrect) {
               standings.push({
@@ -153,6 +156,12 @@ module.exports = (conn, types) => {
       }
     }
     data.Score = standings;
+  };
+
+  GameModel.prototype.getDetails = function() {
+    const data = Object.assign({}, this.get());
+    this.getTeams(data);
+    this.getScore(data);
     return data;
   };
 

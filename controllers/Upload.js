@@ -3,7 +3,6 @@ const router = express.Router();
 const formidable = require('formidable');
 const db = require('../models/index');
 const fs = require('fs');
-const url = require('url');
 const Model = db.Upload;
 const basePath = '/uploads';
 const baseIdPath = `${basePath}/:id`;
@@ -43,14 +42,13 @@ module.exports = (io) => {
   });
 
   router.get(baseIdPath, async (req, res) => {
-    const queryParams = url.parse(req.url, true).query;
     const record = await Model.findOne({
       where: {
         Id: req.params.id
       }
     });
     const img = Buffer.from(record.Data);
-    if (queryParams.base64) {
+    if (req.query.base64) {
       record.Data = img.toString('base64');
       return res.send(record);
     }

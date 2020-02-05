@@ -12,7 +12,107 @@ const Game = BaseCrudModel(GameModel);
 module.exports = (io) => {
   const BaseCrudController = require('./BaseCrud')(GameModel, io);
   router.get(GameSchema.BASE_PATH, BaseCrudController.getAll);
+
+  router.get(GameSchema.ID_PATH, async (req, res) => {
+    const gameId = req.params.id;
+    const game = await Game.getRecordById(gameId);
+    res.send(game.getDetails());
+  });
+
+  router.get(GameSchema.SCORE, async (req, res) => {
+    const gameId = req.params.id;
+    const game = await GameModel.findOne({
+      where: {
+        Id: gameId
+      },
+      include: [{
+        model: db.RoundItem,
+        as: 'RoundItems',
+        required: false,
+        include: [{
+          model: db.RoundItemChoice,
+          as: 'Choices'
+        }, {
+          model: db.RoundItemAnswer,
+          as: 'Answers',
+          where: {
+            IsCorrect: true
+          },
+          attributes: ['Points', 'GroupId']
+        }]
+      }]
+    });
+    const gameTeams = await game.getGameTeams({
+      include: [{
+        model: game.AllowTeams ? TeamModel : UserModel
+      }]
+    });
+    const groups = {};
+    // TODO: Add User support
+    for (let i = 0; i < gameTeams.length; i++) {
+      const gameTeam = gameTeams[i];
+      groups[gameTeam.Team.Id] = gameTeam.Team.Name;
+    }
+    let answers = [];
+    const roundItems = game.RoundItems;
+    if (roundItems) {
+      for (let i = 0; i < roundItems.length; i++) {
+        const roundItem = roundItems[i];
+        const roundName = roundItem.Round;
+        const roundAnswers = roundItem.Answers;
+        const questionNumber = roundItem.Order;
+        for (let j = 0; j < roundAnswers.length; j++) {
+          const answer = roundAnswers[j].get();
+          answer.Round = roundName;
+          answer.QuestionNumber = questionNumber;
+          answer.GroupName = groups[answer.GroupId];
+          answers.push(answer);
+        }
+      }
+    }
+    res.send(answers);
+  });
+
+  router.get(GameSchema.CURRENT_QUESTION, async (req, res) => {
+    const gameId = req.params.id;
+    const groupId = req.query.groupId;
+    const attributes = {};
+    const answerQuery = {
+      model: db.RoundItemAnswer,
+      as: 'Answers',
+      required: false
+    };
+    if (groupId) {
+      answerQuery.where = {
+        GroupId: groupId
+      };
+      // Don't include the answer, so users can't mistakenly see it
+      attributes.exclude = ['Answer'];
+    }
+    const game = await db.RoundItem.findOne({
+      where: {
+        [db.Op.and]: [{
+          GameId: gameId
+        }, {
+          AnswerDate: null
+        }]
+      },
+      attributes: attributes,
+      include: [{
+        model: db.RoundItemChoice,
+        as: 'Choices',
+        required: false
+      }, answerQuery],
+      order: [
+        ['RoundIndex', 'ASC'],
+        ['Order', 'ASC']
+      ]
+    });
+    res.send(game);
+  });
+
   router.post(GameSchema.BASE_PATH, BaseCrudController.createRecord);
+
   router.post(GameSchema.JOIN_PATH, async (req, res) => {
     const teamName = req.body.TeamName;
     let teamId = req.body.TeamId;
@@ -60,6 +160,7 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
+
   router.post(GameSchema.ADD_ANSWER_PATH, async (req, res) => {
     try {
       const gameId = req.params.id;
@@ -81,14 +182,15 @@ module.exports = (io) => {
       await roundItem.createAnswer(req.body);
       if (io && GameModel.updateEvent) {
         io.emit(`${GameModel.updateEvent}${gameId}`);
+        io.emit(`${GameModel.updateEvent}${gameId}Group${groupId}`);
       }
     }
     catch (e) {
-      // TODOJEF: HERE
       console.log(e);
     }
     res.sendStatus(204);
   });
+
   router.put(GameSchema.UPDATE_ROUND_ITEM_PATH, async (req, res) => {
     const gameId = req.params.id;
     const roundItem = await db.RoundItem.findOne({
@@ -105,6 +207,7 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
+
   router.post(GameSchema.ADD_WINNER_PATH, async (req, res) => {
     const gameId = req.params.id;
     const teams = req.body.teams;
@@ -137,8 +240,9 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
-  router.get(GameSchema.ID_PATH, BaseCrudController.getById);
+
   router.put(GameSchema.ID_PATH, BaseCrudController.updateById);
+
   router.put(GameSchema.ID_PATH + '/winner/:WinnerId', async (req, res) => {
     const gameId = req.params.id;
     await db.Game.update({
@@ -150,6 +254,8 @@ module.exports = (io) => {
     });
     res.sendStatus(204);
   });
+
   router.delete(GameSchema.ID_PATH, BaseCrudController.deleteById);
+
   return router;
 };

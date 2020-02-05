@@ -15,10 +15,12 @@ module.exports = {
   JOIN_PATH: `${idPath}/join`,
   JOIN_PATH_UI: `${idPathUI}/join`,
   CONNECT_PATH_UI: `${baseUrl}/:{Id:num}/connect`,
+  CURRENT_QUESTION: `${idPath}/currentRound`,
   ADD_ANSWER_PATH: `${idPath}/answers`,
   ADD_ANSWER_PATH_UI: `${idPathUI}/answers`,
   UPDATE_ROUND_ITEM_PATH: `${idPath}/roundItems/:roundItemId`,
   UPDATE_ROUND_ITEM_PATH_UI: `${idPathUI}/roundItems/:{RoundItemId:num}`,
   ADD_WINNER_PATH: `${idPath}/winner`,
-  ADD_WINNER_PATH_UI: `${idPathUI}/winner`
+  ADD_WINNER_PATH_UI: `${idPathUI}/winner`,
+  SCORE: `${idPath}/score`
 };

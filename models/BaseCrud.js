@@ -87,8 +87,8 @@ module.exports = (Model) => {
     const searchOptions = Object.assign({
       paranoid: await db.User.excludeDeleted(userId)
     }, Model.searchOptions);
-    if (Model.includeOptions) {
-      searchOptions.include = Model.includeOptions;
+    if (Model.includeAllOptions) {
+      searchOptions.include = Model.includeAllOptions;
     }
     return Model.findAll(searchOptions);
   }

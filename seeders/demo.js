@@ -1,6 +1,24 @@
+const db = require('../models/index');
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    queryInterface.bulkInsert('Users', [{
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('RoundItemChoices', {}, {
+      truncate: true,
+      restartIdentity: true
+    });
+    await queryInterface.bulkDelete('RoundItems', {}, {
+      truncate: true,
+      restartIdentity: true
+    });
+    await queryInterface.bulkDelete('Games', {}, {
+      truncate: true,
+      restartIdentity: true
+    });
+    await queryInterface.bulkDelete('Users', {}, {
+      truncate: true,
+      restartIdentity: true
+    });
+    await queryInterface.bulkInsert('Users', [{
+      Id: 1,
       UserName: 'jef',
       IsActive: 0,
       AccessLevel: 3,
@@ -9,11 +27,10 @@ module.exports = {
       CreateDate: new Date(),
       UpdateDate: new Date()
     }], {});
-    queryInterface.bulkInsert('Games', [
+    await queryInterface.bulkInsert('Games', [
       {
         'Id': 1,
         'Name': 'Jef\'s Amazing Game',
-        'Room': 666,
         'Type': 1,
         'Status': 0,
         'AllowTeams': 1,
@@ -23,7 +40,7 @@ module.exports = {
         'OwnerId': 1
       }
     ], {});
-    queryInterface.bulkInsert('RoundItems', [
+    await queryInterface.bulkInsert('RoundItems', [
       {
         'Id': 1,
         'Type': 1,
@@ -400,7 +417,7 @@ module.exports = {
         UploadId: null
       }
     ], {});
-    return queryInterface.bulkInsert('RoundItemChoices', [
+    await queryInterface.bulkInsert('RoundItemChoices', [
       {
         'Id': 1,
         'Value': 1993,
@@ -570,6 +587,7 @@ module.exports = {
         'RoundItemId': 24
       }
     ], {});
+    return Promise.resolve();
   },
 
   down: (queryInterface, Sequelize) => {
