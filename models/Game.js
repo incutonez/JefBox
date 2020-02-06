@@ -1,5 +1,4 @@
 const GameStatuses = require('../enums/GameStatuses');
-const RoundItemTypes = require('../enums/RoundItemTypes');
 module.exports = (conn, types) => {
   const GameModel = conn.define('Game', {
     Id: {
@@ -96,19 +95,27 @@ module.exports = (conn, types) => {
     });
   };
 
-  GameModel.prototype.getTeams = function(data) {
+  GameModel.prototype.getTeams = function(data, userId) {
     const teams = [];
     const gameTeams = data.GameTeams;
     if (gameTeams) {
       for (let i = 0; i < gameTeams.length; i++) {
         const gameTeam = gameTeams[i];
         const team = gameTeam.Team.get();
+        const teamUsers = gameTeam.Users;
         const users = [];
-        for (let j = 0; j < gameTeam.Users.length; j++) {
-          users.push(gameTeam.Users[j].get());
+        let containsUser = !userId;
+        for (let j = 0; j < teamUsers.length; j++) {
+          const user = teamUsers[j].get();
+          users.push(user);
+          if (!containsUser && user.Id === userId) {
+            containsUser = true;
+          }
         }
-        team.Users = users;
-        teams.push(team);
+        if (containsUser) {
+          team.Users = users;
+          teams.push(team);
+        }
       }
       data.Teams = teams;
       delete data.GameTeams;
@@ -168,21 +175,6 @@ module.exports = (conn, types) => {
   GameModel.includeOptions = [];
   GameModel.updateInclude = [];
   GameModel.updateEvent = 'updatedGames';
-
-  GameModel.prototype.getRoundItemById = async function(id) {
-    let roundItem;
-    const roundItems = await this.getRoundItems();
-    if (roundItems) {
-      for (let i = 0; i < roundItems.length; i++) {
-        const item = roundItems[i];
-        if (item.Id === id) {
-          roundItem = item;
-          break;
-        }
-      }
-    }
-    return roundItem;
-  };
 
   return GameModel;
 };

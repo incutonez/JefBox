@@ -2,7 +2,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   extend: 'JefBox.BaseDialog',
   alias: 'widget.phoneGamesRoundView',
   requires: [
-    'JefBox.model.Game',
+    'JefBox.model.PlayerGame',
+    'JefBox.model.game.RoundItem',
     'JefBox.view.PainterView'
   ],
   mixins: [
@@ -16,9 +17,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       gameId: null,
       waitingNextQuestion: false,
       selectedChoice: null,
-      submittingAnswer: false,
       uploadId: null,
-      viewRecord: null
+      viewRecord: null,
+      currentQuestion: null
     },
     formulas: {
       hideAnswerField: function(get) {
@@ -27,33 +28,14 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       isDrawing: function(get) {
         return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
       },
-      // TODOJEF: How to get groupId?  Include in URL?
-      groupId: function(get) {
-        let groupId;
-        const userId = get('userProfile.Id');
-        const teams = get('viewRecord.Teams');
-        if (teams) {
-          teams.each(function(team) {
-            const users = team.getUsersStore();
-            const found = users && users.findRecord('Id', userId, 0, false, true, true);
-            if (found) {
-              groupId = team.getId();
-              return false;
-            }
-          });
-        }
-        return groupId;
-      },
       loadingMask: function(get) {
         const answers = get('currentQuestion.Answers');
-        const found = answers && answers.findRecord('GroupId', get('groupId'), 0, false, true, true);
-        if (found || get('submittingAnswer')) {
-          if (found) {
-            this.set({
-              userAnswer: found.get('Answer'),
-              uploadId: found.get('UploadId')
-            });
-          }
+        const found = answers && answers.findRecord('GroupId', get('viewRecord.Group.Id'), 0, false, true, true);
+        if (found) {
+          this.set({
+            userAnswer: found.get('Answer'),
+            uploadId: found.get('UploadId')
+          });
           return 'Answer submitted...\nAwaiting next round.';
         }
         this.set({
@@ -61,16 +43,6 @@ Ext.define('JefBox.phone.view.games.RoundView', {
           uploadId: null
         });
         return false;
-      },
-      currentQuestion: {
-        bind: {
-          bindTo: '{viewRecord.RoundItems}',
-          deep: true
-        },
-        get: function(roundItemsStore) {
-          const gameRecord = this.get('viewRecord');
-          return gameRecord && gameRecord.getCurrentQuestionRecord();
-        }
       },
       mediaMarkup: function(get) {
         const uploadId = get('uploadId');
@@ -151,32 +123,49 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     this.callParent(arguments);
   },
 
+  loadCurrentQuestion: function() {
+    const me = this;
+    const gameRecord = me.getViewRecord();
+    if (gameRecord) {
+      JefBox.model.game.RoundItem.loadCurrentQuestion({
+        groupId: gameRecord.getGroupId(),
+        gameId: gameRecord.getId(),
+        callback: function(questionRecord, successful) {
+          if (successful) {
+            const viewModel = me.getViewModel();
+            const choicesGrid = me.lookup('choicesGrid');
+            if (viewModel) {
+              viewModel.set('currentQuestion', questionRecord);
+            }
+            if (choicesGrid) {
+              choicesGrid.forceRefresh();
+            }
+          }
+        }
+      });
+    }
+  },
+
   loadViewRecord: function(gameId) {
     const me = this;
     const viewModel = me.getViewModel();
     if (viewModel && gameId) {
-      const choicesGrid = me.lookup('choicesGrid');
-      // me.setLoading(true);
-      JefBox.model.Game.load(gameId, {
-        callback: function(record, operation, successful) {
-          // me.setLoading(false);
-          if (successful) {
-            viewModel.set('viewRecord', record);
-            record.connectSocket({
-              after: function(record, successful) {
-                if (choicesGrid) {
-                  Ext.asap(function() {
-                    choicesGrid.forceRefresh();
-                  });
-                }
-                viewModel.set('submittingAnswer', false);
-              }
-            });
-          }
-          else {
-            me.logError(`Could not load game ${gameId}.`, true);
-            me.close();
-          }
+      me.setLoading(true);
+      JefBox.model.PlayerGame.loadPlayerGame(gameId, function(record, successful) {
+        me.setLoading(false);
+        if (successful) {
+          viewModel.set('viewRecord', record);
+          sockets.on(Schemas.Games.SOCKET_UPDATE_GROUP + record.getId() + record.getGroupId(), function() {
+            me.loadCurrentQuestion();
+          });
+          sockets.on(Schemas.Games.SOCKET_UPDATE + record.getId(), function() {
+            me.loadCurrentQuestion();
+          });
+          me.loadCurrentQuestion();
+        }
+        else {
+          me.logError(`Could not load game ${gameId}.`, true);
+          me.close();
         }
       });
     }
@@ -189,39 +178,38 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   submitAnswer: function() {
     const me = this;
     const viewModel = me.getViewModel();
+    const gameRecord = me.getViewRecord();
     const questionRecord = viewModel && viewModel.get('currentQuestion');
-    if (questionRecord) {
+    if (questionRecord && gameRecord) {
+      const config = {
+        Id: gameRecord.getId(),
+        groupId: gameRecord.get('AllowTeams') ? gameRecord.getGroupId() : null
+      };
+      me.setLoading(true);
       if (viewModel.get('isDrawing')) {
         const painterView = me.lookup('painterView');
         if (painterView) {
-          viewModel.set('submittingAnswer', true);
           painterView.uploadImage({
             callback: function(response, successful) {
               const data = response.getResponseData();
               if (successful && data) {
-                questionRecord.addAnswer({
-                  uploadId: data.UploadId
-                });
+                config.uploadId = data.UploadId;
+                questionRecord.addAnswer(config);
               }
             }
           });
         }
       }
       else {
-        let choice;
         let answer = viewModel.get('userAnswer');
-        if (viewModel.get('currentQuestion.IsMultipleChoice')) {
+        if (questionRecord.get('IsMultipleChoice')) {
           const selectedChoice = viewModel.get('selectedChoice');
-          choice = selectedChoice && selectedChoice.getId();
+          config.choiceId = selectedChoice && selectedChoice.getId();
         }
         if (answer) {
-          answer = answer.replace(/\s*$/, '');
+          config.answer = answer.replace(/\s*$/, '');
         }
-        viewModel.set('submittingAnswer', true);
-        questionRecord.addAnswer({
-          choiceId: choice,
-          answer: answer
-        });
+        questionRecord.addAnswer(config);
       }
     }
   },

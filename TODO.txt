@@ -6,13 +6,10 @@ Desktop:
 - Add nuclear button, which submits empty answers for users that haven't submitted after the time limit
 - Implement time limit
 - Use api/games/1/score (GameSchema.SCORE)
-- Use GameSchema.CURRENT_QUESTION
+- Use GameSchema.CURRENT_QUESTION... mostly done... implemented in phone version, need to do in desktop
 
 Phone:
 - Inspect socket sleeping and reconnecting
 - Answers are submitting while being typed
-- Answers are erasing when typing in... but second time works
--- I think I know why this is... because every time someone submits or the game updates, the phone version refreshes the game
-store... will need to think how the game store reloads for teams... make it more specific and listen for team only changes
 - Deal with long answers and how to display
 - Remove user from previous team if they rejoin game with a new team

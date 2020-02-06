@@ -22,5 +22,8 @@ module.exports = {
   UPDATE_ROUND_ITEM_PATH_UI: `${idPathUI}/roundItems/:{RoundItemId:num}`,
   ADD_WINNER_PATH: `${idPath}/winner`,
   ADD_WINNER_PATH_UI: `${idPathUI}/winner`,
-  SCORE: `${idPath}/score`
+  PLAYER_DETAILS: `${idPath}/player`,
+  SCORE: `${idPath}/score`,
+  SOCKET_UPDATE: 'updatedGames',
+  SOCKET_UPDATE_GROUP: 'updatedGamesGroup'
 };

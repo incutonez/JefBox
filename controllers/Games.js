@@ -19,6 +19,32 @@ module.exports = (io) => {
     res.send(game.getDetails());
   });
 
+  router.get(GameSchema.PLAYER_DETAILS, async (req, res) => {
+    const userId = req.session.user.Id;
+    const gameId = req.params.id;
+    const game = await GameModel.findOne({
+      where: {
+        Id: gameId
+      },
+      include: [{
+        model: db.GameTeam,
+        include: [{
+          model: TeamModel
+        }, {
+          model: UserModel,
+          through: {
+            attributes: []
+          }
+        }]
+      }]
+    });
+    const data = Object.assign({}, game.get());
+    game.getTeams(data, userId);
+    data.Group = data.Teams[0];
+    delete data.Teams;
+    res.send(data);
+  });
+
   router.get(GameSchema.SCORE, async (req, res) => {
     const gameId = req.params.id;
     const game = await GameModel.findOne({
@@ -152,8 +178,8 @@ module.exports = (io) => {
       // Add the user to the game, if they're not already added
       await game.addUser(userId);
     }
-    if (io && GameModel.updateEvent) {
-      io.emit(`${GameModel.updateEvent}${gameId}`);
+    if (io && GameSchema.SOCKET_UPDATE) {
+      io.emit(`${GameSchema.SOCKET_UPDATE}${gameId}`);
     }
     if (io && UserModel.updateEvent) {
       io.emit(`${UserModel.updateEvent}${userId}`);
@@ -180,9 +206,9 @@ module.exports = (io) => {
       req.body.GameId = gameId;
       req.body.GroupId = groupId;
       await roundItem.createAnswer(req.body);
-      if (io && GameModel.updateEvent) {
-        io.emit(`${GameModel.updateEvent}${gameId}`);
-        io.emit(`${GameModel.updateEvent}${gameId}Group${groupId}`);
+      if (io) {
+        io.emit(`${GameSchema.SOCKET_UPDATE}${gameId}`);
+        io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}${groupId}`);
       }
     }
     catch (e) {

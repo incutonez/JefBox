@@ -29,6 +29,9 @@ Ext.define('JefBox.model.Game', {
     storeConfig: {
       remoteSort: false,
       remoteFilter: false,
+      proxy: {
+        type: 'memory'
+      },
       grouper: {
         property: 'Round',
         sortProperty: 'RoundIndex'
