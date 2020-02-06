@@ -208,7 +208,7 @@ module.exports = (io) => {
       await roundItem.createAnswer(req.body);
       if (io) {
         io.emit(`${GameSchema.SOCKET_UPDATE}${gameId}`);
-        io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}${groupId}`);
+        io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}_${groupId}`);
       }
     }
     catch (e) {

@@ -155,10 +155,10 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         me.setLoading(false);
         if (successful) {
           viewModel.set('viewRecord', record);
-          sockets.on(Schemas.Games.SOCKET_UPDATE_GROUP + record.getId() + record.getGroupId(), function() {
+          sockets.on(`${Schemas.Games.SOCKET_UPDATE_GROUP}${record.getId()}_${record.getGroupId()}`, function() {
             me.loadCurrentQuestion();
           });
-          sockets.on(Schemas.Games.SOCKET_UPDATE + record.getId(), function() {
+          sockets.on(`${Schemas.Games.SOCKET_UPDATE}${record.getId()}`, function() {
             me.loadCurrentQuestion();
           });
           me.loadCurrentQuestion();
