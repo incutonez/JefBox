@@ -41,7 +41,7 @@ Ext.define('JefBox.view.games.HostView', {
         }
       },
       allAnswersSubmitted: function(get) {
-        return get('currentQuestion.Answers.count') === get('viewRecord.Teams.count')
+        return get('currentQuestion.Answers.count') === get('viewRecord.Teams.count');
       },
       // Don't show the Answers column until all Answers have been submitted
       hideAnswersColumn: function(get) {
@@ -108,6 +108,17 @@ Ext.define('JefBox.view.games.HostView', {
           }
         },
         columns: [{
+          text: 'Actions',
+          align: 'right',
+          width: 75,
+          cell: {
+            tools: [{
+              iconCls: Icons.DELETE,
+              tooltip: 'Remove Team',
+              handler: 'onRemoveTeamRow'
+            }]
+          }
+        }, {
           text: 'Name',
           dataIndex: 'Name',
           flex: 1

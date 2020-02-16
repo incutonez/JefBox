@@ -50,6 +50,13 @@ Ext.define('JefBox.phone.view.games.RoundView', {
           return `<img style="max-height: 100%; max-width: 100%;" src="api/uploads/${uploadId}" />`;
         }
       }
+    },
+    stores: {
+      // We use a chained store for an existing bug in the framework
+      choicesStore: {
+        type: 'chained',
+        source: '{currentQuestion.Choices}'
+      }
     }
   },
 
@@ -64,6 +71,9 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   bind: {
     title: 'Round: {currentQuestion.Round}, Question: {currentQuestion.Order}',
     loading: '{loadingMask}'
+  },
+  listeners: {
+    destroy: 'onDestroyRoundView'
   },
   items: [{
     xtype: 'textfield',
@@ -83,7 +93,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
     maxWidth: 400,
     reference: 'choicesGrid',
     bind: {
-      store: '{currentQuestion.Choices}',
+      store: '{choicesStore}',
       hidden: '{!currentQuestion.IsMultipleChoice}',
       selection: '{selectedChoice}'
     },
@@ -126,19 +136,20 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   loadCurrentQuestion: function() {
     const me = this;
     const gameRecord = me.getViewRecord();
-    if (gameRecord) {
+    const viewModel = me.getViewModel();
+    if (gameRecord && viewModel) {
       JefBox.model.game.RoundItem.loadCurrentQuestion({
         groupId: gameRecord.getGroupId(),
         gameId: gameRecord.getId(),
         callback: function(questionRecord, successful) {
           if (successful) {
-            const viewModel = me.getViewModel();
-            const choicesGrid = me.lookup('choicesGrid');
-            if (viewModel) {
-              viewModel.set('currentQuestion', questionRecord);
-            }
-            if (choicesGrid) {
-              choicesGrid.forceRefresh();
+            viewModel.set('currentQuestion', questionRecord);
+            viewModel.notify();
+            if (questionRecord.get('IsMultipleChoice')) {
+              const choicesGrid = me.lookup('choicesGrid');
+              if (choicesGrid) {
+                choicesGrid.forceRefresh();
+              }
             }
           }
         }
@@ -212,6 +223,13 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         questionRecord.addAnswer(config);
       }
     }
+  },
+
+  onDestroyRoundView: function() {
+    const me = this;
+    const record = me.getViewRecord();
+    sockets.off(`${Schemas.Games.SOCKET_UPDATE_GROUP}${record.getId()}_${record.getGroupId()}`);
+    sockets.off(`${Schemas.Games.SOCKET_UPDATE}${record.getId()}`);
   },
 
   onKeyDownAnswerField: function(field, event) {

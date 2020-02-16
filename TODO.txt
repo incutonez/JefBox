@@ -1,8 +1,7 @@
 Desktop:
 - Add training video
-- Add ability to remove teams from lobby
+- Add state for starting game... waiting in lobby or something like that, and the other tabs are disabled until game is started
 - When game is over, change the state to finished
-- Add ability to delete answers... this will have to fire an event to the team that submitted the answer, so they can reanswer
 - Add nuclear button, which submits empty answers for users that haven't submitted after the time limit
 - Implement time limit
 - Use api/games/1/score (GameSchema.SCORE)
@@ -10,6 +9,5 @@ Desktop:
 
 Phone:
 - Inspect socket sleeping and reconnecting
-- Answers are submitting while being typed
 - Deal with long answers and how to display
 - Remove user from previous team if they rejoin game with a new team

@@ -16,6 +16,9 @@ module.exports = (io) => {
   router.get(GameSchema.ID_PATH, async (req, res) => {
     const gameId = req.params.id;
     const game = await Game.getRecordById(gameId);
+    if (!game) {
+      return res.sendStatus(404);
+    }
     res.send(game.getDetails());
   });
 
@@ -282,6 +285,33 @@ module.exports = (io) => {
   });
 
   router.delete(GameSchema.ID_PATH, BaseCrudController.deleteById);
+
+  router.delete(GameSchema.GROUP, async (req, res) => {
+    await db.GameTeam.destroy({
+      where: {
+        GameId: req.params.id,
+        TeamId: req.params.GroupId
+      },
+      cascade: true
+    });
+    res.sendStatus(204);
+  });
+
+  router.delete(GameSchema.ANSWERS_ID, async (req, res) => {
+    const groupAnswer = await db.RoundItemAnswer.findByPk(req.params.AnswerId);
+    if (groupAnswer) {
+      // Cascade delete wasn't working, so I'm using this for now
+      const upload = await groupAnswer.getUpload();
+      if (upload) {
+        await upload.destroy();
+      }
+      await groupAnswer.destroy();
+    }
+    if (io) {
+      io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${req.params.id}_${groupAnswer.GroupId}`);
+    }
+    res.sendStatus(204);
+  });
 
   return router;
 };

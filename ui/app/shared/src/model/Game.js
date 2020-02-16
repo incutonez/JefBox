@@ -150,5 +150,33 @@ Ext.define('JefBox.model.Game', {
       // Trigger a sort, so our groupings update appropriately
       questionsStore.sort();
     }
+  },
+
+  removeTeam: function(groupId, cb) {
+    const me = this;
+    Ext.Ajax.request({
+      method: 'DELETE',
+      url: Routes.parseRoute(Schemas.Games.GROUP_UI, {
+        Id: me.getId(),
+        GroupId: groupId
+      }),
+      callback: function(options, successful, response) {
+        Ext.callback(cb, me, [successful, response]);
+      }
+    });
+  },
+
+  deleteAnswer: function(answerId, cb) {
+    const me = this;
+    Ext.Ajax.request({
+      method: 'DELETE',
+      url: Routes.parseRoute(Schemas.Games.ANSWERS_ID_UI, {
+        Id: me.getId(),
+        AnswerId: answerId
+      }),
+      callback: function(options, successful, response) {
+        Ext.callback(cb, me, [successful, response]);
+      }
+    });
   }
 });

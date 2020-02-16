@@ -142,11 +142,14 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     },
     columns: [{
       text: 'Actions',
-      bind: {
-        hidden: '{!isUploadType}'
-      },
+      align: 'right',
+      width: 75,
       cell: {
         tools: [{
+          iconCls: Icons.DELETE,
+          tooltip: 'Delete Answer',
+          handler: 'onDeleteAnswerRow'
+        }, {
           iconCls: Icons.VIEW,
           tooltip: 'View Image',
           handler: 'onClickViewImage',

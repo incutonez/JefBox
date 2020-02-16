@@ -64,6 +64,18 @@ Ext.define('JefBox.view.games.HostViewController', {
     }
   },
 
+  onRemoveTeamRow: function(grid, info) {
+    const me = this;
+    const gameRecord = me.getViewRecord();
+    if (gameRecord) {
+      me.setViewLoading(true);
+      gameRecord.removeTeam(info.record.getId(), function(successful, response) {
+        me.setViewLoading(false);
+        me.loadViewRecord(gameRecord.getId());
+      });
+    }
+  },
+
   onClickAnnounceWinner: function() {
     const me = this;
     const viewModel = me.getViewModel();
@@ -156,6 +168,16 @@ Ext.define('JefBox.view.games.HostViewController', {
     const currentQuestion = this.getCurrentQuestionRecord();
     const previousQuestion = currentQuestion && currentQuestion.getPreviousQuestion();
     this.toggleRoundItemAnswered(previousQuestion && previousQuestion.getId());
+  },
+
+  onDeleteAnswerRow: function(grid, info) {
+    const me = this;
+    const gameRecord = me.getViewRecord();
+    if (gameRecord) {
+      gameRecord.deleteAnswer(info.record.getId(), function(successful, response) {
+        me.loadViewRecord(gameRecord.getId());
+      });
+    }
   },
 
   onClickViewImage: function(grid, info) {

@@ -36,10 +36,10 @@ Ext.define('JefBox.Sockets', {
     }
   },
 
-  off: function(event, handler, scope) {
+  off: function(event) {
     const connection = this.getConnection();
     if (connection) {
-      connection.off(event, Ext.bind(handler, scope || this));
+      connection.off(event);
     }
   },
 

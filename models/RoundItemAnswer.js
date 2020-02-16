@@ -1,5 +1,10 @@
 module.exports = (conn, types) => {
   const RoundItemAnswerModel = conn.define('RoundItemAnswer', {
+    Id: {
+      type: types.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     Answer: {
       type: types.STRING
     },
@@ -15,12 +20,10 @@ module.exports = (conn, types) => {
       allowNull: true
     },
     RoundItemId: {
-      type: types.INTEGER,
-      primaryKey: true
+      type: types.INTEGER
     },
     GroupId: {
-      type: types.INTEGER,
-      primaryKey: true
+      type: types.INTEGER
     }
   });
 

@@ -52,7 +52,7 @@ module.exports = {
         'Answer': 'Arrrrrrrkansas',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -67,7 +67,7 @@ module.exports = {
         'Answer': 'Roth-less Burger (Roethlisberger)',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -82,7 +82,7 @@ module.exports = {
         'Answer': 'Dale Earnhardt (when his car was on fire)',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -97,7 +97,7 @@ module.exports = {
         'Answer': 'Lemon Aid',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -112,7 +112,7 @@ module.exports = {
         'Answer': 'Because it was soda pressing!',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -127,7 +127,7 @@ module.exports = {
         'Answer': 'Because pepper makes them sneeze!',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -142,7 +142,7 @@ module.exports = {
         'Answer': '',
         'IsMultipleChoice': 1,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -157,7 +157,7 @@ module.exports = {
         'Answer': '',
         'IsMultipleChoice': 1,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -172,7 +172,7 @@ module.exports = {
         'Answer': 'Heart attack',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -187,7 +187,7 @@ module.exports = {
         'Answer': 'Benjamin Button',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -202,7 +202,7 @@ module.exports = {
         'Answer': 'The Mars Volta',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -217,7 +217,7 @@ module.exports = {
         'Answer': 'Tool',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -232,7 +232,7 @@ module.exports = {
         'Answer': 'Jack Johnson',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -247,7 +247,7 @@ module.exports = {
         'Answer': '5280 * 12 = 63360',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -262,7 +262,7 @@ module.exports = {
         'Answer': 'Pythagorean Theorem',
         'IsMultipleChoice': 0,
         'Url': 'https://calcworkshop.com/wp-content/uploads/pythagorean-theorem-formula.png',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -277,7 +277,7 @@ module.exports = {
         'Answer': 'Newton andor Leibniz',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -292,7 +292,7 @@ module.exports = {
         'Answer': 27,
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -307,7 +307,7 @@ module.exports = {
         'Answer': '',
         'IsMultipleChoice': 1,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -322,7 +322,7 @@ module.exports = {
         'Answer': 'Deoxyribonucleic acid',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -337,7 +337,7 @@ module.exports = {
         'Answer': 'Thymine, Cytosine, Adenine, and Guanine',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -352,7 +352,7 @@ module.exports = {
         'Answer': 'Jack Johnson',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -367,7 +367,7 @@ module.exports = {
         'Answer': '',
         'IsMultipleChoice': 1,
         'Url': 'http://www.cse.psu.edu/~b58/Barlow-Jesse-Small.jpg',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -382,7 +382,7 @@ module.exports = {
         'Answer': 'Okay',
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -397,7 +397,7 @@ module.exports = {
         'Answer': '',
         'IsMultipleChoice': 1,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       },
@@ -412,7 +412,7 @@ module.exports = {
         'Answer': 31,
         'IsMultipleChoice': 0,
         'Url': '',
-        'AnswerDate': '',
+        AnswerDate: null,
         'GameId': 1,
         UploadId: null
       }
