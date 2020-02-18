@@ -282,6 +282,8 @@ module.exports = (io) => {
     catch (e) {
       console.log(e);
     }
+    // TODOJEF: Fix jefbox:1337/api/games/1/currentRound?_dc=1581998533551&groupId=&id=-28
+    // TODOJEF: Fix dialog resizing issue
     res.sendStatus(204);
   });
 

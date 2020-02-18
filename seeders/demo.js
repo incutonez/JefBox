@@ -1,4 +1,3 @@
-const db = require('../models/index');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('RoundItemChoices', {}, {
