@@ -7,7 +7,8 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
 
   title: 'Current Question',
   layout: {
-    type: 'hbox'
+    type: 'hbox',
+    align: 'stretch'
   },
   items: [{
     xtype: 'panel',
@@ -23,14 +24,14 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       tooltip: 'Previous Question',
       handler: 'onClickPreviousQuestionBtn',
       bind: {
-        disabled: '{viewRecord.RoundItems.first === currentQuestion}'
+        disabled: '{isFirstQuestion}'
       }
     }, {
       type: 'next',
       tooltip: 'Next Question',
       handler: 'onClickNextQuestionBtn',
       bind: {
-        disabled: '{viewRecord.RoundItems.last === currentQuestion}'
+        disabled: '{isLastQuestion}'
       }
     }],
     defaults: {
@@ -106,6 +107,8 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     }, {
       xtype: 'grid',
       flex: 1,
+      reference: 'choicesGrid',
+      variableHeights: true,
       bind: {
         hidden: '{!showAnswer || !currentQuestion.IsMultipleChoice}',
         store: '{multipleAnswersStore}'
@@ -113,7 +116,10 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       columns: [{
         text: 'Answers',
         flex: 1,
-        dataIndex: 'Value'
+        dataIndex: 'Value',
+        cell: {
+          cls: Styles.GRID_CELL_OVERFLOW
+        }
       }]
     }]
   }, {
@@ -121,11 +127,39 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
     flex: 1,
     title: 'Answers',
     margin: '0 0 0 5',
+    variableHeights: true,
     bind: {
-      store: '{currentQuestion.Answers}'
+      store: '{answersStore}'
     },
     titleBar: {
       items: [{
+        xtype: 'button',
+        align: 'right',
+        tooltip: 'Start Timer',
+        handler: 'onClickStartTimer',
+        bind: {
+          iconCls: '{timerIconCls}',
+          text: '{timeRemainingFm}',
+          hidden: '{timeRemaining === null}',
+          disabled: '{timeRemaining === 0}'
+        }
+      }, {
+        xtype: 'button',
+        text: 'Go Nuculer',
+        tooltip: 'Teams with unsubmitted answers will have no answer for this round.',
+        iconCls: Icons.NUCLEAR,
+        handler: 'onClickGoNuclear',
+        align: 'right',
+        cls: Styles.COLOR_RADIATION,
+        bind: {
+          hidden: '{timeRemaining !== 0}'
+        }
+      }, {
+        xtype: 'component',
+        reference: 'timerOverAudio',
+        hidden: true,
+        html: '<audio controls><source src="../../../../../resources/time_over.mp3" type="audio/mpeg"></audio>'
+      }, {
         xtype: 'button',
         tooltip: 'Submit Answers',
         text: 'Answers',
@@ -193,6 +227,9 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
       dataIndex: 'Answer',
       bind: {
         hidden: '{hideAnswersColumn}'
+      },
+      cell: {
+        cls: Styles.GRID_CELL_OVERFLOW
       }
     }]
   }]

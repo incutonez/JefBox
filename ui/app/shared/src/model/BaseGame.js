@@ -21,6 +21,12 @@ Ext.define('JefBox.model.BaseGame', {
     name: 'AllowTeams',
     type: 'boolean',
     defaultValue: true
+  }, {
+    name: 'FirstRoundItemId',
+    type: 'int'
+  }, {
+    name: 'LastRoundItemId',
+    type: 'int'
   }],
 
   proxy: {
@@ -51,47 +57,6 @@ Ext.define('JefBox.model.BaseGame', {
     }
   },
 
-  markAnswers: function(cb) {
-    const currentQuestion = this.getCurrentQuestionRecord();
-    if (!currentQuestion) {
-      return;
-    }
-    const teams = [];
-    const users = [];
-    const answersStore = currentQuestion.getAnswersStore();
-    const roundItemId = currentQuestion.getId();
-    const questionNumber = currentQuestion.get('Order');
-    if (answersStore) {
-      answersStore.each(function(answer) {
-        if (answer.get('IsCorrect')) {
-          const teamId = answer.get('TeamId');
-          if (!Ext.isEmpty(teamId)) {
-            teams.push({
-              Id: teamId,
-              Points: answer.get('Points')
-            });
-          }
-          users.push(answer.get('UserId'));
-        }
-      });
-    }
-    Ext.Ajax.request({
-      url: Routes.parseRoute(Schemas.Games.ADD_WINNER_PATH_UI, this),
-      method: 'POST',
-      jsonData: {
-        RoundItemId: roundItemId,
-        QuestionNumber: questionNumber,
-        teams: teams,
-        users: users
-      },
-      callback: function(operation, successful, response) {
-        if (Ext.isFunction(cb)) {
-          cb(successful, response);
-        }
-      }
-    });
-  },
-
   toggleRoundItemComplete: function(config) {
     if (!config) {
       return;
@@ -103,7 +68,7 @@ Ext.define('JefBox.model.BaseGame', {
         RoundItemId: config.roundItemId
       }),
       jsonData: {
-        isComplete: config.isComplete
+        revertPrevious: config.revertPrevious
       },
       callback: function(operation, successful, response) {
         if (Ext.isFunction(config.callback)) {
@@ -116,5 +81,17 @@ Ext.define('JefBox.model.BaseGame', {
   getRoundItemById: function(id) {
     const roundItemsStore = this.getRoundItemsStore();
     return roundItemsStore && roundItemsStore.findRecord('Id', id, 0, false, true, true);
+  },
+
+  getUpdateEvent: function() {
+    return `${Schemas.Games.SOCKET_UPDATE}${this.getId()}`;
+  },
+
+  getUpdateRoundEvent: function() {
+    return `${Schemas.Games.SOCKET_UPDATE_ROUND}${this.getId()}`;
+  },
+
+  getUpdateRoundAnswersEvent: function() {
+    return `${Schemas.Games.SOCKET_UPDATE_ROUND_ANSWERS}${this.getId()}`;
   }
 });

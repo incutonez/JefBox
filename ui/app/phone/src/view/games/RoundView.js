@@ -78,7 +78,7 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   items: [{
     xtype: 'textfield',
     label: 'Your Answer',
-    maxWidth: 300,
+    maxWidth: 500,
     reference: 'answerField',
     bind: {
       value: '{userAnswer}',
@@ -90,8 +90,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   }, {
     xtype: 'grid',
     flex: 1,
-    maxWidth: 400,
     reference: 'choicesGrid',
+    variableHeights: true,
     bind: {
       store: '{choicesStore}',
       hidden: '{!currentQuestion.IsMultipleChoice}',
@@ -102,8 +102,11 @@ Ext.define('JefBox.phone.view.games.RoundView', {
       dataIndex: 'Order'
     }, {
       text: 'Answer',
+      dataIndex: 'Value',
       flex: 1,
-      dataIndex: 'Value'
+      cell: {
+        cls: Styles.GRID_CELL_OVERFLOW
+      }
     }]
   }, {
     xtype: 'painterView',
@@ -166,10 +169,10 @@ Ext.define('JefBox.phone.view.games.RoundView', {
         me.setLoading(false);
         if (successful) {
           viewModel.set('viewRecord', record);
-          sockets.on(`${Schemas.Games.SOCKET_UPDATE_GROUP}${record.getId()}_${record.getGroupId()}`, function() {
+          sockets.on(`${record.getUpdateGroupEvent()}`, function() {
             me.loadCurrentQuestion();
           });
-          sockets.on(`${Schemas.Games.SOCKET_UPDATE}${record.getId()}`, function() {
+          sockets.on(`${record.getUpdateRoundEvent()}`, function() {
             me.loadCurrentQuestion();
           });
           me.loadCurrentQuestion();
@@ -228,8 +231,8 @@ Ext.define('JefBox.phone.view.games.RoundView', {
   onDestroyRoundView: function() {
     const me = this;
     const record = me.getViewRecord();
-    sockets.off(`${Schemas.Games.SOCKET_UPDATE_GROUP}${record.getId()}_${record.getGroupId()}`);
-    sockets.off(`${Schemas.Games.SOCKET_UPDATE}${record.getId()}`);
+    sockets.off(`${record.getUpdateRoundEvent()}`);
+    sockets.off(`${record.getUpdateGroupEvent()}`);
   },
 
   onKeyDownAnswerField: function(field, event) {

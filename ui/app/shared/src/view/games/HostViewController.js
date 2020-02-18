@@ -7,6 +7,8 @@ Ext.define('JefBox.view.games.HostViewController', {
     'JefBox.view.games.TieView'
   ],
 
+  TIMER_TASK: Ext.create('Ext.util.TaskRunner'),
+
   // TODOJEF: Issue with this... it gets hit twice, but it doesn't get hit twice when loading the edit
   constructor: function(config) {
     const routes = config.routes = {};
@@ -17,11 +19,101 @@ Ext.define('JefBox.view.games.HostViewController', {
     this.callParent(arguments);
   },
 
-  onRouteHostView: function(params) {
-    this.loadViewRecord(params.Id);
+  destroy: function() {
+    this.uninstallSockets();
+    this.callParent();
   },
 
-  loadViewRecord: function(gameId) {
+  onRouteHostView: function(params) {
+    this.loadViewRecord(params.Id, true);
+  },
+
+  loadCurrentQuestion: function() {
+    const me = this;
+    const viewModel = me.getViewModel();
+    const gameRecord = me.getViewRecord();
+    if (gameRecord && viewModel) {
+      me.setViewLoading(true);
+      JefBox.model.game.RoundItem.loadCurrentQuestion({
+        gameId: gameRecord.getId(),
+        callback: function(questionRecord, successful) {
+          if (successful) {
+            viewModel.set({
+              currentQuestion: questionRecord,
+              timeRemaining: questionRecord.get('TimeLimit'),
+              showAnswer: 0
+            });
+            viewModel.notify();
+            if (questionRecord.get('IsMultipleChoice')) {
+              const choicesGrid = me.lookup('choicesGrid');
+              if (choicesGrid) {
+                choicesGrid.forceRefresh();
+              }
+            }
+          }
+          me.setViewLoading(false);
+        }
+      });
+    }
+  },
+
+  loadGameStandings: function() {
+    const scoreStore = this.getScoreStore();
+    if (scoreStore) {
+      scoreStore.load();
+    }
+  },
+
+  loadRoundAnswers: function() {
+    const answersStore = this.getAnswersStore();
+    const gameRecord = this.getViewRecord();
+    if (answersStore && gameRecord) {
+      answersStore.load({
+        callback: function() {
+          answersStore.processGroups(gameRecord.getTeamsStore());
+        }
+      });
+    }
+  },
+
+  uninstallSockets: function() {
+    const record = this.getViewRecord();
+    if (record) {
+      const gameUpdateEvent = record.getUpdateEvent();
+      const gameUpdateRoundEvent = record.getUpdateRoundEvent();
+      const gameUpdateRoundAnswersEvent = record.getUpdateRoundAnswersEvent();
+      sockets.off(gameUpdateEvent);
+      sockets.off(gameUpdateRoundEvent);
+      sockets.off(gameUpdateRoundAnswersEvent);
+    }
+  },
+
+  installSockets: function(uninstall) {
+    const me = this;
+    const record = me.getViewRecord();
+    if (record) {
+      const gameId = record.getId();
+      const gameUpdateEvent = record.getUpdateEvent();
+      const gameUpdateRoundEvent = record.getUpdateRoundEvent();
+      const gameUpdateRoundAnswersEvent = record.getUpdateRoundAnswersEvent();
+      if (uninstall) {
+        me.uninstallSockets();
+      }
+      sockets.on(gameUpdateRoundEvent, function() {
+        me.loadCurrentQuestion();
+        me.loadGameStandings();
+        me.loadRoundAnswers();
+      });
+      sockets.on(gameUpdateEvent, function() {
+        me.loadViewRecord(gameId);
+      });
+      sockets.on(gameUpdateRoundAnswersEvent, function() {
+        me.loadRoundAnswers();
+      });
+    }
+  },
+
+  loadViewRecord: function(gameId, initialLoad) {
     const me = this;
     const viewModel = me.getViewModel();
     if (viewModel) {
@@ -31,35 +123,24 @@ Ext.define('JefBox.view.games.HostViewController', {
       JefBox.model.Game.load(gameId, {
         callback: function(record, operation, successful) {
           viewModel.set('viewRecord', record);
-          record.connectSocket({
-            scope: me,
-            before: function() {
-              me.setViewLoading(true);
-            },
-            after: function() {
-              me.setViewLoading(false);
-            }
-          });
           viewModel.notify();
+          me.installSockets(true);
           me.setViewLoading(false);
+          if (initialLoad) {
+            me.loadCurrentQuestion();
+            me.loadRoundAnswers();
+          }
         }
       });
     }
   },
 
-  toggleRoundItemAnswered: function(roundItemId, isComplete) {
-    const viewModel = this.getViewModel();
+  toggleRoundItemAnswered: function(roundItemId, revertPrevious) {
     const gameRecord = this.getViewRecord();
     if (gameRecord) {
       gameRecord.toggleRoundItemComplete({
         roundItemId: roundItemId,
-        isComplete: isComplete,
-        callback: function(successful, response) {
-          if (successful) {
-            // Reset if the answer is showing
-            viewModel.set('showAnswer', 0);
-          }
-        }
+        revertPrevious: revertPrevious
       });
     }
   },
@@ -78,8 +159,7 @@ Ext.define('JefBox.view.games.HostViewController', {
 
   onClickAnnounceWinner: function() {
     const me = this;
-    const viewModel = me.getViewModel();
-    const standingsStore = viewModel && viewModel.get('viewRecord.Score');
+    const standingsStore = me.getScoreStore();
     const groups = standingsStore && standingsStore.getGroups();
     if (groups) {
       let tiedGroups = [];
@@ -135,14 +215,6 @@ Ext.define('JefBox.view.games.HostViewController', {
     }
   },
 
-  onMarkRoundItemRow: function(grid, info) {
-    this.toggleRoundItemAnswered(info.record.getId(), true);
-  },
-
-  onUnmarkRoundItemRow: function(grid, info) {
-    this.toggleRoundItemAnswered(info.record.getId());
-  },
-
   onClickViewMediaButton: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
     if (currentQuestion) {
@@ -161,22 +233,19 @@ Ext.define('JefBox.view.games.HostViewController', {
 
   onClickNextQuestionBtn: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
-    this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId(), true);
+    this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId());
   },
 
   onClickPreviousQuestionBtn: function() {
     const currentQuestion = this.getCurrentQuestionRecord();
-    const previousQuestion = currentQuestion && currentQuestion.getPreviousQuestion();
-    this.toggleRoundItemAnswered(previousQuestion && previousQuestion.getId());
+    this.toggleRoundItemAnswered(currentQuestion && currentQuestion.getId(), true);
   },
 
   onDeleteAnswerRow: function(grid, info) {
     const me = this;
     const gameRecord = me.getViewRecord();
     if (gameRecord) {
-      gameRecord.deleteAnswer(info.record.getId(), function(successful, response) {
-        me.loadViewRecord(gameRecord.getId());
-      });
+      gameRecord.deleteAnswer(info.record.getId());
     }
   },
 
@@ -191,9 +260,36 @@ Ext.define('JefBox.view.games.HostViewController', {
   },
 
   onClickSubmitAnswers: function() {
+    const questionRecord = this.getCurrentQuestionRecord();
+    if (questionRecord) {
+      questionRecord.markAnswers(this.getAnswersStore());
+    }
+  },
+
+  onClickStartTimer: function() {
+    const viewModel = this.getViewModel();
+    const timerOverAudio = this.lookup('timerOverAudio');
+    if (viewModel) {
+      let timeRemaining = viewModel.get('currentQuestion.TimeLimit');
+      this.TIMER_TASK.start({
+        run: function() {
+          viewModel.set('timeRemaining', --timeRemaining);
+          viewModel.notify();
+          if (timeRemaining === 0 && timerOverAudio) {
+            timerOverAudio.element.down('audio').dom.play();
+          }
+          return timeRemaining !== 0;
+        },
+        interval: 1000
+      });
+    }
+  },
+
+  onClickGoNuclear: function() {
     const gameRecord = this.getViewRecord();
-    if (gameRecord) {
-      gameRecord.markAnswers();
+    const currentQuestion = this.getCurrentQuestionRecord();
+    if (gameRecord && currentQuestion) {
+      gameRecord.submitEmptyRoundAnswers(currentQuestion.getId());
     }
   },
 
@@ -204,5 +300,13 @@ Ext.define('JefBox.view.games.HostViewController', {
       this.logError('currentQuestion is undefined');
     }
     return currentQuestion;
+  },
+
+  getScoreStore: function() {
+    return this.getStore('scoreStore');
+  },
+
+  getAnswersStore: function() {
+    return this.getStore('answersStore');
   }
 });

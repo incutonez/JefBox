@@ -139,7 +139,9 @@ Ext.define('JefBox.model.game.RoundItem', {
   addAnswer: function(config) {
     config = config || {};
     Ext.Ajax.request({
-      url: Routes.parseRoute(Schemas.Games.ADD_ANSWER_PATH_UI, config),
+      url: Routes.parseRoute(Schemas.Games.ADD_ANSWER_PATH_UI, {
+        Id: this.get('GameId')
+      }),
       method: 'POST',
       jsonData: {
         ChoiceId: config.choiceId,
@@ -156,21 +158,43 @@ Ext.define('JefBox.model.game.RoundItem', {
     });
   },
 
-  getPreviousQuestion: function() {
-    let previousRecord;
-    const store = this.store;
-    if (store) {
-      previousRecord = store.getAt(store.indexOf(this) - 1);
+  markAnswers: function(answersStore, cb) {
+    if (!answersStore) {
+      return;
     }
-    return previousRecord;
-  },
-
-  getNextQuestion: function() {
-    let previousRecord;
-    const store = this.store;
-    if (store) {
-      previousRecord = store.getAt(store.indexOf(this) + 1);
-    }
-    return previousRecord;
+    const me = this;
+    const teams = [];
+    const users = [];
+    const roundItemId = me.getId();
+    const questionNumber = me.get('Order');
+    answersStore.each(function(answer) {
+      if (answer.get('IsCorrect')) {
+        const teamId = answer.get('TeamId');
+        if (!Ext.isEmpty(teamId)) {
+          teams.push({
+            Id: teamId,
+            Points: answer.get('Points')
+          });
+        }
+        users.push(answer.get('UserId'));
+      }
+    });
+    Ext.Ajax.request({
+      url: Routes.parseRoute(Schemas.Games.ADD_WINNER_PATH_UI, {
+        Id: me.get('GameId')
+      }),
+      method: 'POST',
+      jsonData: {
+        RoundItemId: roundItemId,
+        QuestionNumber: questionNumber,
+        teams: teams,
+        users: users
+      },
+      callback: function(operation, successful, response) {
+        if (Ext.isFunction(cb)) {
+          cb(successful, response);
+        }
+      }
+    });
   }
 });

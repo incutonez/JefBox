@@ -4,73 +4,21 @@ Ext.define('JefBox.view.games.HostView', {
   requires: [
     'JefBox.view.teams.MainView',
     'JefBox.view.games.HostViewController',
-    'JefBox.view.games.CurrentQuestionView'
+    'JefBox.view.games.CurrentQuestionView',
+    'JefBox.view.games.HostViewModel'
   ],
 
-  bodyPadding: 0,
   controller: {
     type: 'gamesHostView'
   },
   viewModel: {
-    data: {
-      showAnswer: 0,
-      viewRecord: {
-        loading: true
-      }
-    },
-    formulas: {
-      loadingMask: function(get) {
-        return get('viewRecord.loading') ? {
-          message: 'Loading...'
-        } : false;
-      },
-      entityTextSingular: function(get) {
-        return get('viewRecord.AllowTeams') ? 'Team' : 'User';
-      },
-      entityText: function(get) {
-        return get('entityTextSingular') + 's';
-      },
-      currentQuestion: {
-        bind: {
-          bindTo: '{viewRecord.RoundItems}',
-          deep: true
-        },
-        get: function(roundItemsStore) {
-          const gameRecord = this.get('viewRecord');
-          return gameRecord && gameRecord.getCurrentQuestionRecord();
-        }
-      },
-      allAnswersSubmitted: function(get) {
-        return get('currentQuestion.Answers.count') === get('viewRecord.Teams.count');
-      },
-      // Don't show the Answers column until all Answers have been submitted
-      hideAnswersColumn: function(get) {
-        return !get('allAnswersSubmitted') || get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
-      },
-      isAudio: function(get) {
-        return get('currentQuestion.Type') === Enums.RoundItemTypes.AUDIO;
-      },
-      isUploadType: function(get) {
-        return get('currentQuestion.Type') === Enums.RoundItemTypes.DRAWING;
-      },
-      isImageVideo: function(get) {
-        const types = Enums.RoundItemTypes;
-        return Ext.Array.contains([types.IMAGE, types.VIDEO], get('currentQuestion.Type'));
-      }
-    },
-
-    stores: {
-      multipleAnswersStore: {
-        type: 'chained',
-        source: '{currentQuestion.Choices}',
-        filters: [{
-          property: 'IsAnswer',
-          value: true
-        }]
-      }
-    }
+    type: 'gamesHostView'
   },
 
+  width: '90%',
+  height: '90%',
+  maximized: true,
+  bodyPadding: 0,
   bind: {
     title: 'Game: {viewRecord.Name}',
     masked: '{loadingMask}'
@@ -93,7 +41,7 @@ Ext.define('JefBox.view.games.HostView', {
         title: 'Teams',
         bind: {
           hidden: '{!viewRecord.AllowTeams}',
-          store: '{viewRecord.Teams}'
+          store: '{teamsStore}'
         },
         itemConfig: {
           viewModel: {
@@ -139,7 +87,7 @@ Ext.define('JefBox.view.games.HostView', {
         title: 'Users',
         bind: {
           hidden: '{viewRecord.AllowTeams}',
-          store: '{viewRecord.Users}'
+          store: '{usersStore}'
         },
         columns: [{
           text: 'Online',
@@ -156,60 +104,6 @@ Ext.define('JefBox.view.games.HostView', {
       }]
     }, {
       xtype: 'gamesCurrentQuestionView'
-    }, {
-      xtype: 'grid',
-      grouped: true,
-      tab: {
-        title: 'Rounds'
-      },
-      groupHeader: {
-        tpl: 'Round: {name}'
-      },
-      bind: {
-        store: '{viewRecord.RoundItems}'
-      },
-      itemConfig: {
-        viewModel: true
-      },
-      columns: [{
-        text: 'Actions',
-        align: 'right',
-        width: 75,
-        cell: {
-          tools: [{
-            iconCls: Icons.CHECKMARK_ROUND,
-            tooltip: 'Mark Question Answered',
-            handler: 'onMarkRoundItemRow',
-            bind: {
-              hidden: '{record.AnswerDate}'
-            }
-          }, {
-            iconCls: Icons.CHECKMARK_ROUND_SOLID,
-            tooltip: 'Mark Question Unanswered',
-            handler: 'onUnmarkRoundItemRow',
-            bind: {
-              hidden: '{!record.AnswerDate}'
-            }
-          }]
-        }
-      }, {
-        text: 'Order',
-        dataIndex: 'Order'
-      }, {
-        text: 'Type',
-        dataIndex: 'Type',
-        width: 120,
-        renderer: function(value) {
-          return Enums.RoundItemTypes.getDisplayValue(value);
-        }
-      }, {
-        text: 'Question',
-        dataIndex: 'Question',
-        flex: 1
-      }, {
-        text: 'Points',
-        dataIndex: 'Points'
-      }]
     }, {
       title: 'Standings',
       xtype: 'grid',
@@ -229,7 +123,7 @@ Ext.define('JefBox.view.games.HostView', {
         })
       },
       bind: {
-        store: '{viewRecord.Score}'
+        store: '{scoreStore}'
       },
       titleBar: {
         items: [{
@@ -239,7 +133,7 @@ Ext.define('JefBox.view.games.HostView', {
           iconCls: Icons.ANNOUNCE,
           handler: 'onClickAnnounceWinner',
           bind: {
-            disabled: '{viewRecord.RoundItems.last !== currentQuestion}'
+            disabled: '{!isLastQuestion}'
           }
         }]
       },

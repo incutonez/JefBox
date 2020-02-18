@@ -3,7 +3,6 @@ Ext.define('JefBox.model.Game', {
   requires: [
     'JefBox.model.Team',
     'JefBox.model.game.RoundItem',
-    'JefBox.model.game.Score',
     'JefBox.view.games.EditRoundView'
   ],
 
@@ -11,12 +10,26 @@ Ext.define('JefBox.model.Game', {
     model: 'JefBox.model.Team',
     associationKey: 'Teams',
     role: 'Teams',
-    getterName: 'getTeamsStore'
+    getterName: 'getTeamsStore',
+    storeConfig: {
+      remoteSort: false,
+      remoteFilter: false,
+      proxy: {
+        type: 'memory'
+      }
+    }
   }, {
     model: 'JefBox.model.User',
     associationKey: 'Users',
     role: 'Users',
-    getterName: 'getUsersStore'
+    getterName: 'getUsersStore',
+    storeConfig: {
+      remoteSort: false,
+      remoteFilter: false,
+      proxy: {
+        type: 'memory'
+      }
+    }
   }, {
     model: 'JefBox.model.game.RoundItem',
     associationKey: 'RoundItems',
@@ -41,19 +54,6 @@ Ext.define('JefBox.model.Game', {
         direction: 'ASC'
       }]
     }
-  }, {
-    model: 'JefBox.model.game.Score',
-    associationKey: 'Score',
-    role: 'Score',
-    getterName: 'getScoreStore',
-    inverse: {
-      getterName: 'getGameRecord'
-    },
-    storeConfig: {
-      remoteSort: false,
-      remoteFilter: false,
-      groupField: 'GroupName'
-    }
   }],
 
   proxy: {
@@ -75,19 +75,6 @@ Ext.define('JefBox.model.Game', {
         critical: true
       }
     }
-  },
-
-  connectSocket: function(config) {
-    const me = this;
-    config = config || {};
-    sockets.on('updatedGames' + me.getId(), function() {
-      Ext.callback(config.before, config.scope);
-      me.load({
-        callback: function(record, options, successful) {
-          Ext.callback(config.after, config.scope);
-        }
-      });
-    });
   },
 
   editRoundGroup: function(group) {
@@ -173,6 +160,20 @@ Ext.define('JefBox.model.Game', {
       url: Routes.parseRoute(Schemas.Games.ANSWERS_ID_UI, {
         Id: me.getId(),
         AnswerId: answerId
+      }),
+      callback: function(options, successful, response) {
+        Ext.callback(cb, me, [successful, response]);
+      }
+    });
+  },
+
+  submitEmptyRoundAnswers: function(roundId, cb) {
+    const me = this;
+    Ext.Ajax.request({
+      method: 'PUT',
+      url: Routes.parseRoute(Schemas.Games.ROUND_ITEM_ANSWERS_UI, {
+        Id: me.getId(),
+        RoundItemId: roundId
       }),
       callback: function(options, successful, response) {
         Ext.callback(cb, me, [successful, response]);

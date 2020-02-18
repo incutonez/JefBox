@@ -60,10 +60,10 @@ Ext.define('Shared.overrides.util.Format', {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     if (minutes) {
-      display += minutes + ' mins ';
+      display += this.plural(minutes, 'min') + ' ';
     }
     if (seconds) {
-      display += seconds + ' secs';
+      display += this.plural(seconds, 'sec');
     }
     return display;
   }

@@ -19,7 +19,21 @@ module.exports = (io) => {
     if (!game) {
       return res.sendStatus(404);
     }
-    res.send(game.getDetails());
+    const roundItems = await db.RoundItem.findAll({
+      where: {
+        GameId: gameId
+      },
+      order: [
+        ['RoundIndex', 'ASC'],
+        ['Order', 'ASC']
+      ]
+    });
+    const response = game.getDetails();
+    if (roundItems && roundItems.length) {
+      response.FirstRoundItemId = roundItems[0].Id;
+      response.LastRoundItemId = roundItems[roundItems.length - 1].Id;
+    }
+    res.send(response);
   });
 
   router.get(GameSchema.PLAYER_DETAILS, async (req, res) => {
@@ -106,7 +120,13 @@ module.exports = (io) => {
     const gameId = req.params.id;
     const groupId = req.query.groupId;
     const attributes = {};
-    const answerQuery = {
+    const answersOnly = req.query.answersOnly;
+    const includeOptions = [{
+      model: db.RoundItemChoice,
+      as: 'Choices',
+      required: false
+    }];
+    let answerQuery = {
       model: db.RoundItemAnswer,
       as: 'Answers',
       required: false
@@ -115,10 +135,16 @@ module.exports = (io) => {
       answerQuery.where = {
         GroupId: groupId
       };
-      // Don't include the answer, so users can't mistakenly see it
+      // Exclude the answer so users can't see it
       attributes.exclude = ['Answer'];
     }
-    const game = await db.RoundItem.findOne({
+    else if (!answersOnly) {
+      answerQuery = null;
+    }
+    if (answerQuery) {
+      includeOptions.push(answerQuery);
+    }
+    let roundItem = await db.RoundItem.findOne({
       where: {
         [db.Op.and]: [{
           GameId: gameId
@@ -127,17 +153,58 @@ module.exports = (io) => {
         }]
       },
       attributes: attributes,
-      include: [{
-        model: db.RoundItemChoice,
-        as: 'Choices',
-        required: false
-      }, answerQuery],
+      include: includeOptions,
       order: [
         ['RoundIndex', 'ASC'],
         ['Order', 'ASC']
       ]
     });
-    res.send(game);
+    // This means we're possibly at the end of the game, so just grab the last record
+    if (!roundItem) {
+      roundItem = await db.RoundItem.findOne({
+        where: {
+          [db.Op.and]: [{
+            GameId: gameId
+          }]
+        },
+        attributes: attributes,
+        include: [{
+          model: db.RoundItemChoice,
+          as: 'Choices',
+          required: false
+        }, answerQuery],
+        order: [
+          ['RoundIndex', 'DESC'],
+          ['Order', 'DESC']
+        ]
+      });
+    }
+    if (roundItem) {
+      const roundItemPoints = roundItem.Points;
+      const answers = roundItem.Answers;
+      if (answers) {
+        let choicesMapped;
+        const choices = roundItem.Choices;
+        if (choices && choices.length) {
+          choicesMapped = {};
+          for (let i = 0; i < choices.length; i++) {
+            const choice = choices[i];
+            choicesMapped[choice.Id] = choice.Value;
+          }
+        }
+        for (let i = 0; i < answers.length; i++) {
+          const answer = answers[i];
+          if (choicesMapped) {
+            answer.Answer = choicesMapped[answer.ChoiceId];
+          }
+          answer.Points = answer.Points || roundItemPoints;
+        }
+      }
+    }
+    if (answersOnly) {
+      return res.send(roundItem.Answers);
+    }
+    res.send(roundItem);
   });
 
   router.post(GameSchema.BASE_PATH, BaseCrudController.createRecord);
@@ -173,6 +240,7 @@ module.exports = (io) => {
         }
       });
       await gameTeam.addUser(userId);
+      // Potentially added a team to the global teams store, so have that event fire to trickle to clients
       if (io && TeamModel.updateEvent) {
         io.emit(TeamModel.updateEvent);
       }
@@ -181,11 +249,8 @@ module.exports = (io) => {
       // Add the user to the game, if they're not already added
       await game.addUser(userId);
     }
-    if (io && GameSchema.SOCKET_UPDATE) {
+    if (io) {
       io.emit(`${GameSchema.SOCKET_UPDATE}${gameId}`);
-    }
-    if (io && UserModel.updateEvent) {
-      io.emit(`${UserModel.updateEvent}${userId}`);
     }
     res.sendStatus(204);
   });
@@ -210,7 +275,7 @@ module.exports = (io) => {
       req.body.GroupId = groupId;
       await roundItem.createAnswer(req.body);
       if (io) {
-        io.emit(`${GameSchema.SOCKET_UPDATE}${gameId}`);
+        io.emit(`${GameSchema.SOCKET_UPDATE_ROUND_ANSWERS}${gameId}`);
         io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}_${groupId}`);
       }
     }
@@ -228,11 +293,33 @@ module.exports = (io) => {
         Id: req.params.roundItemId
       }
     });
-    await roundItem.update({
-      AnswerDate: req.body.isComplete ? new Date() : null
-    });
-    if (io && GameModel.updateEvent) {
-      io.emit(`${GameModel.updateEvent}${gameId}`);
+    if (req.body.revertPrevious) {
+      // Make sure our game hasn't actually ended
+      await roundItem.update({
+        AnswerDate: null
+      });
+      const lastQuestion = await db.RoundItem.findOne({
+        where: {
+          GameId: gameId,
+          AnswerDate: {
+            [db.Op.ne]: null
+          }
+        },
+        order: [['AnswerDate', 'DESC']]
+      });
+      if (lastQuestion) {
+        await lastQuestion.update({
+          AnswerDate: null
+        });
+      }
+    }
+    else {
+      await roundItem.update({
+        AnswerDate: new Date()
+      });
+    }
+    if (io) {
+      io.emit(`${GameSchema.SOCKET_UPDATE_ROUND}${gameId}`);
     }
     res.sendStatus(204);
   });
@@ -264,8 +351,15 @@ module.exports = (io) => {
         });
       }
     }
-    if (io && GameModel.updateEvent) {
-      io.emit(`${GameModel.updateEvent}${gameId}`);
+    await db.RoundItem.update({
+      AnswerDate: new Date()
+    }, {
+      where: {
+        Id: roundItemId
+      }
+    });
+    if (io) {
+      io.emit(`${GameSchema.SOCKET_UPDATE_ROUND}${gameId}`);
     }
     res.sendStatus(204);
   });
@@ -298,6 +392,7 @@ module.exports = (io) => {
   });
 
   router.delete(GameSchema.ANSWERS_ID, async (req, res) => {
+    const gameId = req.params.id;
     const groupAnswer = await db.RoundItemAnswer.findByPk(req.params.AnswerId);
     if (groupAnswer) {
       // Cascade delete wasn't working, so I'm using this for now
@@ -308,7 +403,43 @@ module.exports = (io) => {
       await groupAnswer.destroy();
     }
     if (io) {
-      io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${req.params.id}_${groupAnswer.GroupId}`);
+      io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}_${groupAnswer.GroupId}`);
+      io.emit(`${GameSchema.SOCKET_UPDATE_ROUND_ANSWERS}${gameId}`);
+    }
+    res.sendStatus(204);
+  });
+
+  router.put(GameSchema.ROUND_ITEM_ANSWERS, async (req, res) => {
+    const gameId = req.params.id;
+    const roundItemId = req.params.roundItemId;
+    const gameTeams = await db.GameTeam.findAll({
+      where: {
+        GameId: gameId
+      }
+    });
+    const roundAnswers = await db.RoundItemAnswer.findAll({
+      where: {
+        RoundItemId: roundItemId
+      }
+    });
+    const groupIds = gameTeams && gameTeams.map(x => x.getDataValue('Id'));
+    const groupIdsWithAnswers = roundAnswers && roundAnswers.map(x => x.getDataValue('GroupId'));
+    // Get the difference between the 2 groups
+    const missingGroupAnswers = [...groupIds].filter(x => !groupIdsWithAnswers.includes(x));
+    if (missingGroupAnswers && missingGroupAnswers.length) {
+      await db.RoundItemAnswer.bulkCreate(missingGroupAnswers.map(function(item) {
+        return {
+          GroupId: item,
+          TeamId: item,
+          RoundItemId: roundItemId
+        };
+      }));
+      if (io) {
+        io.emit(`${GameSchema.SOCKET_UPDATE_ROUND_ANSWERS}${gameId}`);
+        for (let i = 0; i < missingGroupAnswers.length; i++) {
+          io.emit(`${GameSchema.SOCKET_UPDATE_GROUP}${gameId}_${missingGroupAnswers[i]}`);
+        }
+      }
     }
     res.sendStatus(204);
   });

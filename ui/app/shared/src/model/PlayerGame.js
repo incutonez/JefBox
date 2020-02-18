@@ -32,5 +32,9 @@ Ext.define('JefBox.model.PlayerGame', {
   getGroupId: function() {
     const groupRecord = this.getGroupRecord();
     return groupRecord && groupRecord.getId();
+  },
+
+  getUpdateGroupEvent: function() {
+    return `${Schemas.Games.SOCKET_UPDATE_GROUP}${this.getId()}_${this.getGroupId()}`;
   }
 });

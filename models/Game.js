@@ -75,17 +75,6 @@ module.exports = (conn, types) => {
           attributes: []
         }
       }]
-    }, {
-      model: models.RoundItem,
-      as: 'RoundItems',
-      required: false,
-      include: [{
-        model: models.RoundItemChoice,
-        as: 'Choices'
-      }, {
-        model: models.RoundItemAnswer,
-        as: 'Answers'
-      }]
     });
 
     GameModel.updateInclude.push({
@@ -122,59 +111,14 @@ module.exports = (conn, types) => {
     }
   };
 
-  GameModel.prototype.getScore = function(data, scoreOnly) {
-    const standings = [];
-    data = data || Object.assign({}, this.get());
-    const roundItems = data.RoundItems;
-    if (roundItems) {
-      // TODOJEF: Add support for user only games
-      const teamIds = data.Teams.map(x => x.Id);
-      for (let i = 0; i < roundItems.length; i++) {
-        const roundItem = roundItems[i];
-        const answers = roundItem.Answers;
-        const choices = roundItem.Choices;
-        const choiceIds = choices && choices.map(x => x.Id);
-        if (answers) {
-          for (let j = 0; j < answers.length; j++) {
-            const answer = answers[j].get();
-            const groupId = answer.TeamId || answer.UserId;
-            const group = data.Teams[teamIds.indexOf(groupId)];
-            const groupName = group && group.Name;
-            if (answer.IsCorrect) {
-              standings.push({
-                Round: roundItem.Round,
-                QuestionNumber: roundItem.Order,
-                Points: answer.Points,
-                GroupId: groupId,
-                GroupName: groupName
-              });
-            }
-            if (choiceIds && choiceIds.length) {
-              const choice = choices[choiceIds.indexOf(answer.ChoiceId)];
-              answer.Answer = choice && choice.Value;
-            }
-            answer.GroupName = groupName;
-            answer.GroupId = groupId;
-            if (answer.Points === null) {
-              answer.Points = roundItem.Points;
-            }
-          }
-        }
-      }
-    }
-    data.Score = standings;
-  };
-
   GameModel.prototype.getDetails = function() {
     const data = Object.assign({}, this.get());
     this.getTeams(data);
-    this.getScore(data);
     return data;
   };
 
   GameModel.includeOptions = [];
   GameModel.updateInclude = [];
-  GameModel.updateEvent = 'updatedGames';
 
   return GameModel;
 };

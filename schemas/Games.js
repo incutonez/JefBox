@@ -21,13 +21,18 @@ module.exports = {
   ANSWERS_ID: `${idPath}/answers/:AnswerId`,
   ANSWERS_ID_UI: `${idPathUI}/answers/:{AnswerId:num}`,
   UPDATE_ROUND_ITEM_PATH: `${idPath}/roundItems/:roundItemId`,
+  ROUND_ITEM_ANSWERS: `${idPath}/roundItems/:roundItemId/answers`,
   UPDATE_ROUND_ITEM_PATH_UI: `${idPathUI}/roundItems/:{RoundItemId:num}`,
+  ROUND_ITEM_ANSWERS_UI: `${idPathUI}/roundItems/:{RoundItemId:num}/answers`,
   ADD_WINNER_PATH: `${idPath}/winner`,
   ADD_WINNER_PATH_UI: `${idPathUI}/winner`,
   PLAYER_DETAILS: `${idPath}/player`,
   GROUP: `${idPath}/groups/:GroupId`,
   GROUP_UI: `${idPathUI}/groups/:{GroupId:num}`,
   SCORE: `${idPath}/score`,
+  SCORE_UI: `${idPathUI}/score`,
   SOCKET_UPDATE: 'updatedGames',
-  SOCKET_UPDATE_GROUP: 'updatedGamesGroup'
+  SOCKET_UPDATE_GROUP: 'updatedGamesGroup',
+  SOCKET_UPDATE_ROUND: 'updatedGamesRound',
+  SOCKET_UPDATE_ROUND_ANSWERS: 'updatedGamesRoundAnswers'
 };

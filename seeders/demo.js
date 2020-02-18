@@ -54,7 +54,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 2,
@@ -69,7 +70,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 3,
@@ -84,7 +86,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 4,
@@ -99,7 +102,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 5,
@@ -114,7 +118,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 6,
@@ -129,7 +134,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 7,
@@ -144,7 +150,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 8,
@@ -159,7 +166,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 9,
@@ -174,7 +182,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 10,
@@ -189,7 +198,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 11,
@@ -204,7 +214,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 12,
@@ -219,7 +230,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 13,
@@ -234,7 +246,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 14,
@@ -249,7 +262,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 15,
@@ -264,7 +278,8 @@ module.exports = {
         'Url': 'https://calcworkshop.com/wp-content/uploads/pythagorean-theorem-formula.png',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 16,
@@ -279,7 +294,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 17,
@@ -294,7 +310,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 18,
@@ -309,7 +326,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 19,
@@ -324,7 +342,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 20,
@@ -339,7 +358,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 21,
@@ -354,7 +374,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 22,
@@ -369,7 +390,8 @@ module.exports = {
         'Url': 'http://www.cse.psu.edu/~b58/Barlow-Jesse-Small.jpg',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 23,
@@ -384,7 +406,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 24,
@@ -399,7 +422,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       },
       {
         'Id': 25,
@@ -414,7 +438,8 @@ module.exports = {
         'Url': '',
         AnswerDate: null,
         'GameId': 1,
-        UploadId: null
+        UploadId: null,
+        TimeLimit: 2
       }
     ], {});
     await queryInterface.bulkInsert('RoundItemChoices', [
@@ -534,7 +559,7 @@ module.exports = {
         'Id': 17,
         'Value': 'Jesse Barlow',
         'Order': 3,
-        'IsAnswer': 0,
+        'IsAnswer': 1,
         'RoundItemId': 22
       },
       {
@@ -569,7 +594,7 @@ module.exports = {
         'Id': 22,
         'Value': 'Pennsylvania',
         'Order': 3,
-        'IsAnswer': 0,
+        'IsAnswer': 1,
         'RoundItemId': 24
       },
       {
