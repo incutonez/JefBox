@@ -15,23 +15,34 @@ module.exports = (io) => {
 
   router.get(GameSchema.ID_PATH, async (req, res) => {
     const gameId = req.params.id;
+    const details = req.query.details;
     const game = await Game.getRecordById(gameId);
     if (!game) {
       return res.sendStatus(404);
     }
-    const roundItems = await db.RoundItem.findAll({
-      where: {
-        GameId: gameId
-      },
+    const includeOptions = [];
+    if (details) {
+      includeOptions.push({
+        model: db.RoundItemChoice,
+        as: 'Choices'
+      });
+    }
+    const roundItems = await game.getRoundItems({
+      include: includeOptions,
       order: [
         ['RoundIndex', 'ASC'],
         ['Order', 'ASC']
       ]
     });
     const response = game.getDetails();
-    if (roundItems && roundItems.length) {
-      response.FirstRoundItemId = roundItems[0].Id;
-      response.LastRoundItemId = roundItems[roundItems.length - 1].Id;
+    if (roundItems) {
+      if (req.query.details) {
+        response.RoundItems = roundItems;
+      }
+      else if (roundItems.length) {
+        response.FirstRoundItemId = roundItems[0].Id;
+        response.LastRoundItemId = roundItems[roundItems.length - 1].Id;
+      }
     }
     res.send(response);
   });
@@ -168,11 +179,7 @@ module.exports = (io) => {
           }]
         },
         attributes: attributes,
-        include: [{
-          model: db.RoundItemChoice,
-          as: 'Choices',
-          required: false
-        }, answerQuery],
+        include: includeOptions,
         order: [
           ['RoundIndex', 'DESC'],
           ['Order', 'DESC']
@@ -207,7 +214,28 @@ module.exports = (io) => {
     res.send(roundItem);
   });
 
-  router.post(GameSchema.BASE_PATH, BaseCrudController.createRecord);
+  router.post(GameSchema.BASE_PATH, async (req, res) => {
+    const data = req.body;
+    data.UpdatedById = req.session.user.Id;
+    data.OwnerId = req.session.user.Id;
+    let record = await db.Game.create(data);
+    record = await Game.getRecordById(record.Id, null, db.Game.updateInclude);
+    return res.send(await Game.updateAssociations(record, data));
+  });
+
+  router.put(GameSchema.ID_PATH, async (req, res) => {
+    const data = req.body;
+    data.UpdatedById = req.session.user.Id;
+    data.OwnerId = req.session.user.Id;
+    await db.Game.update(data, {
+      where: {
+        Id: data.Id
+      },
+      individualHooks: true
+    });
+    const record = await Game.getRecordById(data.Id, null, db.Game.updateInclude);
+    return res.send(await Game.updateAssociations(record, data));
+  });
 
   router.post(GameSchema.JOIN_PATH, async (req, res) => {
     const teamName = req.body.TeamName;
@@ -282,8 +310,6 @@ module.exports = (io) => {
     catch (e) {
       console.log(e);
     }
-    // TODOJEF: Fix jefbox:1337/api/games/1/currentRound?_dc=1581998533551&groupId=&id=-28
-    // TODOJEF: Fix dialog resizing issue
     res.sendStatus(204);
   });
 
@@ -365,8 +391,6 @@ module.exports = (io) => {
     }
     res.sendStatus(204);
   });
-
-  router.put(GameSchema.ID_PATH, BaseCrudController.updateById);
 
   router.put(GameSchema.ID_PATH + '/winner/:WinnerId', async (req, res) => {
     const gameId = req.params.id;

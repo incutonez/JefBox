@@ -39,6 +39,9 @@ Ext.define('JefBox.view.games.EditViewController', {
     const me = this;
     me.setViewLoading(true);
     JefBox.model.Game.load(gameId, {
+      params: {
+        details: true
+      },
       callback: function(record, operation, successful) {
         if (successful) {
           me.processViewRecord(record);

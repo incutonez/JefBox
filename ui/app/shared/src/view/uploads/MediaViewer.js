@@ -27,8 +27,7 @@ Ext.define('JefBox.view.uploads.MediaViewer', {
     }
   },
 
-  width: '50%',
-  height: 'auto',
+  height: '75%',
   minWidth: 0,
   bodyPadding: 0,
   layout: 'auto',

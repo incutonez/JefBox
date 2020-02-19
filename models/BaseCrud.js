@@ -70,16 +70,14 @@ module.exports = (Model) => {
     return record;
   }
 
-  async function getRecordById(id, userId) {
+  async function getRecordById(id, userId, includeOptions) {
     const searchOptions = Object.assign({
       paranoid: await db.User.excludeDeleted(userId),
       where: {
         Id: id
       }
     }, Model.searchOptions);
-    if (Model.includeOptions) {
-      searchOptions.include = Model.includeOptions;
-    }
+    searchOptions.include = includeOptions || Model.includeOptions;
     return Model.findOne(searchOptions);
   }
 
@@ -126,6 +124,7 @@ module.exports = (Model) => {
     getAllRecords: getAllRecords,
     createRecord: createRecord,
     updateRecord: updateRecord,
-    deleteRecord: deleteRecord
+    deleteRecord: deleteRecord,
+    updateAssociations: updateAssociations
   };
 };

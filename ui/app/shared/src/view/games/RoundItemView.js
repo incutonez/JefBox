@@ -117,6 +117,63 @@ Ext.define('JefBox.view.games.RoundItemView', {
       }]
     }]
   }, {
+    xtype: 'container',
+    layout: {
+      type: 'vbox'
+    },
+    bind: {
+      hidden: '{hideMediaField}'
+    },
+    items: [{
+      xtype: 'textfield',
+      label: 'Url',
+      bind: {
+        disabled: '{viewRecord.UploadId}',
+        value: '{viewRecord.Url}'
+      }
+    }, {
+      xtype: 'displayfield',
+      label: 'Video ID',
+      bind: {
+        hidden: '{!viewRecord.Url}',
+        value: '{viewRecord.youtubeVideoId}'
+      }
+    }, {
+      xtype: 'container',
+      layout: {
+        type: 'hbox',
+        align: 'left'
+      },
+      bind: {
+        disabled: '{viewRecord.Url}'
+      },
+      items: [{
+        xtype: 'button',
+        iconCls: Icons.VIEW,
+        handler: 'onClickViewAttachment',
+        tooltip: 'View Attachment',
+        bind: {
+          hidden: '{!viewRecord.UploadId}'
+        }
+      }, {
+        xtype: 'button',
+        iconCls: Icons.DELETE,
+        handler: 'onClickDeleteAttachment',
+        tooltip: 'Delete Attachment',
+        bind: {
+          hidden: '{!viewRecord.UploadId}'
+        }
+      }, {
+        xtype: 'button',
+        text: 'Attachment',
+        iconCls: Icons.NEW,
+        handler: 'onClickAddAttachmentBtn',
+        bind: {
+          disabled: '{viewRecord.Url}'
+        }
+      }]
+    }]
+  }, {
     xtype: 'textfield',
     label: 'Question',
     required: true,
@@ -203,64 +260,6 @@ Ext.define('JefBox.view.games.RoundItemView', {
         xtype: 'textfield',
         required: true
       }
-    }]
-  }, {
-    xtype: 'container',
-    flex: 1,
-    layout: {
-      type: 'vbox'
-    },
-    bind: {
-      hidden: '{hideMediaField}'
-    },
-    items: [{
-      xtype: 'textfield',
-      label: 'Url',
-      bind: {
-        disabled: '{viewRecord.UploadId}',
-        value: '{viewRecord.Url}'
-      }
-    }, {
-      xtype: 'displayfield',
-      label: 'Video ID',
-      bind: {
-        hidden: '{!viewRecord.Url}',
-        value: '{viewRecord.VideoId}'
-      }
-    }, {
-      xtype: 'container',
-      layout: {
-        type: 'hbox',
-        align: 'left'
-      },
-      bind: {
-        disabled: '{viewRecord.Url}'
-      },
-      items: [{
-        xtype: 'button',
-        iconCls: Icons.VIEW,
-        handler: 'onClickViewAttachment',
-        tooltip: 'View Attachment',
-        bind: {
-          hidden: '{!viewRecord.UploadId}'
-        }
-      }, {
-        xtype: 'button',
-        iconCls: Icons.DELETE,
-        handler: 'onClickDeleteAttachment',
-        tooltip: 'Delete Attachment',
-        bind: {
-          hidden: '{!viewRecord.UploadId}'
-        }
-      }, {
-        xtype: 'button',
-        text: 'Attachment',
-        iconCls: Icons.NEW,
-        handler: 'onClickAddAttachmentBtn',
-        bind: {
-          disabled: '{viewRecord.Url}'
-        }
-      }]
     }]
   }],
 
