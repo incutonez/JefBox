@@ -13,13 +13,16 @@ Ext.define('JefBox.view.games.RoundItemView', {
       createAnotherQuestion: false
     },
     formulas: {
+      isDrawingType: function(get) {
+        return get('viewRecord.Type') === Enums.RoundItemTypes.DRAWING;
+      },
       hideMediaField: function(get) {
         const types = Enums.RoundItemTypes;
         return !Ext.Array.contains([types.AUDIO, types.IMAGE, types.VIDEO], get('viewRecord.Type'));
       },
       saveBtnDisabled: function(get) {
         const isMultipleChoice = get('viewRecord.IsMultipleChoice');
-        return !get('viewRecord.valid') || isMultipleChoice && !get('viewRecord.Choices.count') || !isMultipleChoice && Ext.isEmpty(get('viewRecord.Answer'));
+        return !get('viewRecord.valid') || isMultipleChoice && !get('viewRecord.Choices.count') || !isMultipleChoice && !get('isDrawingType');
       }
     }
   },
@@ -186,7 +189,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
     bind: {
       value: '{viewRecord.Answer}',
       disabled: '{viewRecord.IsMultipleChoice}',
-      required: '{!viewRecord.IsMultipleChoice}'
+      required: '{!viewRecord.IsMultipleChoice && !isDrawingType}'
     }
   }, {
     xtype: 'grid',

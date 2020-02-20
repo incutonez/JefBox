@@ -50,6 +50,7 @@ module.exports = (io) => {
   router.get(GameSchema.PLAYER_DETAILS, async (req, res) => {
     const userId = req.session.user.Id;
     const gameId = req.params.id;
+    // TODOJEF: Figure out a better way of doing these one of findOnes
     const game = await GameModel.findOne({
       where: {
         Id: gameId
@@ -66,6 +67,9 @@ module.exports = (io) => {
         }]
       }]
     });
+    if (!game) {
+      return res.sendStatus(404);
+    }
     const data = Object.assign({}, game.get());
     game.getTeams(data, userId);
     data.Group = data.Teams[0];
@@ -85,10 +89,12 @@ module.exports = (io) => {
         required: false,
         include: [{
           model: db.RoundItemChoice,
+          required: false,
           as: 'Choices'
         }, {
           model: db.RoundItemAnswer,
           as: 'Answers',
+          required: false,
           where: {
             IsCorrect: true
           },
@@ -96,6 +102,9 @@ module.exports = (io) => {
         }]
       }]
     });
+    if (!game) {
+      return res.sendStatus(404);
+    }
     const gameTeams = await game.getGameTeams({
       include: [{
         model: game.AllowTeams ? TeamModel : UserModel
