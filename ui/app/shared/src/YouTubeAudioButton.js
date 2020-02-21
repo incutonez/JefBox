@@ -15,56 +15,72 @@ Ext.define('JefBox.YouTubeAudioButton', {
   },
   config: {
     videoId: null,
-    isPlaying: false
+    isPlaying: false,
+    player: null
   },
   items: [{
     xtype: 'button',
     reference: 'toggleButton',
     tooltip: 'Play',
     handler: 'onClickToggleButton'
-  }],
-
-  /**
-   * @ticket https://support.sencha.com/#ticket-50021
-   */
-  template: [{
-    tag: 'iframe',
-    reference: 'iframe',
+  }, {
+    xtype: 'component',
+    reference: 'iframeContainer',
     cls: Styles.ELEMENT_HIDDEN
   }],
 
   updateVideoId: function(videoId) {
-    let src = '';
-    if (videoId) {
-      let extraConfig = {
-        enablejsapi: 1
-      };
-      if (Ext.isObject(videoId)) {
-        const temp = videoId.videoId;
-        delete videoId.videoId;
-        Ext.Object.merge(extraConfig, videoId);
-        videoId = temp;
-      }
-      extraConfig = Ext.Object.toQueryString(extraConfig);
-      src = `https://www.youtube.com/embed/${videoId}?${extraConfig}`;
+    const player = this.getPlayer();
+    if (videoId && player) {
+      player.cueVideoById(videoId);
     }
-    this.iframe.dom.src = src;
   },
 
   updateIsPlaying: function(isPlaying) {
-    const iframeContainer = this.iframe.dom;
     const toggleButton = this.lookup('toggleButton');
-    const contentWindow = iframeContainer && iframeContainer.contentWindow;
+    const player = this.getPlayer();
+    if (player) {
+      if (isPlaying) {
+        player.playVideo();
+      }
+      else {
+        player.pauseVideo();
+      }
+    }
     if (toggleButton) {
       toggleButton.setIconCls(isPlaying ? Icons.PAUSE : Icons.PLAY);
       toggleButton.setTooltip(isPlaying ? 'Pause' : 'Play');
     }
-    if (contentWindow) {
-      contentWindow.postMessage(Ext.encode({
-        event: 'command',
-        func: isPlaying ? 'playVideo' : 'pauseVideo'
-      }), '*');
-    }
+  },
+
+  initialize: function() {
+    const me = this;
+    me.callParent();
+    Ext.asap(function() {
+      const playerVars = me.getVideoId();
+      new YT.Player(me.lookup('iframeContainer').getId(), {
+        height: 0,
+        width: 0,
+        events: {
+          onReady: function(event) {
+            const playerVars = me.getVideoId();
+            me.setPlayer(event.target);
+            event.target.cueVideoById(playerVars);
+            if (me.getIsPlaying()) {
+              event.target.playVideo();
+            }
+          },
+          onStateChange: function(event) {
+            const playerVars = me.getVideoId();
+            // We have to listen for when the video ends, so we can reset it to the proper start/end times
+            if (event.data === YT.PlayerState.ENDED) {
+              me.setIsPlaying(false);
+              event.target.cueVideoById(playerVars);
+            }
+          }
+        }
+      });
+    });
   },
 
   onClickToggleButton: function() {

@@ -19,9 +19,8 @@ Ext.define('JefBox.view.games.HostViewController', {
     this.callParent(arguments);
   },
 
-  destroy: function() {
+  onBeforeDestroyView: function() {
     this.uninstallSockets();
-    this.callParent();
   },
 
   onRouteHostView: function(params) {

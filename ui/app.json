@@ -90,6 +90,10 @@
     {
       "path": "node_modules/canvas-confetti/dist/confetti.browser.js",
       "includeInBundle": true
+    },
+    {
+      "path": "https://www.youtube.com/iframe_api",
+      "remote": true
     }
   ],
   "css": [

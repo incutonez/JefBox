@@ -23,6 +23,9 @@ Ext.define('JefBox.view.games.HostView', {
     title: 'Game: {viewRecord.Name}',
     masked: '{loadingMask}'
   },
+  listeners: {
+    beforedestroy: 'onBeforeDestroyView'
+  },
   items: [{
     xtype: 'tabpanel',
     tabBar: {

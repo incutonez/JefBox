@@ -80,14 +80,26 @@ Ext.define('JefBox.model.game.RoundItem', {
     }
   }, {
     name: 'youtubeVideoId',
-    type: 'string',
-    depends: ['Url'],
+    type: 'auto',
+    depends: ['Url', 'Type'],
     convert: function(value, record) {
       const url = record.get('Url');
       const isYoutube = url.includes('youtube.com');
       if (isYoutube) {
-        const matches = url.match(/v=([^$]+)/);
-        return matches && matches[1];
+        const matches = Ext.Object.fromQueryString(url.split('?')[1]);
+        matches.videoId = matches.v;
+        if (record.get('Type') !== Enums.RoundItemTypes.VIDEO) {
+          if (!Ext.isEmpty(matches.start)) {
+            matches.startSeconds = matches.start;
+            delete matches.start;
+          }
+          if (!Ext.isEmpty(matches.end)) {
+            matches.endSeconds = matches.end;
+            delete matches.end;
+          }
+        }
+        delete matches.v;
+        return matches;
       }
       return value || '';
     }

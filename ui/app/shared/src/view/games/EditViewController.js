@@ -179,6 +179,7 @@ Ext.define('JefBox.view.games.EditViewController', {
     const me = this;
     const viewRecord = me.getViewRecord();
     if (viewRecord) {
+      me.setViewLoading(true);
       viewRecord.save({
         callback: function(record, operation, successful) {
           me.closeView();

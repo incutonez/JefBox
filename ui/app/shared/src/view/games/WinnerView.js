@@ -43,7 +43,7 @@ Ext.define('JefBox.view.games.WinnerView', {
     hidden: true,
     videoId: {
       videoId: 'YA5QJ8wsDp0',
-      start: 73
+      startSeconds: 73
     },
     bind: {
       isPlaying: '{playSong}'

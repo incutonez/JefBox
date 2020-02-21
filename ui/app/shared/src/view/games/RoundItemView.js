@@ -20,15 +20,18 @@ Ext.define('JefBox.view.games.RoundItemView', {
         const types = Enums.RoundItemTypes;
         return !Ext.Array.contains([types.AUDIO, types.IMAGE, types.VIDEO], get('viewRecord.Type'));
       },
+      answerRequired: function(get) {
+        return !get('viewRecord.IsMultipleChoice') && !get('isDrawingType');
+      },
       saveBtnDisabled: function(get) {
         const isMultipleChoice = get('viewRecord.IsMultipleChoice');
-        return !get('viewRecord.valid') || isMultipleChoice && !get('viewRecord.Choices.count') || !isMultipleChoice && !get('isDrawingType');
+        return !get('viewRecord.valid') || isMultipleChoice && !get('viewRecord.Choices.count') || get('answerRequired') && Ext.isEmpty(get('viewRecord.Answer'));
       }
     }
   },
 
-  width: 400,
-  height: 600,
+  width: '50%',
+  height: '100%',
   title: 'Round Item',
   minimizable: false,
   maximizable: false,
@@ -135,13 +138,6 @@ Ext.define('JefBox.view.games.RoundItemView', {
         value: '{viewRecord.Url}'
       }
     }, {
-      xtype: 'displayfield',
-      label: 'Video ID',
-      bind: {
-        hidden: '{!viewRecord.Url}',
-        value: '{viewRecord.youtubeVideoId}'
-      }
-    }, {
       xtype: 'container',
       layout: {
         type: 'hbox',
@@ -189,7 +185,7 @@ Ext.define('JefBox.view.games.RoundItemView', {
     bind: {
       value: '{viewRecord.Answer}',
       disabled: '{viewRecord.IsMultipleChoice}',
-      required: '{!viewRecord.IsMultipleChoice && !isDrawingType}'
+      required: '{answerRequired}'
     }
   }, {
     xtype: 'grid',
