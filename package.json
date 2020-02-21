@@ -7,7 +7,8 @@
     "start": "supervisor -i ./ui,./seeders server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cd ui && npm install",
-    "seed": "sequelize db:seed:all"
+    "seed": "sequelize db:seed:all",
+    "seed2": "sequelize db:seed --seed seeders/demo2.js"
   },
   "keywords": [],
   "author": "Jef Harkay",

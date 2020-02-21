@@ -141,7 +141,7 @@ Ext.define('JefBox.view.games.CurrentQuestionView', {
           iconCls: '{timerIconCls}',
           text: '{timeRemainingFm}',
           hidden: '{timeRemaining === null}',
-          disabled: '{timeRemaining === 0}'
+          disabled: '{timeRemaining === 0 || timerTask}'
         }
       }, {
         xtype: 'button',

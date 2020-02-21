@@ -7,8 +7,6 @@ Ext.define('JefBox.view.games.HostViewController', {
     'JefBox.view.games.TieView'
   ],
 
-  TIMER_TASK: Ext.create('Ext.util.TaskRunner'),
-
   // TODOJEF: Issue with this... it gets hit twice, but it doesn't get hit twice when loading the edit
   constructor: function(config) {
     const routes = config.routes = {};
@@ -33,6 +31,11 @@ Ext.define('JefBox.view.games.HostViewController', {
     const gameRecord = me.getViewRecord();
     if (gameRecord && viewModel) {
       me.setViewLoading(true);
+      const timerTask = viewModel.get('timerTask');
+      if (timerTask) {
+        timerTask.destroy();
+        viewModel.set('timerTask', null);
+      }
       JefBox.model.game.RoundItem.loadCurrentQuestion({
         gameId: gameRecord.getId(),
         callback: function(questionRecord, successful) {
@@ -270,7 +273,7 @@ Ext.define('JefBox.view.games.HostViewController', {
     const timerOverAudio = this.lookup('timerOverAudio');
     if (viewModel) {
       let timeRemaining = viewModel.get('currentQuestion.TimeLimit');
-      this.TIMER_TASK.start({
+      const timerTask = Ext.create('Ext.util.TaskRunner').newTask({
         run: function() {
           viewModel.set('timeRemaining', --timeRemaining);
           viewModel.notify();
@@ -281,6 +284,8 @@ Ext.define('JefBox.view.games.HostViewController', {
         },
         interval: 1000
       });
+      timerTask.start();
+      viewModel.set('timerTask', timerTask);
     }
   },
 

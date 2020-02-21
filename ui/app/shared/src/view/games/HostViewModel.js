@@ -6,6 +6,7 @@ Ext.define('JefBox.view.games.HostViewModel', {
     showAnswer: 0,
     timeRemaining: 0,
     currentQuestion: null,
+    timerTask: null,
     viewRecord: {
       loading: true
     }
