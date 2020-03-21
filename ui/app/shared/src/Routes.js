@@ -44,6 +44,12 @@ Ext.define('JefBox.Routes', {
      */
     key: 'PAINTER',
     basePath: 'painter'
+  }, {
+    /**
+     * @property IP_ADDRESS
+     */
+    key: 'IP_ADDRESS',
+    basePath: 'ipAddress'
   }],
 
   constructor: function(config) {

@@ -90,11 +90,11 @@ Ext.define('JefBox.model.game.RoundItem', {
         matches.videoId = matches.v;
         if (record.get('Type') !== Enums.RoundItemTypes.VIDEO) {
           if (!Ext.isEmpty(matches.start)) {
-            matches.startSeconds = matches.start;
+            matches.startSeconds = record.convertTimeOffset(matches.start);
             delete matches.start;
           }
           if (!Ext.isEmpty(matches.end)) {
-            matches.endSeconds = matches.end;
+            matches.endSeconds = record.convertTimeOffset(matches.end);
             delete matches.end;
           }
         }
@@ -104,6 +104,25 @@ Ext.define('JefBox.model.game.RoundItem', {
       return value || '';
     }
   }],
+
+  /**
+   * Method for converting if the youtube time is specified in seconds only or minutes:seconds
+   * @param {String} time
+   * @return {Number} seconds
+   */
+  convertTimeOffset: function(time) {
+    let seconds = time.split(':');
+    if (!Ext.isEmpty(seconds)) {
+      // Only dealing with seconds here, no need to make any changes
+      if (seconds.length === 1) {
+        seconds = parseInt(seconds, 10);
+      }
+      else if (seconds.length === 2) {
+        seconds = parseInt(seconds[0], 10) * 60 + parseInt(seconds[1], 10);
+      }
+    }
+    return seconds;
+  },
 
   hasMany: [{
     model: 'JefBox.model.game.RoundItemChoice',

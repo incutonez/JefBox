@@ -6,7 +6,8 @@ Ext.define('JefBox.view.main.MainViewController', {
     'JefBox.view.users.MainView',
     'JefBox.view.games.MainView',
     'JefBox.view.uploads.MainView',
-    'JefBox.view.PainterView'
+    'JefBox.view.PainterView',
+    'JefBox.view.IpAddressView'
   ],
 
   constructor: function(config) {
@@ -17,6 +18,7 @@ Ext.define('JefBox.view.main.MainViewController', {
     routes[Schemas.Games.BASE_PATH_UI] = 'onRouteGames';
     routes[Routes.UPLOADS] = 'onRouteUploads';
     routes[Routes.PAINTER] = 'onRoutePainter';
+    routes[Routes.IP_ADDRESS] = 'onRouteIpAddress';
     config.routes = routes;
     config.openWindows = {};
     this.callParent(arguments);
@@ -48,6 +50,10 @@ Ext.define('JefBox.view.main.MainViewController', {
 
   onRoutePainter: function(params) {
     this.createTaskWindow('Painter', 'painterView', Icons.PAINT, Routes.PAINTER);
+  },
+
+  onRouteIpAddress: function() {
+    this.createTaskWindow('IP Address', 'ipAddressView', Icons.ADDRESS, Routes.IP_ADDRESS);
   },
 
   getTaskWindowByType: function(key) {
@@ -127,6 +133,10 @@ Ext.define('JefBox.view.main.MainViewController', {
 
   onClickPainterView: function(button) {
     this.redirectTo(Routes.PAINTER);
+  },
+
+  onClickIpAddressView: function(button) {
+    this.redirectTo(Routes.IP_ADDRESS);
   },
 
   onClickSignOut: function() {

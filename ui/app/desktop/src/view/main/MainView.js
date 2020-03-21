@@ -90,5 +90,12 @@ Ext.define('JefBox.view.main.MainView', {
     style: 'border: 1px solid #cecece;',
     handler: 'onClickPainterView',
     margin: '0 0 10 0'
+  }, {
+    xtype: 'button',
+    text: 'IP',
+    iconAlign: 'top',
+    cls: Styles.BUTTON_LARGE,
+    iconCls: Icons.ADDRESS,
+    handler: 'onClickIpAddressView'
   }]
 });
